@@ -1,2 +1,14 @@
 # SEM-25
-# Template for readme file
+
+About
+-----
+
+Bejeweled game developed in Java for a group project part of the Software Engineering Methods course at the Technical University of Delft.
+
+Main contributors:
+
+*	Pim Veldhuisen
+*	Jan-Gerrit Harms
+*	Michel Jansen
+*	Amrit S Gill
+*	Jeroen Vrijenhoef
