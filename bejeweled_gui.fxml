@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="578.0" prefWidth="700.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <BorderPane layoutX="14.0" layoutY="14.0" prefHeight="550.0" prefWidth="672.0">
+      <center>
+        <Pane prefHeight="511.0" prefWidth="515.0" />
+      </center>
+      <left>
+        <Pane prefHeight="338.0" prefWidth="157.0">
+          <children>
+            <Button layoutX="14.0" layoutY="481.0" mnemonicParsing="false" text="Button" />
+            <Button layoutX="82.0" layoutY="481.0" mnemonicParsing="false" text="Button" />
+            <ImageView fitHeight="119.50000004849191" fitWidth="159.3333282470703" layoutX="0.0" layoutY="-7.0" pickOnBounds="true" preserveRatio="true" />
+            <Button layoutX="14.0" layoutY="452.0" mnemonicParsing="false" text="Button" />
+            <Button layoutX="82.0" layoutY="452.0" mnemonicParsing="false" text="Button" />
+          </children>
+        </Pane>
+      </left>
+      <top>
+        <Pane prefHeight="34.0" prefWidth="572.0" />
+      </top>
+    </BorderPane>
+  </children>
+</AnchorPane>
