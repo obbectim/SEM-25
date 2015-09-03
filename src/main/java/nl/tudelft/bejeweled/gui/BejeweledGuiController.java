@@ -12,9 +12,11 @@ import java.util.ResourceBundle;
 
 /**
  * Created by Jeroen on 3-9-2015.
+ * The JavaFX Controller class that accompanies bejeweeld_gui.fxml
  */
 public class BejeweledGuiController implements Initializable {
 
+    // The launched game
     private Game game;
 
     @FXML
@@ -56,6 +58,10 @@ public class BejeweledGuiController implements Initializable {
         });
     }
 
+    /**
+     * Setter method for game.
+     * @param game The current game
+     */
     public void setGame(Game game) {
         this.game = game;
     }

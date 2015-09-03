@@ -1,9 +1,6 @@
 package nl.tudelft.bejeweled;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.game.Game;
 import nl.tudelft.bejeweled.gui.BejeweledGui;
@@ -14,11 +11,18 @@ import nl.tudelft.bejeweled.gui.BejeweledGui;
  */
 public class Launcher extends Application {
 
+    /**
+     *  The current game
+     */
     private Game game;
-    private BejeweledGui bejeweledGui ;
+
+    /**
+     * The GUI for the Bejeweled game
+     */
+    private BejeweledGui bejeweledGui;
 
     public static void main(String[] args) {
-        Application.launch(Launcher.class, (java.lang.String[])null);
+        Application.launch(Launcher.class, (java.lang.String[]) null);
     }
 
     @Override
@@ -26,18 +30,12 @@ public class Launcher extends Application {
         new Launcher().launchGame(theStage);
     }
 
+    /**
+     * Loads the gui and launches the game.
+     * @param theStage The primary stage to draw the GUI on
+     */
     public void launchGame(Stage theStage) {
-
-        // make a game
-        // game makes a board
-        // game listens to keyboard input
-        // board provides game loop and logic
-
-        // build the GUI elements
-        // start the GUI
         game = new Game();
         bejeweledGui = new BejeweledGui(game, theStage);
-
-
     }
 }
