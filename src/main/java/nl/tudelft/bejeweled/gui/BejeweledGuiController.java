@@ -5,6 +5,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
 import nl.tudelft.bejeweled.game.Game;
 
 import java.net.URL;
@@ -25,6 +26,8 @@ public class BejeweledGuiController implements Initializable {
     private Button buttonStop;
     @FXML
     private Button buttonExit;
+    @FXML
+    private Pane boardPane;
 
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -32,7 +35,7 @@ public class BejeweledGuiController implements Initializable {
         assert buttonStop != null;
         assert buttonExit != null;
 
-        // initialize your logic here: all @FXML variables will have been injected
+        // set button event handles
         buttonStart.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -64,5 +67,13 @@ public class BejeweledGuiController implements Initializable {
      */
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    /**
+     * Getter method for boardPane (the pane of the game)
+     * @return The boardPane used by the board.
+     */
+    public Pane getBoardPane() {
+        return boardPane;
     }
 }
