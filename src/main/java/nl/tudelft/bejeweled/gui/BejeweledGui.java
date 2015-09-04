@@ -2,6 +2,7 @@ package nl.tudelft.bejeweled.gui;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import nl.tudelft.bejeweled.game.Game;
@@ -36,6 +37,7 @@ public class BejeweledGui {
             // init the scene and set dialog properties
             Scene scene = new Scene(page);
             stage.setScene(scene);
+            stage.getIcons().add(new Image(BejeweledGui.class.getResourceAsStream("/bejeweled_icon.png")));
             stage.setTitle("Bejeweled");
             stage.setResizable(false);
             stage.show();
