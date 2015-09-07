@@ -22,11 +22,6 @@ public class BejeweledGame extends Game implements BoardObserver {
 
     private SpriteStore spriteStore;
 
-    /**
-     * <code>true</code> if the game is in progress.
-     */
-    private boolean inProgress;
-
     private Pane gamePane;
 
     public BejeweledGame(int framesPerSecond, String windowTitle) {
@@ -57,6 +52,7 @@ public class BejeweledGame extends Game implements BoardObserver {
         // check for any combo's on the freshly created board
         int comboCount = board.checkBoardCombos();
         System.out.println("Combo Jewels on board: " + comboCount);
+        board.generateJewels();
 
         inProgress = true;
     }
@@ -102,6 +98,15 @@ public class BejeweledGame extends Game implements BoardObserver {
         Image boardImage = new Image("/board.png");
         gc.drawImage(boardImage, 0, 0);
         */
+    }
+
+    /**
+     * Update the game and let board generate new Jewels.
+     * The board handles removing the Jewels by handling mouse click events.
+     */
+    @Override
+    public void updateGame() {
+        board.updateBoard();
     }
 
     @Override

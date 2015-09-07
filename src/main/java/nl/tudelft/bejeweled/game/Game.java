@@ -40,6 +40,11 @@ public abstract class Game {
     private final SpriteStore spriteStore = new SpriteStore();
 
     /**
+     * <code>true</code> if the game is in progress.
+     */
+    protected boolean inProgress = false;
+
+    /**
      * Constructor that is called by the derived class. This will
      * set the frames per second, title, and setup the game loop.
      * @param framesPerSecond - Frames per second.
@@ -63,6 +68,9 @@ public abstract class Game {
 
                     @Override
                     public void handle(javafx.event.ActionEvent event) {
+
+                    //    if(inProgress)// update game
+                    //        updateGame();
 
                         // update actors
                         updateSprites();
@@ -114,6 +122,11 @@ public abstract class Game {
     protected void handleUpdate(Sprite sprite) {
         sprite.update();
     }
+
+    /**
+     * Updates the state of the game.
+     */
+    protected abstract void updateGame();
 
     /**
      * Sprites to be cleaned up.
