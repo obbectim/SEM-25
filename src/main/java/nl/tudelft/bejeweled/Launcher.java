@@ -2,6 +2,7 @@ package nl.tudelft.bejeweled;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import nl.tudelft.bejeweled.game.BejeweledGame;
 import nl.tudelft.bejeweled.game.Game;
 import nl.tudelft.bejeweled.gui.BejeweledGui;
 
@@ -35,7 +36,15 @@ public class Launcher extends Application {
      * @param theStage The primary stage to draw the GUI on
      */
     public void launchGame(Stage theStage) {
-        game = new Game();
+        game = new BejeweledGame(60, "Bejeweled");
+
+        // initialise the gui and map start/stop buttons
         bejeweledGui = new BejeweledGui(game, theStage);
+
+        // initialise the game
+        game.initialise(bejeweledGui.getBoardPane());
+
+        // begin game loop
+        game.beginGameLoop();
     }
 }

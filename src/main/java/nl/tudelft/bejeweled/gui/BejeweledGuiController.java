@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import nl.tudelft.bejeweled.game.Game;
 
 import java.net.URL;
@@ -57,6 +58,11 @@ public class BejeweledGuiController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Exit");
+
+                // get a handle to the stage
+                Stage stage = (Stage) buttonExit.getScene().getWindow();
+                game.stop();
+                stage.close();
             }
         });
     }
