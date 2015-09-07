@@ -52,8 +52,9 @@ public class Board {
                 int comboCount = checkBoardCombos();
                 System.out.println("Combo Jewels on board: " + comboCount);
 
-                selection.clear();
             }
+            selection.clear();
+
         }
     }
 
