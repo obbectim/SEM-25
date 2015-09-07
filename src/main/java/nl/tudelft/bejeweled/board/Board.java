@@ -49,23 +49,24 @@ public class Board {
         selection.add(jewel);
 
         // 2 gems are selected, see if any combo's are made
-        if(selection.size() == 2) {
+        if (selection.size() == 2) {
 
-            if(moveWithinDomain(selection.get(0), selection.get(1))) {
+            if (moveWithinDomain(selection.get(0), selection.get(1))) {
                 System.out.println("Swapping jewels");
                 swapJewel(selection.get(0), selection.get(1));
 
                 int comboCount = checkBoardCombos();
                 System.out.println("Combo Jewels on board: " + comboCount);
-            }
-            else
+            } else
                 System.out.println("No swap made");
 
             // reset the selection
             selection.clear();
-        }
-    }
 
+        }
+        selection.clear();
+    }
+    
     /**
      * Generates new Jewels if any have imploded by user input.
      */
