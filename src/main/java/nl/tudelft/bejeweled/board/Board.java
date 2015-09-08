@@ -3,6 +3,8 @@ package nl.tudelft.bejeweled.board;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import nl.tudelft.bejeweled.sprite.Jewel;
+import nl.tudelft.bejeweled.sprite.SpriteStore;
+
 import java.util.*;
 
 
@@ -15,11 +17,15 @@ public class Board {
     private List<Jewel> selection = new ArrayList<Jewel>();
 
     private double width = 0, height = 0;
-
+    
+    private Random rand = new Random();
+    
     private Jewel[][] grid;
 
     /** The JavaFX group containing all the jewels */
     private Group sceneNodes;
+
+	private SpriteStore spriteStore;
 
     /**
      * Constructor for the board class
@@ -197,18 +203,60 @@ public class Board {
             // grid[jewel.getBoardX()][jewel.getBoardY()] = null;
         }
 
+      //  doGravity();
         return count;
     }
 
     /**
-     * Function that checks if jewels are falling down.
+     * Function that run one step of jewels falling down.
      * @return True if jewels are moving.
      */
-    public Boolean doGravity() {
-        return true;
+    public Boolean doGravityStep() {
+    	System.out.println("STep");
+    	boolean falling;
+		//do{
+		//	falling= false;
+		for (int j =1;j<8;j++){
+			falling= false;
+			for (int i =0;i<8;i++){		
+					if(grid[i][j].isDead){
+						System.out.println("Swap " + j + " and " + (j-1));
+						swapJewel(grid[i][j],grid[i][j-1]);
+						falling =true;
+					}
+				}
+			if(falling){return true;}
+			}
+		return false;
+    }
+    
+    public void doGravity() {
+    	while(doGravityStep()){
+    		fillEmptySpots();
+    	}
     }
 
     public void fillEmptySpots() {
+    	for (int i =0;i<8;i++){	
+    		if(grid[i][0].isDead){
+    			//TODO next 4 lines are repeated code and should probably be in the constructor
+                Jewel jewel = new Jewel(rand.nextInt((7 - 1) + 1) + 1, i, 0);
+                jewel.xPos = i * (width / 8.0);
+                jewel.yPos = 0 * (height / 8.0);
+                grid[i][0] = jewel;
+                spriteStore.addSprites(jewel);
+                sceneNodes.getChildren().add(0, jewel.node);
 
+
+                 		}
+    	}
     }
+
+	public Object getSpriteStore() {
+		return spriteStore;
+	}
+
+	public void setSpriteStore(SpriteStore spriteStore) {
+		this.spriteStore = spriteStore;
+	}
 }
