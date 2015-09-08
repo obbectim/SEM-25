@@ -89,6 +89,9 @@ public class Board {
 
                 int comboCount = checkBoardCombos();
                 System.out.println("Combo Jewels on board: " + comboCount);
+                if (comboCount==0){
+                	swapJewel(selection.get(0), selection.get(1));
+                }
 
             }
             sceneNodes.getChildren().remove(selectionCursor.node);
