@@ -14,7 +14,6 @@ public interface BoardObserver {
     /**
      * Callback from when there has been a valid move and
      * jewels have been removed from the board
-     * @param count The number of Jewels removed.
      */
-    void boardJewelsRemoved(int count);
+    void boardJewelRemoved();
 }

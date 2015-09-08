@@ -20,6 +20,8 @@ public class BejeweledGame extends Game implements BoardObserver {
 
     private BoardFactory boardFactory;
 
+    private int score = 0;
+
     private SpriteStore spriteStore;
 
     /**
@@ -44,6 +46,8 @@ public class BejeweledGame extends Game implements BoardObserver {
             return;
 
         System.out.println("Game started");
+
+        score = 0;
 
         // Create the group that holds all the jewel nodes and create a game scene
         setSceneNodes(new Group());
@@ -91,20 +95,6 @@ public class BejeweledGame extends Game implements BoardObserver {
 
         // draw and stretch the board background
         gamePane.setStyle("-fx-background-image: url('/board.png'); -fx-background-size: cover;");
-
-        // draw the board as a background on the pane
-        /*
-        Image boardImage = new Image(Game.class.getResourceAsStream("/board.png"));
-        ImageView boardImageView = new ImageView();
-        boardImageView.setImage(boardImage);
-        gamePane.getChildren().add(boardImageView);
-
-        Canvas canvas = new Canvas(560, 564);
-        gamePane.getChildren().add(canvas);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        Image boardImage = new Image("/board.png");
-        gc.drawImage(boardImage, 0, 0);
-        */
     }
     
     protected void updateBoard() {
@@ -120,7 +110,7 @@ public class BejeweledGame extends Game implements BoardObserver {
     }
 
     @Override
-    public void boardJewelsRemoved(int count) {
-    	// TODO: count the points based on the amount of jewels cleared
+    public void boardJewelRemoved() {
+    	score += 10; // add 10 points per jewel removed
     }
 }
