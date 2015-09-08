@@ -1,5 +1,6 @@
 package nl.tudelft.bejeweled.board;
 
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import nl.tudelft.bejeweled.sprite.Jewel;
@@ -14,19 +15,20 @@ import java.util.*;
  */
 public class Board {
 
-    private final SpriteStore spriteStore;
-
-    /** The sprite store providing the sprites for the game. */
     private List<Jewel> selection = new ArrayList<Jewel>();
     
     private List<BoardObserver> observers = new ArrayList<BoardObserver>();
 
     private double width = 0, height = 0;
-
+    
+    private Random rand = new Random();
+    
     private Jewel[][] grid;
 
     /** The JavaFX group containing all the jewels */
     private Group sceneNodes;
+
+	private SpriteStore spriteStore;
 
     /**
      * Constructor for the board class
@@ -34,12 +36,11 @@ public class Board {
      * @param width Width of the board scene in pixels.
      * @param height Height of the board scene in pixels.
      */
-    public Board(Jewel[][] grid, Group sceneNodes, double width, double height, final SpriteStore spriteStore) {
+    public Board(Jewel[][] grid, Group sceneNodes, double width, double height) {
         this.grid = grid;
         this.width = width;
         this.height = height;
         this.sceneNodes = sceneNodes;
-        this.spriteStore = spriteStore;
     }
 
     /**
@@ -72,29 +73,20 @@ public class Board {
         selection.add(jewel);
 
         // 2 gems are selected, see if any combo's are made
-        if (selection.size() == 2) {
+        if(selection.size() == 2) {
 
-            if (moveWithinDomain(selection.get(0), selection.get(1))) {
+            if(moveWithinDomain(selection.get(0), selection.get(1))) {
                 System.out.println("Swapping jewels");
                 swapJewel(selection.get(0), selection.get(1));
 
                 int comboCount = checkBoardCombos();
                 System.out.println("Combo Jewels on board: " + comboCount);
-            } else
-                System.out.println("No swap made");
 
-            // reset the selection
+            }
             selection.clear();
 
         }
-        selection.clear();
-    }
-    
-    /**
-     * Generates new Jewels if any have imploded by user input.
-     */
-    public void updateBoard() {
-        generateJewels();
+
     }
 
     /**
@@ -128,7 +120,7 @@ public class Board {
 
         Jewel tmpJewel;
         int tmp;
-        double tmp2;
+        double previousJ1,previousJ2;
         // find out what direction the change is
         // horizontal swap
         if(Math.abs(j1.getBoardX() - j2.getBoardX()) == 1) {
@@ -136,9 +128,14 @@ public class Board {
             j1.setBoardX(j2.getBoardX());
             j2.setBoardX(tmp);
 
-            tmp2 = j1.xPos;
+            previousJ1 = j1.xPos;
             j1.xPos = j2.xPos;
-            j2.xPos = tmp2;
+            j1.node.setTranslateX(previousJ1-j1.xPos);
+            previousJ2 = j2.xPos;
+            j2.xPos = previousJ1;
+            j2.node.setTranslateX(previousJ2-j2.xPos);
+
+           
         }
         else if (Math.abs(j1.getBoardY() - j2.getBoardY()) == 1) {
             // vertical swap
@@ -146,9 +143,13 @@ public class Board {
             j1.setBoardY(j2.getBoardY());
             j2.setBoardY(tmp);
 
-            tmp2 = j1.yPos;
+            previousJ1 = j1.yPos;
             j1.yPos = j2.yPos;
-            j2.yPos = tmp2;
+            j1.node.setTranslateY(previousJ1-j1.yPos);
+            previousJ2 = j2.yPos;
+            j2.yPos = previousJ1;
+            j2.node.setTranslateY(previousJ2-j2.yPos);
+
         }
 
         tmpJewel = j1;
@@ -166,7 +167,7 @@ public class Board {
         // list to hold current selection of combo
         Stack<Jewel> current = new Stack<>();
 
-        //TODO Find nicer implementation to find combos, maybe with recursion.
+        //TODO Find nicer implementation to find combos, maybe with resursion.
         int count;
         int matches;
         int type;
@@ -223,105 +224,97 @@ public class Board {
         comboList.addAll(comboSet);
         count = comboList.size();
 
-        // remove the combo Jewels from the board
-        for (Jewel jewel : comboList) removeJewel(jewel);
+        for(Iterator<Jewel> jewelIterator = comboList.iterator(); jewelIterator.hasNext(); ) {
+            Jewel jewel = jewelIterator.next();
+            // remove the JavaFX nodes from the scene group and animate an implosion
+            jewel.implode(sceneNodes);
 
+            // remove the event filter
+            jewel.node.setOnMouseClicked(null);
+
+            // remove the Jewel from the Grid
+            // TODO Make sure the Jewels are also removed from the spriteStore.
+            // grid[jewel.getBoardX()][jewel.getBoardY()] = null;
+        }
+
+        doGravity();
         return count;
     }
 
     /**
-     * Generates new Jewels in the grid.
-     * References to a null object are replaced by new Jewels.
-     */
-    public void generateJewels() {
-        // assumptions: either 3+ horizontal or 3+ vertical Jewels are missing.
-        Random rand = new Random();
-/*
-        int k = 0;
-        for(int i = 0; i < 8; i++) {
-            for(int j = 6; j >= 0; j--) {
-                if(grid[i][j] == null)
-                    continue;
-
-                k = j + 1;
-                while(grid[i][k] == null) {
-                    grid[i][k] = grid[i][k-1];
-                    grid[i][k].setBoardY(grid[i][k].getBoardY() + 1);
-                    grid[i][k].yPos += height / 8.0;
-                    k++;
-                }
-            }
-        }
-        /*
-        // check the grid for null jewels
-        for(int j = 7; j >= 0; j--) {
-            for(int i = 7; i >= 0; i--) {
-                if(grid[i][j] == null) {
-                    // loop through all vertical nodes above this Jewel
-                    // first one it sees replaces this empty spot and creates a new empty spot
-                    for(int k = j - 1; k >= 0; k--) {
-                        if(grid[i][k] != null) {
-                            // update grid[i][k] jewel with new position information for animation
-                            grid[i][k].setBoardY(j);
-                            grid[i][k].yPos += height / 8.0;
-
-                            // finally swap them
-                            grid[i][j] = grid[i][k];
-                            grid[i][k] = null;
-                        }
-                        else if(grid[i][k] == null && j == 0) {
-                            // we found no jewels and are at the top so start filling
-                            // the vertical column
-                            for(int l = 7; l >= 0; l--) {
-                                if(grid[i][l] == null) {
-                                    // generate a new jewel at this place
-                                    Jewel jewel = new Jewel(rand.nextInt((7 - 1) + 1) + 1, i, l);
-                                    jewel.xPos = i * (width / 8.0);
-                                    jewel.yPos = l * (height / 8.0);
-                                    grid[i][l] = jewel;
-
-                                    // add to actors in play (sprite objects)
-                                    spriteStore.addSprites(jewel);
-
-                                    // add sprites
-                                    sceneNodes.getChildren().add(0, jewel.node);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        */
-    }
-
-    /**
-     * Remove the Jewel from the game.
-     * @param jewel The jewel to be removed.
-     */
-    public void removeJewel(Jewel jewel) {
-        // remove the JavaFX nodes from the scene group and animate an implosion
-        jewel.implode(sceneNodes);
-
-        // remove the event filter
-        jewel.node.setOnMouseClicked(null);
-
-        // remove the jewel from the sprite store
-        spriteStore.removeSprite(jewel);
-
-        // remove the Jewel from the Grid
-     //   grid[jewel.getBoardX()][jewel.getBoardY()] = null;
-    }
-
-    /**
-     * Function that checks if jewels are falling down.
+     * Function that run one step of jewels falling down.
      * @return True if jewels are moving.
      */
-    public Boolean doGravity() {
-        return true;
+    public Boolean doGravityStep() {
+    	//System.out.println("STep");
+    	boolean falling;
+		//do{
+		//	falling= false;
+		for (int j =1;j<8;j++){
+			falling= false;
+			for (int i =0;i<8;i++){		
+					if(grid[i][j].isDead){
+						System.out.println("Swap " + j + " and " + (j-1));
+						swapJewel(grid[i][j],grid[i][j-1]);
+						falling =true;
+					}
+				}
+			if(falling){return true;}
+			}
+		return false;
+    }
+    
+    public boolean doGravity() {
+    	boolean changes = false;
+    	while(doGravityStep()){
+    		changes = true;
+    		fillEmptySpots();
+    	}
+    	return changes;
+    }
+    
+    protected void addRandomJewel(int i, int j){
+    	  Jewel jewel = new Jewel(rand.nextInt((7 - 1) + 1) + 1, i, j);
+          jewel.xPos = i * (width / 8.0);
+          jewel.yPos = j * (height / 8.0);
+          grid[i][j] = jewel;
+          spriteStore.addSprites(jewel);
+          sceneNodes.getChildren().add(0, jewel.node);
+          setSpriteStore(spriteStore);
+          grid[i][j].node.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                  new EventHandler<MouseEvent>() {
+                      public void handle(MouseEvent event) {
+                          System.out.println("Jewel[" + jewel.getBoardX() + "][" + jewel.getBoardY() + "] " + event.getEventType());
+                          addSelection(jewel);
+                          event.consume();
+                      }
+                  }
+          );
     }
 
     public void fillEmptySpots() {
-
+    	for (int i =0;i<8;i++){	
+    		if(grid[i][0].isDead){
+    			addRandomJewel(i,0);
+                 		}
+    	}
     }
+
+	public Object getSpriteStore() {
+		return spriteStore;
+	}
+
+	public void setSpriteStore(SpriteStore spriteStore) {
+		this.spriteStore = spriteStore;
+	}
+
+	public void update() {
+		while(doGravity()){
+    		checkBoardCombos();
+
+    	}
+		fillEmptySpots();
+
+		
+	}
 }
