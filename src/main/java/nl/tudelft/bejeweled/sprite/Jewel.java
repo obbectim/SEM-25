@@ -80,30 +80,25 @@ public class Jewel extends Sprite {
      * Updates the Jewels velocity based on its current position and desired position.
      */
     private void updateVelocity(){
-
+    	//Update x velocity
     	if(node.getTranslateX() > 4){
-    		//vX = .0003;
     		vX = -4;
     	}else{
     		if(node.getTranslateX() < -4){
         		vX = 4;
-
-        	//	vX = -.003;
         	}else{
-        		vX=0;
+        		vX=-node.getTranslateX();
         	}
     	}
 
+    	//Update x velocity
     	if(node.getTranslateY() > 4){
-    		//vX = .0003;
     		vY = -4;
     	}else{
     		if(node.getTranslateY() < -4){
         		vY = 4;
-
-        	//	vX = -.003;
         	}else{
-        		vY=0;
+        		vY=-node.getTranslateY();
         	}
     	}
     	
