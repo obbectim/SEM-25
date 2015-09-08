@@ -4,7 +4,6 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import nl.tudelft.bejeweled.sprite.Jewel;
-import nl.tudelft.bejeweled.sprite.SelectionCursor;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
 import java.util.*;
@@ -30,7 +29,6 @@ public class Board {
     private Group sceneNodes;
 
 	private SpriteStore spriteStore;
-	private SelectionCursor selectionCursor;
 
     /**
      * Constructor for the board class
@@ -73,13 +71,7 @@ public class Board {
      */
     public void addSelection(Jewel jewel) {
         selection.add(jewel);
-        
-        if(selection.size() == 1) {
-        	selectionCursor  = new SelectionCursor(selection.get(0).xPos,selection.get(0).yPos);
-            spriteStore.addSprites(selectionCursor);
-            sceneNodes.getChildren().add(0, selectionCursor.node);
-        }
-        
+
         // 2 gems are selected, see if any combo's are made
         if(selection.size() == 2) {
 
@@ -91,14 +83,9 @@ public class Board {
                 System.out.println("Combo Jewels on board: " + comboCount);
 
             }
-            sceneNodes.getChildren().remove(selectionCursor.node);
-            selectionCursor =null;
             selection.clear();
 
         }
-        
-        // Check if the board is out of moves which should end the game
-        outOfMoves();
     }
 
     /**
@@ -251,12 +238,15 @@ public class Board {
 
         doGravity();
 
+        outOfMoves();
+        
         return count;
     }
     
     
     /**
-     * Checks if a pair of similar jewels can be extended by a valid move 
+     * Checks if a pair of similar jewels can be extended by a valid move (done for a vertical pair
+     * but can be used for horizontal if jewels matrix is transposed)
      * 
      * @param x x-position of the first jewel of the pair to be extended
      * @param y y-position of the first jewel of the pair to be extended
@@ -295,14 +285,15 @@ public class Board {
      * @param x x-position of the first jewel of the vertical pair
      * @param y y-position of first jewel of the vertical pair
      */
-    private void verticalRow(int x, int y){
+    private boolean verticalRow(int x, int y){
     	ArrayList<Integer> swap = validMove(grid, x, y);
     	System.out.println(swap);
     	if (swap.isEmpty()) {
-    		return;
+    		return false;
     	}
     	System.out.print("Switch ("+swap.get(0)+","+swap.get(1)+") with (");
     	System.out.println(swap.get(2)+","+swap.get(3)+")");
+    	return true;
     }
     
     /**
@@ -310,7 +301,7 @@ public class Board {
      * @param x x-position of the first jewel of the horizontal pair
      * @param y y-position of first jewel of the horizontal pair
      */
-    private void horizontalRow(int x, int y){
+    private boolean horizontalRow(int x, int y){
     	/**
     	 * Create transpose of matrix
     	 */
@@ -324,10 +315,11 @@ public class Board {
     	ArrayList<Integer> swap = validMove(transposed, y, x);
     	System.out.println(swap);
     	if (swap.isEmpty()) {
-    		return;
+    		return false;
     	}
     	System.out.print("Switch ("+swap.get(1)+","+swap.get(0)+") with (");
     	System.out.println(swap.get(3)+","+swap.get(2)+")");
+    	return true;
     }
     
     /**
@@ -336,15 +328,19 @@ public class Board {
      * @param x x-position of first jewel of possible row
      * @param y y-position of first jewel of possible row
      */
-    private void horizontalRowPossible(int x, int y){
+    private boolean horizontalRowPossible(int x, int y){
     	if (y > 0 && grid[x+1][y-1].getType() == grid[x][y].getType()){
     		System.out.print("Switch ("+(x+1)+","+y+") with (");
         	System.out.println((x+1)+","+(y-1)+")");
+        	return true;
     	}
     	if (y < grid[0].length-1 && grid[x+1][y+1].getType() == grid[x][y].getType()){
     		System.out.print("Switch ("+(x+1)+","+y+") with (");
         	System.out.println((x+1)+","+(y+1)+")");
+        	return true;
     	}
+    	
+    	return false;
     }
     
     /**
@@ -353,15 +349,19 @@ public class Board {
      * @param x x-position of first jewel of possible row
      * @param y y-position of first jewel of possible row
      */
-    private void verticalRowPossible(int x, int y){
+    private boolean verticalRowPossible(int x, int y){
     	if (x > 0 && grid[x-1][y+1].getType() == grid[x][y].getType()){
     		System.out.print("Switch ("+x+","+(y+1)+") with (");
         	System.out.println((x-1)+","+(y+1)+")");
+        	return true;
     	}
     	if (x < grid.length-1 && grid[x+1][y+1].getType() == grid[x][y].getType()){
     		System.out.print("Switch ("+x+","+(y+1)+") with (");
         	System.out.println((x+1)+","+(y+1)+")");
+        	return true;
     	}
+    	
+    	return false;
     }
     
     /**
@@ -369,7 +369,7 @@ public class Board {
      * @return true if there are no more moves possible and the game should end
      */
     public void outOfMoves() {
-
+    	
     	/**
     	 * Iterate through all gems and look for pairs of two which could be a possible row to complete
     	 */
@@ -377,23 +377,31 @@ public class Board {
 			for (int y = 0; y < grid[0].length; y++){
 				if (y < grid[0].length-1 && grid[x][y].getType() == grid[x][y+1].getType()){
 					System.out.println("vertical row found at " + x + ", " + y);
-					verticalRow(x, y);
+					if (verticalRow(x, y))
+						return;
 				}
 				if (x < grid.length-1 && grid[x][y].getType() == grid[x+1][y].getType()){
 					System.out.println("horizontal row found at " + x + ", " + y);
-					horizontalRow(x, y);
+					if (horizontalRow(x, y))
+						return;
 				}
 				if (y < grid[0].length-2 && grid[x][y].getType() == grid[x][y+2].getType()){
 					System.out.println("vertical row possible at " + x + ", " + y);
-					verticalRowPossible(x, y);
+					if (verticalRowPossible(x, y))
+						return;
 				}
 				if (x < grid.length-2 && grid[x][y].getType() == grid[x+2][y].getType()){
 					System.out.println("horizontal row possible at " + x + ", " + y);
-					horizontalRowPossible(x, y);
+					if (horizontalRowPossible(x, y))
+						return;
 				}
 			}
 		}
     	
+    	// if the flow arrives here then no move was found; inform the observers
+    	for (BoardObserver observer : observers) {
+			observer.boardOutOfMoves();
+		}
     	
     }
     
@@ -467,7 +475,6 @@ public class Board {
 	public void update() {
 		while(doGravity()){
     		checkBoardCombos();
-
     	}
 		fillEmptySpots();
 

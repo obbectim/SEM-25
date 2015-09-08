@@ -54,6 +54,9 @@ public class BejeweledGame extends Game implements BoardObserver {
         // generate the jewels
         board = boardFactory.generateBoard(getSceneNodes(), gamePane.getWidth(), gamePane.getHeight());
 
+        // start observing the board for callback events
+        board.addObserver(this);
+        
         // check for any combo's on the freshly created board
         int comboCount = board.checkBoardCombos();
         System.out.println("Combo Jewels on board: " + comboCount);
@@ -112,6 +115,7 @@ public class BejeweledGame extends Game implements BoardObserver {
     
     @Override
     public void boardOutOfMoves() {
+    	// TODO: Show a text like "Game over"
     	stop();
     }
 
