@@ -2,6 +2,7 @@ package nl.tudelft.bejeweled.game;
 
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.board.BoardFactory;
@@ -30,6 +31,8 @@ public class BejeweledGame extends Game implements BoardObserver {
     private boolean inProgress;
 
     private Pane gamePane;
+
+    private Label scoreLabel;
 
     public BejeweledGame(int framesPerSecond, String windowTitle) {
         super(framesPerSecond, windowTitle);
@@ -90,8 +93,12 @@ public class BejeweledGame extends Game implements BoardObserver {
      * @param gamePane The primary scene.
      */
     @Override
-    public void initialise(Pane gamePane) {
+    public void initialise(Pane gamePane, Label scoreLabel) {
         this.gamePane = gamePane;
+        this.scoreLabel = scoreLabel;
+
+        // set initial score
+        scoreLabel.setText(Integer.toString(score));
 
         // draw and stretch the board background
         gamePane.setStyle("-fx-background-image: url('/board.png'); -fx-background-size: cover;");
@@ -112,5 +119,6 @@ public class BejeweledGame extends Game implements BoardObserver {
     @Override
     public void boardJewelRemoved() {
     	score += 10; // add 10 points per jewel removed
+        scoreLabel.setText(Integer.toString(score));
     }
 }
