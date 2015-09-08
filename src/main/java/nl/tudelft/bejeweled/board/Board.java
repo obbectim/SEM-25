@@ -1,5 +1,6 @@
 package nl.tudelft.bejeweled.board;
 
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import nl.tudelft.bejeweled.sprite.Jewel;
@@ -248,19 +249,30 @@ public class Board {
     	}
     	return changes;
     }
+    
+    protected void addRandomJewel(int i, int j){
+    	  Jewel jewel = new Jewel(rand.nextInt((7 - 1) + 1) + 1, i, j);
+          jewel.xPos = i * (width / 8.0);
+          jewel.yPos = j * (height / 8.0);
+          grid[i][j] = jewel;
+          spriteStore.addSprites(jewel);
+          sceneNodes.getChildren().add(0, jewel.node);
+          setSpriteStore(spriteStore);
+          grid[i][j].node.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                  new EventHandler<MouseEvent>() {
+                      public void handle(MouseEvent event) {
+                          System.out.println("Jewel[" + jewel.getBoardX() + "][" + jewel.getBoardY() + "] " + event.getEventType());
+                          addSelection(jewel);
+                          event.consume();
+                      }
+                  }
+          );
+    }
 
     public void fillEmptySpots() {
     	for (int i =0;i<8;i++){	
     		if(grid[i][0].isDead){
-    			//TODO next 4 lines are repeated code and should probably be in the constructor
-                Jewel jewel = new Jewel(rand.nextInt((7 - 1) + 1) + 1, i, 0);
-                jewel.xPos = i * (width / 8.0);
-                jewel.yPos = 0 * (height / 8.0);
-                grid[i][0] = jewel;
-                spriteStore.addSprites(jewel);
-                sceneNodes.getChildren().add(0, jewel.node);
-
-
+    			addRandomJewel(i,0);
                  		}
     	}
     }
@@ -276,7 +288,10 @@ public class Board {
 	public void update() {
 		while(doGravity()){
     		checkBoardCombos();
+
     	}
+		fillEmptySpots();
+
 		
 	}
 }
