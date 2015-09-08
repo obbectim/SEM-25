@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import nl.tudelft.bejeweled.sprite.Jewel;
+import nl.tudelft.bejeweled.sprite.SelectionCursor;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
 import java.util.*;
@@ -29,6 +30,7 @@ public class Board {
     private Group sceneNodes;
 
 	private SpriteStore spriteStore;
+	private SelectionCursor selectionCursor;
 
     /**
      * Constructor for the board class
@@ -71,7 +73,13 @@ public class Board {
      */
     public void addSelection(Jewel jewel) {
         selection.add(jewel);
-
+        
+        if(selection.size() == 1) {
+        	selectionCursor  = new SelectionCursor(selection.get(0).xPos,selection.get(0).yPos);
+            spriteStore.addSprites(selectionCursor);
+            sceneNodes.getChildren().add(0, selectionCursor.node);
+        }
+        
         // 2 gems are selected, see if any combo's are made
         if(selection.size() == 2) {
 
@@ -83,6 +91,8 @@ public class Board {
                 System.out.println("Combo Jewels on board: " + comboCount);
 
             }
+            sceneNodes.getChildren().remove(selectionCursor.node);
+            selectionCursor =null;
             selection.clear();
 
         }
