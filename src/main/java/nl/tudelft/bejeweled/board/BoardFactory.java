@@ -55,6 +55,7 @@ public class BoardFactory {
         }
 
         Board board = new Board(grid, sceneNodes, width, height);
+        board.setSpriteStore(spriteStore);
 
         // add event handlers.
         for(int i = 0; i < 8; i++) {

@@ -103,7 +103,13 @@ public class BejeweledGame extends Game implements BoardObserver {
         gc.drawImage(boardImage, 0, 0);
         */
     }
-
+    
+    protected void updateBoard() {
+        if(inProgress){
+        	board.update();
+        }
+    }
+    
     @Override
     public void boardOutOfMoves() {
 

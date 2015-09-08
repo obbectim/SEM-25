@@ -69,12 +69,47 @@ public class Jewel extends Sprite {
      */
     @Override
     public void update() {
+    	updateVelocity();
         node.setTranslateX(node.getTranslateX() + vX);
         node.setTranslateY(node.getTranslateY() + vY);
         node.setLayoutX(xPos);
         node.setLayoutY(yPos);
     }
+    
+    /**
+     * Updates the Jewels velocity based on its current position and desired position.
+     */
+    private void updateVelocity(){
 
+    	if(node.getTranslateX() > 4){
+    		//vX = .0003;
+    		vX = -4;
+    	}else{
+    		if(node.getTranslateX() < -4){
+        		vX = 4;
+
+        	//	vX = -.003;
+        	}else{
+        		vX=0;
+        	}
+    	}
+
+    	if(node.getTranslateY() > 4){
+    		//vX = .0003;
+    		vY = -4;
+    	}else{
+    		if(node.getTranslateY() < -4){
+        		vY = 4;
+
+        	//	vX = -.003;
+        	}else{
+        		vY=0;
+        	}
+    	}
+    	
+    }
+    
+    
     /**
      * Getter method for boardX.
      * @return The X position of the Jewel on the board's grid.
