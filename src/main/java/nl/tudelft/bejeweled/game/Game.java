@@ -64,6 +64,9 @@ public abstract class Game {
                     @Override
                     public void handle(javafx.event.ActionEvent event) {
 
+                    	//update board
+                    	updateBoard();
+                    	
                         // update actors
                         updateSprites();
 
@@ -95,6 +98,15 @@ public abstract class Game {
     public void beginGameLoop() {
         getGameLoop().play();
     }
+    
+    /**
+     * Updates the board
+     *
+     */
+    protected  void updateBoard() {
+    	
+    }
+    
 
     /**
      * Updates each game sprite in the game world. This method will

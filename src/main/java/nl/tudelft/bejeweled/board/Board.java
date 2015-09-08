@@ -62,6 +62,7 @@ public class Board {
             selection.clear();
 
         }
+
     }
 
     /**
@@ -95,7 +96,7 @@ public class Board {
 
         Jewel tmpJewel;
         int tmp;
-        double tmp2;
+        double previousJ1,previousJ2;
         // find out what direction the change is
         // horizontal swap
         if(Math.abs(j1.getBoardX() - j2.getBoardX()) == 1) {
@@ -103,9 +104,14 @@ public class Board {
             j1.setBoardX(j2.getBoardX());
             j2.setBoardX(tmp);
 
-            tmp2 = j1.xPos;
+            previousJ1 = j1.xPos;
             j1.xPos = j2.xPos;
-            j2.xPos = tmp2;
+            j1.node.setTranslateX(previousJ1-j1.xPos);
+            previousJ2 = j2.xPos;
+            j2.xPos = previousJ1;
+            j2.node.setTranslateX(previousJ2-j2.xPos);
+
+           
         }
         else if (Math.abs(j1.getBoardY() - j2.getBoardY()) == 1) {
             // vertical swap
@@ -113,9 +119,13 @@ public class Board {
             j1.setBoardY(j2.getBoardY());
             j2.setBoardY(tmp);
 
-            tmp2 = j1.yPos;
+            previousJ1 = j1.yPos;
             j1.yPos = j2.yPos;
-            j2.yPos = tmp2;
+            j1.node.setTranslateY(previousJ1-j1.yPos);
+            previousJ2 = j2.yPos;
+            j2.yPos = previousJ1;
+            j2.node.setTranslateY(previousJ2-j2.yPos);
+
         }
 
         tmpJewel = j1;
@@ -203,7 +213,7 @@ public class Board {
             // grid[jewel.getBoardX()][jewel.getBoardY()] = null;
         }
 
-      //  doGravity();
+        doGravity();
         return count;
     }
 
@@ -212,7 +222,7 @@ public class Board {
      * @return True if jewels are moving.
      */
     public Boolean doGravityStep() {
-    	System.out.println("STep");
+    	//System.out.println("STep");
     	boolean falling;
 		//do{
 		//	falling= false;
@@ -230,10 +240,13 @@ public class Board {
 		return false;
     }
     
-    public void doGravity() {
+    public boolean doGravity() {
+    	boolean changes = false;
     	while(doGravityStep()){
+    		changes = true;
     		fillEmptySpots();
     	}
+    	return changes;
     }
 
     public void fillEmptySpots() {
@@ -258,5 +271,12 @@ public class Board {
 
 	public void setSpriteStore(SpriteStore spriteStore) {
 		this.spriteStore = spriteStore;
+	}
+
+	public void update() {
+		while(doGravity()){
+    		checkBoardCombos();
+    	}
+		
 	}
 }
