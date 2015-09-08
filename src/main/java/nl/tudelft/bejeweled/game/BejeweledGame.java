@@ -42,7 +42,8 @@ public class BejeweledGame extends Game implements BoardObserver {
     public void start() {
         if(inProgress)
             return;
-
+        inProgress = true;
+        
         System.out.println("Game started");
 
         // Create the group that holds all the jewel nodes and create a game scene
@@ -60,8 +61,6 @@ public class BejeweledGame extends Game implements BoardObserver {
         // check for any combo's on the freshly created board
         int comboCount = board.checkBoardCombos();
         System.out.println("Combo Jewels on board: " + comboCount);
-
-        inProgress = true;
     }
 
     /**
