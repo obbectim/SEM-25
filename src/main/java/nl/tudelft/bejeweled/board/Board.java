@@ -18,6 +18,8 @@ public class Board {
 
     /** The sprite store providing the sprites for the game. */
     private List<Jewel> selection = new ArrayList<Jewel>();
+    
+    private List<BoardObserver> observers = new ArrayList<BoardObserver>();
 
     private double width = 0, height = 0;
 
@@ -40,6 +42,27 @@ public class Board {
         this.spriteStore = spriteStore;
     }
 
+    /**
+     * Adds an observer for the board
+     * 
+     * @param observer BoardObserver to be added to the list of observers
+     */
+    public void addObserver(BoardObserver observer){
+    	if (!observers.contains(observer)){
+    		observers.add(observer);
+    	}
+    }
+    
+    
+    /**
+     * Removes an observer of the board
+     * 
+     * @param observer BoardObserver to be removed
+     */
+    public void removeObserver(BoardObserver observer){
+    	observers.remove(observer);
+    }
+    
     /**
      * Add Jewel to the current selection.
      * After 2 Jewels are selected they are swapped.

@@ -111,11 +111,11 @@ public class BejeweledGame extends Game implements BoardObserver {
 
     @Override
     public void boardOutOfMoves() {
-
+    	stop();
     }
 
     @Override
     public void boardJewelsRemoved(int count) {
-
+    	// TODO: count the points based on the amount of jewels cleared
     }
 }
