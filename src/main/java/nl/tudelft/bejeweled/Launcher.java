@@ -12,16 +12,22 @@ import nl.tudelft.bejeweled.gui.BejeweledGui;
  */
 public class Launcher extends Application {
 
+	private static final int FPS_LIMIT = 60;
+	
     /**
-     *  The current game
+     *  The current game.
      */
     private Game game;
 
     /**
-     * The GUI for the Bejeweled game
+     * The GUI for the Bejeweled game.
      */
     private BejeweledGui bejeweledGui;
 
+    /**
+     * The main method which starts the launcher.
+     * @param args Command line arguments which do not currently effect anything.
+     */
     public static void main(String[] args) {
         Application.launch(Launcher.class, (java.lang.String[]) null);
     }
@@ -36,7 +42,7 @@ public class Launcher extends Application {
      * @param theStage The primary stage to draw the GUI on
      */
     public void launchGame(Stage theStage) {
-        game = new BejeweledGame(60, "Bejeweled");
+        game = new BejeweledGame(FPS_LIMIT, "Bejeweled");
 
         // initialise the gui and map start/stop buttons
         bejeweledGui = new BejeweledGui(game, theStage);
