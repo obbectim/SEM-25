@@ -35,6 +35,7 @@ public class Board {
     /**
      * Constructor for the board class
      * @param grid Two-dimensional grid holding all Jewel sprites.
+     * @param sceneNodes The JavaFX group container for the Jewel Nodes.
      * @param width Width of the board scene in pixels.
      * @param height Height of the board scene in pixels.
      */
@@ -272,7 +273,7 @@ public class Board {
     /**
      * Checks if a pair of similar jewels can be extended by a valid move (done for a vertical pair
      * but can be used for horizontal if jewels matrix is transposed)
-     * 
+     * @param jewels The grid containing the Jewels
      * @param x x-position of the first jewel of the pair to be extended
      * @param y y-position of the first jewel of the pair to be extended
      * @return if valid move is possible list of jewels to swap, otherwise empty list
@@ -391,7 +392,6 @@ public class Board {
     
     /**
      * Function that checks if there are any moves possible
-     * @return true if there are no more moves possible and the game should end
      */
     public void outOfMoves() {
     	

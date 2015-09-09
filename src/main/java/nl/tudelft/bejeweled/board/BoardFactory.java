@@ -29,14 +29,15 @@ public class BoardFactory {
         this.spriteStore = spriteStore;
     }
 
-    
     /**
-     *
+     * Generates a new board from text file.
+     * @param file Name of the board configuration file.
+     * @param sceneNodes The group container for the Jewel nodes.
      * @param width The width of the board.
      * @param height The height of the board.
      * @return A new Board.
      */
-    public Board fromTextGenerateBoard(Group sceneNodes, double width, double height) {
+    public Board fromTextGenerateBoard(String file, Group sceneNodes, double width, double height) {
         Jewel[][] grid = new Jewel[8][8];
         InputStream in =BoardFactory.class.getResourceAsStream("/board.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -89,7 +90,8 @@ public class BoardFactory {
         return board;
     }
     /**
-     *
+     * Generates a new board.
+     * @param sceneNodes The group container for the Jewel nodes.
      * @param width The width of the board.
      * @param height The height of the board.
      * @return A new Board.
