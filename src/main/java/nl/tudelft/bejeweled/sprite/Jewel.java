@@ -3,7 +3,6 @@ package nl.tudelft.bejeweled.sprite;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import nl.tudelft.bejeweled.game.Game;
 import javafx.animation.FadeTransitionBuilder;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,49 +13,27 @@ import javafx.util.Duration;
  * Jewel class that holds all sprite information.
  */
 public class Jewel extends Sprite {
-
+	public static final int MAX_SPEED_X = 4;
+	public static final int MAX_SPEED_Y = 4;
+	public static final int ANIMATION_DURATION = 300;
+	
     private final int type;
-
     private int boardX, boardY;
-
     private Image jewelImage;
 
     /**
-     * Constructor for Jewel class
+     * Constructor for Jewel class.
      * @param type The type of Jewel created.
-     * @param boardX The X position of this Jewel on the board grid.
-     * @param boardY The Y position of this Jewel on the board grid.
+     * @param boardX The X position of this Jewel on the board grid (in number of squares).
+     * @param boardY The Y position of this Jewel on the board grid (in number of squares).
      */
     public Jewel(int type, int boardX, int boardY) {
         this.type = type;
         this.boardX = boardX;
         this.boardY = boardY;
 
-        //TODO This can be done better by constructing the file directory string on the fly
-        switch(type) {
-            case 1:
-                jewelImage = new Image(Jewel.class.getResourceAsStream("/1.png"));
-                break;
-            case 2:
-                jewelImage = new Image(Jewel.class.getResourceAsStream("/2.png"));
-                break;
-            case 3:
-                jewelImage = new Image(Jewel.class.getResourceAsStream("/3.png"));
-                break;
-            case 4:
-                jewelImage = new Image(Jewel.class.getResourceAsStream("/4.png"));
-                break;
-            case 5:
-                jewelImage = new Image(Jewel.class.getResourceAsStream("/5.png"));
-                break;
-            case 6:
-                jewelImage = new Image(Jewel.class.getResourceAsStream("/6.png"));
-                break;
-            case 7:
-                jewelImage = new Image(Jewel.class.getResourceAsStream("/7.png"));
-                break;
-        }
-
+        String imagePath = "/" + Integer.toString(type) + ".png";
+        jewelImage = new Image(Jewel.class.getResourceAsStream(imagePath));
         ImageView jewelImageView = new ImageView();
         jewelImageView.setImage(jewelImage);
         jewelImageView.setStyle("-fx-background-color:transparent;");
@@ -70,8 +47,8 @@ public class Jewel extends Sprite {
     @Override
     public void update() {
     	updateVelocity();
-        node.setTranslateX(node.getTranslateX() + vX);
-        node.setTranslateY(node.getTranslateY() + vY);
+        node.setTranslateX(node.getTranslateX() - vX);
+        node.setTranslateY(node.getTranslateY() - vY);
         node.setLayoutX(xPos);
         node.setLayoutY(yPos);
     }
@@ -79,29 +56,24 @@ public class Jewel extends Sprite {
     /**
      * Updates the Jewels velocity based on its current position and desired position.
      */
-    private void updateVelocity(){
+    private void updateVelocity() {
     	//Update x velocity
-    	if(node.getTranslateX() > 4){
-    		vX = -4;
-    	}else{
-    		if(node.getTranslateX() < -4){
-        		vX = 4;
-        	}else{
-        		vX=-node.getTranslateX();
-        	}
+    	if (node.getTranslateX() > MAX_SPEED_X) {
+    		vX = MAX_SPEED_X;
+    	} else if (node.getTranslateX() < -MAX_SPEED_X) {
+        		vX = -MAX_SPEED_X;
+        } else {
+        		vX = node.getTranslateX();
     	}
 
     	//Update x velocity
-    	if(node.getTranslateY() > 4){
-    		vY = -4;
-    	}else{
-    		if(node.getTranslateY() < -4){
-        		vY = 4;
-        	}else{
-        		vY=-node.getTranslateY();
+    	if (node.getTranslateY() > MAX_SPEED_Y) {
+    		vY = MAX_SPEED_Y;
+    	} else if (node.getTranslateY() < -MAX_SPEED_Y) {
+        		vY = -MAX_SPEED_Y;
+    	} else {
+        		vY = node.getTranslateY();
         	}
-    	}
-    	
     }
     
     
@@ -122,7 +94,7 @@ public class Jewel extends Sprite {
     }
 
     /**
-     * Getter method for Jewel type
+     * Getter method for Jewel type.
      * @return The type identifier for this Jewel.
      */
     public int getType() {
@@ -150,13 +122,14 @@ public class Jewel extends Sprite {
      * @param sceneGroup Game scene group to remove the Jewel from.
      */
     public void implode(Group sceneGroup) {
-        vX = vY = 0;
+        vX = 0;
+        vY = 0;
         FadeTransitionBuilder.create()
                 .node(node)
-                .duration(Duration.millis(300))
+                .duration(Duration.millis(ANIMATION_DURATION))
                 .fromValue(node.getOpacity())
                 .toValue(0)
-                .onFinished( new EventHandler<ActionEvent>() {
+                .onFinished(new EventHandler<ActionEvent>() {
 
                     @Override
                     public void handle(ActionEvent arg0) {
