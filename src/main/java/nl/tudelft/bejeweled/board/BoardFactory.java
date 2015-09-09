@@ -41,7 +41,8 @@ public class BoardFactory {
         // create the boards jewels
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
-                Jewel jewel = new Jewel(rand.nextInt((7 - 1) + 1) + 1, i, j);
+               Jewel jewel = new Jewel(rand.nextInt((7 - 1) + 1) + 1, i, j);
+            //	Jewel jewel = new Jewel((i+j)%7+1, i, j);
                 jewel.xPos = i * (width / 8.0);
                 jewel.yPos = j * (height / 8.0);
                 grid[i][j] = jewel;
