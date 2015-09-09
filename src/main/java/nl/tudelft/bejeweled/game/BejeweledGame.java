@@ -120,4 +120,8 @@ public class BejeweledGame extends Game implements BoardObserver {
     	score += 10; // add 10 points per jewel removed
         scoreLabel.setText(Integer.toString(score));
     }
+
+    public boolean isInProgress() {
+        return inProgress;
+    }
 }

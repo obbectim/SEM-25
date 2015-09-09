@@ -17,7 +17,7 @@ public class Launcher extends Application {
     /**
      *  The current game.
      */
-    private Game game;
+    private BejeweledGame game;
 
     /**
      * The GUI for the Bejeweled game.
@@ -52,5 +52,13 @@ public class Launcher extends Application {
 
         // begin game loop
         game.beginGameLoop();
+    }
+
+    /**
+     * Getter method for the game.
+     * @return The game.
+     */
+    public BejeweledGame getGame() {
+        return game;
     }
 }
