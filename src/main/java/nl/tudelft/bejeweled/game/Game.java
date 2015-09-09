@@ -43,7 +43,8 @@ public abstract class Game {
     /**
      * Constructor that is called by the derived class. This will
      * set the frames per second, title, and setup the game loop.
-     * @param framesPerSecond - Frames per second.
+     * @param framesPerSecond - The number of frames per second the game will attempt to render.
+     * @param windowTitle - The title displayed in the window.
      */
     public Game(int framesPerSecond, final String windowTitle) {
         this.framesPerSecond = framesPerSecond;
@@ -57,8 +58,7 @@ public abstract class Game {
      * Builds and sets the game loop ready to be started.
      */
     protected final void buildAndSetGameLoop() {
-
-        final Duration oneFrameAmt = Duration.millis(1000/getFramesPerSecond());
+        final Duration oneFrameAmt = Duration.seconds(getFramesPerSecond());
         final KeyFrame oneFrame = new KeyFrame(oneFrameAmt,
                 new EventHandler<ActionEvent>() {
 
@@ -87,6 +87,7 @@ public abstract class Game {
     /**
      * Initialise the game world by update the JavaFX Stage.
      * @param gamePane The primary scene.
+     * @param scoreLabel The label for the score.
      */
     public abstract void initialise(Pane gamePane, Label scoreLabel);
 
@@ -101,7 +102,7 @@ public abstract class Game {
     }
     
     /**
-     * Updates the board
+     * Updates the board.
      *
      */
     protected  void updateBoard() {
@@ -116,7 +117,7 @@ public abstract class Game {
      *
      */
     protected void updateSprites() {
-        for(Iterator<Sprite> i =  spriteStore.getAllSprites().iterator(); i.hasNext(); ) {
+        for (Iterator<Sprite> i =  spriteStore.getAllSprites().iterator(); i.hasNext();) {
             handleUpdate(i.next());
         }
     }
@@ -192,12 +193,12 @@ public abstract class Game {
     }
 
     /**
-     *  Starts the game
+     *  Starts the game.
      */
     public abstract void start();
 
     /**
-     *  Stops the game
+     *  Stops the game.
      */
     public abstract void stop();
 }
