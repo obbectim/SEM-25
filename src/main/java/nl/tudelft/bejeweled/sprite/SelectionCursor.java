@@ -3,27 +3,36 @@ package nl.tudelft.bejeweled.sprite;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * Created by Pim on 8-9-2015.
+ * Class to define the cursor that indicates the currently selected jewel in the game.
+ */
 public class SelectionCursor extends Sprite {
-	private double xPos,yPos;
+	private double xPos, yPos;
 	
-	public SelectionCursor(double x, double y){
-		xPos= x;
-		yPos =y;
+    /**
+     * Constructor for Jewel class.
+     * @param x The X position of this SelectionCursor on the board grid (in number of squares).
+     * @param y The Y position of this SelectionCursor on the board grid (in number of squares).
+     */
+	public SelectionCursor(double x, double y) {
+		xPos = x;
+		yPos = y;
 		
         ImageView cursorImageView = new ImageView();
-        cursorImageView.setImage(new Image(SelectionCursor.class.getResourceAsStream("/selection.png")));
+        Image cursorImage = new Image(SelectionCursor.class.getResourceAsStream("/selection.png"));
+        cursorImageView.setImage(cursorImage);
         cursorImageView.setStyle("-fx-background-color:transparent;");
 
         node = cursorImageView;
-        
 	}
 	
+    /**
+     * Updates the SelectionCursor graphics.
+     */
 	public void update() {
         node.setLayoutX(xPos);
         node.setLayoutY(yPos);
-        
-
-        
 	}
 	
 
