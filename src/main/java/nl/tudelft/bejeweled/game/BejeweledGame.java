@@ -47,7 +47,8 @@ public class BejeweledGame extends Game implements BoardObserver {
     public void start() {
         if(inProgress)
             return;
-
+        inProgress = true;
+        
         System.out.println("Game started");
 
         score = 0;
@@ -67,8 +68,6 @@ public class BejeweledGame extends Game implements BoardObserver {
         // check for any combo's on the freshly created board
         int comboCount = board.checkBoardCombos();
         System.out.println("Combo Jewels on board: " + comboCount);
-
-        inProgress = true;
     }
 
     /**
