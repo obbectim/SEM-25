@@ -1,6 +1,7 @@
 package nl.tudelft.bejeweled.board;
 
 import javafx.event.EventHandler;
+import java.io.*;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import nl.tudelft.bejeweled.sprite.Jewel;
@@ -28,6 +29,65 @@ public class BoardFactory {
         this.spriteStore = spriteStore;
     }
 
+    
+    /**
+     *
+     * @param width The width of the board.
+     * @param height The height of the board.
+     * @return A new Board.
+     */
+    public Board fromTextGenerateBoard(Group sceneNodes, double width, double height) {
+        Jewel[][] grid = new Jewel[8][8];
+        InputStream in =BoardFactory.class.getResourceAsStream("/board.txt");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String line;
+        int k=0;
+        try {
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("|");
+                
+                for(int j = 0; j < 8; j++) {
+                    int amr=Integer.parseInt(parts[j]);
+                    System.out.println(amr);
+                    Jewel jewel = new Jewel(amr, k, j);
+                    jewel.xPos = k * (width / 8.0);
+                    jewel.yPos = j * (height / 8.0);
+                    grid[k][j] = jewel;
+                    
+                    // add to actors in play (sprite objects)
+                    spriteStore.addSprites(jewel);
+                    
+                    // add sprites
+                    sceneNodes.getChildren().add(0, jewel.node);
+                }
+                k++;
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        Board board = new Board(grid, sceneNodes, width, height);
+        board.setSpriteStore(spriteStore);
+        
+        // add event handlers.
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                Jewel jewel = grid[i][j];
+                grid[i][j].node.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                                               new EventHandler<MouseEvent>() {
+                                                   public void handle(MouseEvent event) {
+                                                       System.out.println("Jewel[" + jewel.getBoardX() + "][" + jewel.getBoardY() + "] " + event.getEventType());
+                                                       board.addSelection(jewel);
+                                                       event.consume();
+                                                   }
+                                               }
+                                               );
+            }
+        }
+        
+        return board;
+    }
     /**
      *
      * @param width The width of the board.
