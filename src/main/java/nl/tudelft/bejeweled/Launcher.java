@@ -42,7 +42,7 @@ public class Launcher extends Application {
         bejeweledGui = new BejeweledGui(game, theStage);
 
         // initialise the game
-        game.initialise(bejeweledGui.getBoardPane());
+        game.initialise(bejeweledGui.getBoardPane(), bejeweledGui.getScoreLabel());
 
         // begin game loop
         game.beginGameLoop();

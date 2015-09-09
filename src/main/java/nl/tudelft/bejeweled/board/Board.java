@@ -17,14 +17,14 @@ import java.util.*;
 public class Board {
 
     private List<Jewel> selection = new ArrayList<Jewel>();
-    
-    private List<BoardObserver> observers = new ArrayList<BoardObserver>();
 
     private double width = 0, height = 0;
     
     private Random rand = new Random();
     
     private Jewel[][] grid;
+
+    private final List<BoardObserver> observers;
 
     /** The JavaFX group containing all the jewels */
     private Group sceneNodes;
@@ -43,6 +43,7 @@ public class Board {
         this.width = width;
         this.height = height;
         this.sceneNodes = sceneNodes;
+        this.observers = new ArrayList<>();
     }
 
     /**
@@ -65,7 +66,16 @@ public class Board {
     public void removeObserver(BoardObserver observer){
     	observers.remove(observer);
     }
-    
+
+    /**
+     * Updates the observers a jewel was removed
+     */
+    private void updateScore() {
+        for(BoardObserver observer : observers) {
+            observer.boardJewelRemoved();
+        }
+    }
+
     /**
      * Add Jewel to the current selection.
      * After 2 Jewels are selected they are swapped.
@@ -240,6 +250,8 @@ public class Board {
 
             // remove the event filter
             jewel.node.setOnMouseClicked(null);
+
+            updateScore();
 
             // remove the Jewel from the Grid
             // TODO Make sure the Jewels are also removed from the spriteStore.

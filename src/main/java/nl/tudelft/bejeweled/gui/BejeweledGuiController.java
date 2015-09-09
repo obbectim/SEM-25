@@ -5,6 +5,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.game.Game;
@@ -29,6 +30,8 @@ public class BejeweledGuiController implements Initializable {
     private Button buttonExit;
     @FXML
     private Pane boardPane;
+    @FXML
+    private Label scoreLabel;
 
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -81,5 +84,13 @@ public class BejeweledGuiController implements Initializable {
      */
     public Pane getBoardPane() {
         return boardPane;
+    }
+
+    /**
+     * Getter method for the score label in the dialog.
+     * @return The Label used to display the score.
+     */
+    public Label getScoreLabel() {
+        return scoreLabel;
     }
 }

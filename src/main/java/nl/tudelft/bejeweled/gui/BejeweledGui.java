@@ -6,6 +6,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
@@ -24,6 +25,8 @@ import java.util.Random;
 public class BejeweledGui {
 
     private Pane boardPane;
+
+    private Label scoreLabel;
 
     /**
      * The constructor initialises the GUI.
@@ -59,6 +62,8 @@ public class BejeweledGui {
             // draw board as a background on the boardPane
             boardPane = bejeweledController.getBoardPane();
 
+            scoreLabel = bejeweledController.getScoreLabel();
+
             // redirect button callbacks to game class
             bejeweledController.setGame(game);
 
@@ -69,7 +74,17 @@ public class BejeweledGui {
         }
     }
 
+    /**
+     * Getter method for boardPane (the pane of the game)
+     * @return The boardPane used by the board.
+     */
     public Pane getBoardPane() {
         return boardPane;
     }
+
+    /**
+     * Getter method for the score label in the dialog.
+     * @return The Label used to display the score.
+     */
+    public Label getScoreLabel() { return scoreLabel; }
 }

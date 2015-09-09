@@ -7,6 +7,7 @@ import javafx.animation.TimelineBuilder;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import nl.tudelft.bejeweled.sprite.Sprite;
@@ -87,7 +88,7 @@ public abstract class Game {
      * Initialise the game world by update the JavaFX Stage.
      * @param gamePane The primary scene.
      */
-    public abstract void initialise(Pane gamePane);
+    public abstract void initialise(Pane gamePane, Label scoreLabel);
 
     /**Kicks off (plays) the Timeline objects containing one key frame
      * that simply runs indefinitely with each frame invoking a method
