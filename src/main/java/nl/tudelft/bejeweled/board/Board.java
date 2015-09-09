@@ -502,7 +502,14 @@ public class Board {
     		checkBoardCombos();
     	}
 		fillEmptySpots();
-
-		
+	}
+	
+	/**
+	 * Getter function for the current jewel Grid (used for testing)
+	 * 
+	 * @return current grid of jewels
+	 */
+	public Jewel[][] getGrid() {
+		return grid;
 	}
 }
