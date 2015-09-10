@@ -37,7 +37,7 @@ public class BoardFactory {
      * @param height The height of the board.
      * @return A new Board.
      */
-    public Board fromTextGenerateBoard(String file, Group sceneNodes, double width, double height) {
+    public Board fromTextGenerateBoard(String file, Group sceneNodes, int gridWidth, int gridHeight, int spriteWidth, int spriteHeight) {
         Jewel[][] grid = new Jewel[8][8];
         InputStream in =BoardFactory.class.getResourceAsStream("/board.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -47,12 +47,12 @@ public class BoardFactory {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("|");
                 
-                for(int j = 0; j < 8; j++) {
+                for(int j = 0; j < gridHeight; j++) {
                     int amr=Integer.parseInt(parts[j]);
                     System.out.println(amr);
                     Jewel jewel = new Jewel(amr, k, j);
-                    jewel.xPos = k * (width / 8.0);
-                    jewel.yPos = j * (height / 8.0);
+                    jewel.xPos = k * spriteWidth;
+                    jewel.yPos = j * spriteHeight;
                     grid[k][j] = jewel;
                     
                     // add to actors in play (sprite objects)
@@ -68,12 +68,12 @@ public class BoardFactory {
             e.printStackTrace();
         }
         
-        Board board = new Board(grid, sceneNodes, width, height);
+        Board board = new Board(grid, sceneNodes, gridWidth, gridHeight, spriteWidth, spriteHeight);
         board.setSpriteStore(spriteStore);
         
         // add event handlers.
-        for(int i = 0; i < 8; i++) {
-            for(int j = 0; j < 8; j++) {
+        for(int i = 0; i < gridWidth; i++) {
+            for(int j = 0; j < gridHeight; j++) {
                 Jewel jewel = grid[i][j];
                 grid[i][j].node.addEventFilter(MouseEvent.MOUSE_CLICKED,
                                                new EventHandler<MouseEvent>() {
@@ -96,17 +96,17 @@ public class BoardFactory {
      * @param height The height of the board.
      * @return A new Board.
      */
-    public Board generateBoard(Group sceneNodes, double width, double height) {
+    public Board generateBoard(Group sceneNodes, int gridWidth, int gridHeight, int spriteWidth, int spriteHeight) {
         Random rand = new Random();
-        Jewel[][] grid = new Jewel[8][8];
+        Jewel[][] grid = new Jewel[gridWidth][gridHeight];
 
         // create the boards jewels
-        for(int i = 0; i < 8; i++) {
-            for(int j = 0; j < 8; j++) {
+        for(int i = 0; i < gridWidth; i++) {
+            for(int j = 0; j < gridHeight; j++) {
                Jewel jewel = new Jewel(rand.nextInt((7 - 1) + 1) + 1, i, j);
             //	Jewel jewel = new Jewel((i+j)%7+1, i, j);
-                jewel.xPos = i * (width / 8.0);
-                jewel.yPos = j * (height / 8.0);
+                jewel.xPos = i * spriteWidth;
+                jewel.yPos = j * spriteHeight;
                 grid[i][j] = jewel;
 
                 // add to actors in play (sprite objects)
@@ -117,12 +117,12 @@ public class BoardFactory {
             }
         }
 
-        Board board = new Board(grid, sceneNodes, width, height);
+        Board board = new Board(grid, sceneNodes, gridWidth, gridHeight, spriteWidth, spriteHeight);
         board.setSpriteStore(spriteStore);
 
         // add event handlers.
-        for(int i = 0; i < 8; i++) {
-            for(int j = 0; j < 8; j++) {
+        for(int i = 0; i < gridWidth; i++) {
+            for(int j = 0; j < gridHeight; j++) {
                 Jewel jewel = grid[i][j];
                 grid[i][j].node.addEventFilter(MouseEvent.MOUSE_CLICKED,
                         new EventHandler<MouseEvent>() {
