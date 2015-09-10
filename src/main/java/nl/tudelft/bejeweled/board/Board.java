@@ -16,8 +16,6 @@ import nl.tudelft.bejeweled.sprite.Jewel;
 import nl.tudelft.bejeweled.sprite.SelectionCursor;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
-
-
 /**
  * Created by Jeroen on 4-9-2015.
  * Class that encapsulates the board.
@@ -214,7 +212,7 @@ public class Board {
             matches = 0;
             type = 0; //Reserve 0 for the empty state. If we make it a normal gem type, then only 2 are needed to match for the start.
             for (int i = 0; i < grid[0].length; i++) {
-                if (grid[col][i].getType() == type) {
+                if (grid[col][i].getType() == type && type != 0) {
                     matches++;
                     current.push(grid[col][i]);
                 }
@@ -238,7 +236,7 @@ public class Board {
             matches = 0;
             type = 0; //Reserve 0 for the empty state. If we make it a normal gem type, then only 2 are needed to match for the start.
             for (int i = 0; i < grid.length; i++) {
-                if (grid[i][row].getType() == type) {
+                if (grid[i][row].getType() == type && type != 0) {
                     matches++;
                     current.push(grid[i][row]);
                 }
