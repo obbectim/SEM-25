@@ -15,10 +15,12 @@ import java.util.*;
  * Class that encapsulates the board.
  */
 public class Board {
+	private int gridWidth;
+	private int gridHeight;
+	private int spriteWidth;
+	private int spriteHeight;
 
     private List<Jewel> selection = new ArrayList<Jewel>();
-
-    private double width = 0, height = 0;
     
     private Random rand = new Random();
     
@@ -36,13 +38,18 @@ public class Board {
      * Constructor for the board class
      * @param grid Two-dimensional grid holding all Jewel sprites.
      * @param sceneNodes The JavaFX group container for the Jewel Nodes.
-     * @param width Width of the board scene in pixels.
-     * @param height Height of the board scene in pixels.
+     * @param gridWidth Width of the board in squares.
+     * @param gridHeight Height of the board in squares.
+     * @param spriteWidth Width of the sprites in pixels.
+     * @param spriteHeight Height of the sprites in pixels.
      */
-    public Board(Jewel[][] grid, Group sceneNodes, double width, double height) {
+    public Board(Jewel[][] grid, Group sceneNodes, int gridWidth, int gridHeight, int spriteWidth, int spriteHeight) {
         this.grid = grid;
-        this.width = width;
-        this.height = height;
+        this.gridWidth = gridWidth;
+        this.gridHeight = gridHeight;
+        this.spriteWidth = spriteWidth;
+        this.spriteHeight = spriteHeight;
+
         this.sceneNodes = sceneNodes;
         this.observers = new ArrayList<>();
     }
@@ -219,10 +226,10 @@ public class Board {
 
         // then do the rows
         current.clear();
-        for(int row = 0; row < grid.length; row++){
+        for(int row = 0; row < grid[0].length; row++){
             matches = 0;
             type = 0; //Reserve 0 for the empty state. If we make it a normal gem type, then only 2 are needed to match for the start.
-            for(int i = 0; i < grid[0].length; i++){
+            for(int i = 0; i < grid.length; i++){
                 if(grid[i][row].getType() == type){
                     matches++;
                     current.push(grid[i][row]);
@@ -331,9 +338,9 @@ public class Board {
     	/**
     	 * Create transpose of matrix
     	 */
-    	Jewel[][] transposed = new Jewel[grid.length][grid[0].length];
-    	for (int i = 0; i < grid.length; i++) {
-			for (int j = 0; j < grid[0].length; j++){
+    	Jewel[][] transposed = new Jewel[grid[0].length][grid.length];
+    	for (int i = 0; i < grid[0].length; i++) {
+			for (int j = 0; j < grid.length; j++){
 				transposed[i][j] = grid[j][i];
 			}
 		}
@@ -439,9 +446,9 @@ public class Board {
     	boolean falling;
 		//do{
 		//	falling= false;
-		for (int j =1;j<8;j++){
+		for (int j =1;j<gridHeight;j++){
 			falling= false;
-			for (int i =0;i<8;i++){		
+			for (int i =0;i<gridWidth;i++){		
 					if(grid[i][j].isDead){
 						System.out.println("Swap " + j + " and " + (j-1));
 						swapJewel(grid[i][j],grid[i][j-1]);
@@ -464,8 +471,8 @@ public class Board {
     
     protected void addRandomJewel(int i, int j){
     	  Jewel jewel = new Jewel(rand.nextInt((7 - 1) + 1) + 1, i, j);
-          jewel.xPos = i * (width / 8.0);
-          jewel.yPos = j * (height / 8.0);
+          jewel.xPos = i * spriteWidth;
+          jewel.yPos = j * spriteHeight;
           grid[i][j] = jewel;
           spriteStore.addSprites(jewel);
           sceneNodes.getChildren().add(0, jewel.node);
@@ -482,7 +489,7 @@ public class Board {
     }
 
     public void fillEmptySpots() {
-    	for (int i =0;i<8;i++){	
+    	for (int i =0;i<gridWidth;i++){	
     		if(grid[i][0].isDead){
     			addRandomJewel(i,0);
                  		}

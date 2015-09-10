@@ -13,8 +13,8 @@ import javafx.util.Duration;
  * Jewel class that holds all sprite information.
  */
 public class Jewel extends Sprite {
-	public static final int MAX_SPEED_X = 4;
-	public static final int MAX_SPEED_Y = 4;
+	public static final double MAX_SPEED_X = 4;
+	public static final double MAX_SPEED_Y = 4;
 	public static final int ANIMATION_DURATION = 300;
 	
     private final int type;
