@@ -1,6 +1,10 @@
 package nl.tudelft.bejeweled.sprite;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Jeroen on 4-9-2015.
@@ -8,20 +12,20 @@ import java.util.*;
  */
 public class SpriteStore {
 
-    /** All the sprite objects currently in play */
-    private final static List listActors = new ArrayList<>();
+    /** All the sprite objects currently in play. */
+    private static final List LIST_ACTORS = new ArrayList<>();
 
     /** A global single threaded set used to cleanup or remove sprite objects
      * in play.
      */
-    private final static Set listDeadSprites = new HashSet<>();
+    private static final Set LIST_DEAD_SPRITES = new HashSet<>();
 
     /**
      * Get the list of all currently active sprites in the game.
      * @return List of all actors.
      */
     public List getAllSprites() {
-        return listActors;
+        return LIST_ACTORS;
     }
 
     /**
@@ -29,7 +33,7 @@ public class SpriteStore {
      * @param sprite Sprite object to add to the list.
      */
     public void addSprites(Sprite sprite) {
-        listActors.add(sprite);
+        LIST_ACTORS.add(sprite);
     }
 
     /**
@@ -37,32 +41,32 @@ public class SpriteStore {
      * @param sprite The sprite to be removed.
      */
     public void removeSprite(Sprite sprite) {
-        listActors.remove(sprite);
+        LIST_ACTORS.remove(sprite);
     }
 
     /**
      * Removes all the sprites in the store from the game.
      */
     public void removeAllSprites() {
-        listActors.clear();
+        LIST_ACTORS.clear();
     }
 
     /** Returns a set of sprite objects to be removed from the listActors.
      * @return listDeadSprites
      */
     public Set getSpritesToBeRemoved() {
-        return listDeadSprites;
+        return LIST_DEAD_SPRITES;
     }
 
     /**
-     * Adds sprite objects to be removed
+     * Adds sprite objects to be removed.
      * @param sprites varargs of sprite objects.
      */
     public void addSpritesToBeRemoved(Sprite... sprites) {
         if (sprites.length > 1) {
-            listDeadSprites.addAll(Arrays.asList((Sprite[]) sprites));
+            LIST_DEAD_SPRITES.addAll(Arrays.asList((Sprite[]) sprites));
         } else {
-            listDeadSprites.add(sprites[0]);
+            LIST_DEAD_SPRITES.add(sprites[0]);
         }
     }
 
@@ -76,9 +80,9 @@ public class SpriteStore {
     public void cleanupSprites() {
 
         // remove from actors list
-        listActors.removeAll(listDeadSprites);
+        LIST_ACTORS.removeAll(LIST_DEAD_SPRITES);
 
         // reset the clean up sprites
-        listDeadSprites.clear();
+        LIST_DEAD_SPRITES.clear();
     }
 }

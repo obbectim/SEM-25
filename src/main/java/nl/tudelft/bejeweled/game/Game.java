@@ -58,7 +58,7 @@ public abstract class Game {
      * Builds and sets the game loop ready to be started.
      */
     protected final void buildAndSetGameLoop() {
-        final Duration oneFrameAmt = Duration.seconds(1.0/getFramesPerSecond());
+        final Duration oneFrameAmt = Duration.seconds(1.0 / getFramesPerSecond());
         final KeyFrame oneFrame = new KeyFrame(oneFrameAmt,
                 new EventHandler<ActionEvent>() {
 
