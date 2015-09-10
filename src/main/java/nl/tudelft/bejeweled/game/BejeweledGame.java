@@ -1,8 +1,10 @@
 package nl.tudelft.bejeweled.game;
 
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.board.BoardFactory;
@@ -106,6 +108,17 @@ public class BejeweledGame extends Game implements BoardObserver {
 
         // draw and stretch the board background
         gamePane.setStyle("-fx-background-image: url('/board.png'); -fx-background-size: cover;");
+
+        // set callback for clicking on the board
+        gamePane.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>() {
+                    public void handle(MouseEvent event) {
+                        if(isInProgress() && event.getTarget() instanceof Pane) {
+                            board.boardClicked(true);
+                        }
+                    }
+                }
+        );
     }
     
     protected void updateBoard() {

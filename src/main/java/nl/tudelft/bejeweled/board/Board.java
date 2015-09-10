@@ -92,13 +92,30 @@ public class Board {
     }
 
     /**
+     * Handler method for detecting a click on the board
+     * @param noJewelHit Boolean determining if mouse is over a Jewel or not
+     */
+    public void boardClicked(Boolean noJewelHit) {
+        if(noJewelHit) {
+            if(selectionCursor != null) {
+                // if there was a selection remove it
+                sceneNodes.getChildren().remove(selectionCursor.node);
+                selectionCursor = null;
+            }
+            selection.clear();
+        }
+    }
+
+    /**
      * Add Jewel to the current selection.
      * After 2 Jewels are selected they are swapped.
      * @param jewel The Jewel to be added to the current selection.
      */
     public void addSelection(Jewel jewel) {
         selection.add(jewel);
-                
+
+        //TODO Cleanup this method with better logic.
+
         if (selection.size() == 1) {
            selectionCursor  = new SelectionCursor(selection.get(0).xPos, selection.get(0).yPos);
            spriteStore.addSprites(selectionCursor);
