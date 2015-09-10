@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="536.0" prefWidth="703.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="nl.tudelft.bejeweled.gui.BejeweledGuiController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0002136230469" prefWidth="683.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="nl.tudelft.bejeweled.gui.BejeweledGuiController">
   <children>
-    <BorderPane layoutX="14.0" layoutY="14.0" prefHeight="508.0" prefWidth="675.0">
+    <BorderPane layoutX="0.0" layoutY="8.0" prefHeight="512.0" prefWidth="683.0">
       <center>
-        <Pane fx:id="boardPane" prefHeight="564.0" prefWidth="560.0" />
+        <Pane fx:id="boardPane" prefHeight="512.0" prefWidth="512.0" />
       </center>
       <left>
         <Pane prefHeight="564.0" prefWidth="171.0">
           <children>
-            <Button fx:id="buttonStart" layoutX="46.0" layoutY="409.0" mnemonicParsing="false" text="Start Game" />
-            <Button fx:id="buttonStop" layoutX="46.0" layoutY="442.0" mnemonicParsing="false" text="Stop Game" />
-            <Button fx:id="buttonExit" layoutX="48.0" layoutY="482.0" mnemonicParsing="false" prefWidth="74.0" text="Exit" />
-            <Label fx:id="scoreLabel" alignment="CENTER" contentDisplay="LEFT" layoutX="14.0" layoutY="67.0" prefWidth="143.0" text="" textAlignment="CENTER">
+            <Button fx:id="buttonStart" layoutX="42.0" layoutY="409.0" mnemonicParsing="false" text="Start Game" />
+            <Button fx:id="buttonStop" layoutX="42.0" layoutY="438.0" mnemonicParsing="false" text="Stop Game" />
+            <Button fx:id="buttonExit" layoutX="42.0" layoutY="477.0" mnemonicParsing="false" prefWidth="75.0" text="Exit" />
+            <Label fx:id="scoreLabel" alignment="CENTER" contentDisplay="LEFT" layoutX="13.0" layoutY="67.0" prefWidth="143.0" text="" textAlignment="CENTER">
               <font>
                 <Font size="30.0" />
               </font>
             </Label>
-            <Label layoutX="24.0" layoutY="7.0" text="Score" textFill="#292929">
+            <Label layoutX="20.0" layoutY="7.0" text="Score" textFill="#292929">
               <font>
                 <Font name="System Bold" size="50.0" />
               </font>
