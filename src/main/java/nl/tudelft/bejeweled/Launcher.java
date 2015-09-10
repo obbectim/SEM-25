@@ -3,7 +3,6 @@ package nl.tudelft.bejeweled;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.game.BejeweledGame;
-import nl.tudelft.bejeweled.game.Game;
 import nl.tudelft.bejeweled.gui.BejeweledGui;
 
 /**
