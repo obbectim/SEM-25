@@ -46,7 +46,7 @@ public class BoardFactory {
      */
     public Board fromTextGenerateBoard(String file, Group sceneNodes, int gridWidth, int gridHeight, int spriteWidth, int spriteHeight) {
         Jewel[][] grid = new Jewel[gridWidth][gridHeight];
-        InputStream in = BoardFactory.class.getResourceAsStream("/board.txt");
+        InputStream in = BoardFactory.class.getResourceAsStream(file);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         String line;
         int k = 0;
