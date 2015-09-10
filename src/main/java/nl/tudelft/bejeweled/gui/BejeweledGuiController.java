@@ -79,7 +79,7 @@ public class BejeweledGuiController implements Initializable {
     }
 
     /**
-     * Getter method for boardPane (the pane of the game)
+     * Getter method for boardPane (the pane of the game).
      * @return The boardPane used by the board.
      */
     public Pane getBoardPane() {

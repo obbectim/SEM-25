@@ -1,21 +1,13 @@
 package nl.tudelft.bejeweled.gui;
 
-import javafx.animation.AnimationTimer;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.game.Game;
-import nl.tudelft.bejeweled.sprite.Jewel;
-
-import java.util.Random;
 
 
 /**
@@ -55,7 +47,8 @@ public class BejeweledGui {
             // init the scene and set dialog properties
             Scene scene = new Scene(page);
             stage.setScene(scene);
-            stage.getIcons().add(new Image(BejeweledGui.class.getResourceAsStream("/bejeweled_icon.png")));
+            Image icon = new Image(BejeweledGui.class.getResourceAsStream("/bejeweled_icon.png"));
+            stage.getIcons().add(icon);
             stage.setTitle("Bejeweled");
             stage.setResizable(false);
 
@@ -75,7 +68,7 @@ public class BejeweledGui {
     }
 
     /**
-     * Getter method for boardPane (the pane of the game)
+     * Getter method for boardPane (the pane of the game).
      * @return The boardPane used by the board.
      */
     public Pane getBoardPane() {
@@ -86,5 +79,7 @@ public class BejeweledGui {
      * Getter method for the score label in the dialog.
      * @return The Label used to display the score.
      */
-    public Label getScoreLabel() { return scoreLabel; }
+    public Label getScoreLabel() {
+    	return scoreLabel;
+    }
 }

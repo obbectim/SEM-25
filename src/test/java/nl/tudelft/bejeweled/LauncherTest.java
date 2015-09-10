@@ -35,8 +35,7 @@ public class LauncherTest extends ApplicationTest {
      * First test.
      */
     @Test
-    public void testStartGame()
-    {
+    public void testStartGame() {
         BejeweledGame game = launcher.getGame();
         assertFalse(game.isInProgress());
 

@@ -13,7 +13,7 @@ public interface BoardObserver {
 
     /**
      * Callback from when there has been a valid move and
-     * jewels have been removed from the board
+     * jewels have been removed from the board.
      */
     void boardJewelRemoved();
 }
