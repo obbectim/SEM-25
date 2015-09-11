@@ -26,23 +26,36 @@ public class JewelTest {
 
 
 	
-	Jewel jewel;
+	private Jewel jewel;
+	
+	/**
+	 * Creates the jewel to test with.
+	 */
 	@Before
 	public void setUp() {
 		jewel = new Jewel(TYPE, GRID_I, GRID_J);
 	}
 	
+	/**
+	 * Test the type setting and getting.
+	 */
 	@Test
 	public void getTypeTest() {
 		assertEquals(TYPE, jewel.getType());
 	}
 	
+	/**
+	 * Test the positioning.
+	 */
 	@Test
 	public void getPositionTest() {
 		assertEquals(GRID_I, jewel.getBoardX());
 		assertEquals(GRID_J, jewel.getBoardY());
 	}
 	
+	/**
+	 * Test the setting of the positioning.
+	 */
 	@Test
 	public void setPositionTest() {
 		jewel.setBoardX(GRID_I_NEW);
@@ -51,60 +64,75 @@ public class JewelTest {
 		assertEquals(GRID_J_NEW, jewel.getBoardY());
 	}
 	
+	/**
+	 * Test the velocity for a small (remaining) translation.
+	 */
 	@Test
 	public void velocitySmallTest() {
 		jewel.getNode().setTranslateX(SMALL_V_X);
 		jewel.getNode().setTranslateY(SMALL_V_Y);
     	jewel.update();
-		assertEquals(SMALL_V_X, jewel.getvX(),DELTA);
-		assertEquals(SMALL_V_Y, jewel.getvY(),DELTA);
-		assertEquals(0, jewel.getNode().getTranslateX(),DELTA);
-		assertEquals(0, jewel.getNode().getTranslateY(),DELTA);
+		assertEquals(SMALL_V_X, jewel.getvX(), DELTA);
+		assertEquals(SMALL_V_Y, jewel.getvY(), DELTA);
+		assertEquals(0, jewel.getNode().getTranslateX(), DELTA);
+		assertEquals(0, jewel.getNode().getTranslateY(), DELTA);
 
 	}
 	
+	/**
+	 * Test the velocity for a big translation.
+	 */
 	@Test
 	public void velocityMaxTest() {
 		jewel.getNode().setTranslateX(LARGE_V_X);
 		jewel.getNode().setTranslateY(LARGE_V_Y);
     	jewel.update();
-		assertEquals(Jewel.MAX_SPEED_X, jewel.getvX(),DELTA);
-		assertEquals(Jewel.MAX_SPEED_Y, jewel.getvY(),DELTA);
-		assertEquals(LARGE_V_X - Jewel.MAX_SPEED_X, jewel.getNode().getTranslateX(),DELTA);
-		assertEquals(LARGE_V_Y - Jewel.MAX_SPEED_Y, jewel.getNode().getTranslateY(),DELTA);
+		assertEquals(Jewel.MAX_SPEED_X, jewel.getvX(), DELTA);
+		assertEquals(Jewel.MAX_SPEED_Y, jewel.getvY(), DELTA);
+		assertEquals(LARGE_V_X - Jewel.MAX_SPEED_X, jewel.getNode().getTranslateX(), DELTA);
+		assertEquals(LARGE_V_Y - Jewel.MAX_SPEED_Y, jewel.getNode().getTranslateY(), DELTA);
 	}
 	
+	/**
+	 * Test the velocity for a small (remaining) translation that's negative.
+	 */
 	@Test
 	public void velocitySmallNegativeTest() {
 		jewel.getNode().setTranslateX(-SMALL_V_X);
 		jewel.getNode().setTranslateY(-SMALL_V_Y);
     	jewel.update();
-		assertEquals(-SMALL_V_X, jewel.getvX(),DELTA);
-		assertEquals(-SMALL_V_Y, jewel.getvY(),DELTA);
-		assertEquals(0, jewel.getNode().getTranslateX(),DELTA);
-		assertEquals(0, jewel.getNode().getTranslateY(),DELTA);
+		assertEquals(-SMALL_V_X, jewel.getvX(), DELTA);
+		assertEquals(-SMALL_V_Y, jewel.getvY(), DELTA);
+		assertEquals(0, jewel.getNode().getTranslateX(), DELTA);
+		assertEquals(0, jewel.getNode().getTranslateY(), DELTA);
 
 	}
 	
+	/**
+	 * Test the velocity for a big translation that's negative.
+	 */
 	@Test
 	public void velocityMaxNegativeTest() {
 		jewel.getNode().setTranslateX(-LARGE_V_X);
 		jewel.getNode().setTranslateY(-LARGE_V_Y);
     	jewel.update();
-		assertEquals(-Jewel.MAX_SPEED_X, jewel.getvX(),DELTA);
-		assertEquals(-Jewel.MAX_SPEED_Y, jewel.getvY(),DELTA);
-		assertEquals(-(LARGE_V_X - Jewel.MAX_SPEED_X), jewel.getNode().getTranslateX(),DELTA);
-		assertEquals(-(LARGE_V_Y - Jewel.MAX_SPEED_Y), jewel.getNode().getTranslateY(),DELTA);
+		assertEquals(-Jewel.MAX_SPEED_X, jewel.getvX(), DELTA);
+		assertEquals(-Jewel.MAX_SPEED_Y, jewel.getvY(), DELTA);
+		assertEquals(-(LARGE_V_X - Jewel.MAX_SPEED_X), jewel.getNode().getTranslateX(), DELTA);
+		assertEquals(-(LARGE_V_Y - Jewel.MAX_SPEED_Y), jewel.getNode().getTranslateY(), DELTA);
 	}
 	
+	/**
+	 * Test the velocity at implosion.
+	 */
 	@Test
-	public void ImplodeVelocityTest() {
+	public void implodeVelocityTest() {
 		jewel.getNode().setTranslateX(LARGE_V_X);
 		jewel.getNode().setTranslateY(LARGE_V_Y);
     	jewel.update();
     	jewel.implode(null);
-		assertEquals(0, jewel.getvX(),DELTA);
-		assertEquals(0, jewel.getvY(),DELTA);
+		assertEquals(0, jewel.getvX(), DELTA);
+		assertEquals(0, jewel.getvY(), DELTA);
 	}
 	
 	
