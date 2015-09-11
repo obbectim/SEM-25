@@ -128,7 +128,7 @@ public class BoardFactory {
      * */
 	public Board addEventHandler(Jewel[][] grid, Group sceneNodes, int gridWidth, int gridHeight,
     		int spriteWidth, int spriteHeight) {
-		Board board = new Board(grid, sceneNodes, gridWidth, gridHeight, spriteWidth, spriteHeight);
+		Board board = new Board(grid, sceneNodes);
         board.setSpriteStore(spriteStore);
 
         // add event handlers.
