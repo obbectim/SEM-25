@@ -457,8 +457,9 @@ public class Board {
     
     /**
      * Function that checks if there are any moves possible.
+     * @return true if any moves possible
      */
-    public void outOfMoves() {
+    public boolean outOfMoves() {
     	/**
     	 * Iterate through all gems and look for pairs of two,
     	 * which could be a possible row to complete
@@ -468,25 +469,25 @@ public class Board {
 				if (y < grid[0].length - 1 && grid[x][y].getType() == grid[x][y + 1].getType()) {
 					System.out.println("vertical row found at " + x + ", " + y);
 					if (verticalRow(x, y)) {
-						return;
+						return false;
 					}
 				}
 				if (x < grid.length - 1 && grid[x][y].getType() == grid[x + 1][y].getType()) {
 					System.out.println("horizontal row found at " + x + ", " + y);
 					if (horizontalRow(x, y)) {
-						return;
+						return false;
 					}
 				}
 				if (y < grid[0].length - 2 && grid[x][y].getType() == grid[x][y + 2].getType()) {
 					System.out.println("vertical row possible at " + x + ", " + y);
 					if (verticalRowPossible(x, y)) {
-						return;
+						return false;
 					}
 				}
 				if (x < grid.length - 2 && grid[x][y].getType() == grid[x + 2][y].getType()) {
 					System.out.println("horizontal row possible at " + x + ", " + y);
 					if (horizontalRowPossible(x, y)) {
-						return;
+						return false;
 					}
 				}
 			}
@@ -496,6 +497,7 @@ public class Board {
     	for (BoardObserver observer : observers) {
 			observer.boardOutOfMoves();
 		}
+		return true;
     	
     }
     
