@@ -42,6 +42,9 @@ public class Board {
 
 	private SpriteStore spriteStore;
 	private SelectionCursor selectionCursor;
+	private boolean toReverseMove = false;
+	private Jewel reverse1;
+	private Jewel reverse2;
 
     /**
      * Constructor for the board class.
@@ -98,12 +101,12 @@ public class Board {
      */
     public void boardClicked(Boolean noJewelHit) {
         if (noJewelHit) {
-            if (selectionCursor != null) {
+            if (getSelectionCursor() != null) {
                 // if there was a selection remove it
-                sceneNodes.getChildren().remove(selectionCursor.getNode());
+                sceneNodes.getChildren().remove(getSelectionCursor().getNode());
                 selectionCursor = null;
             }
-            selection.clear();
+            getSelection().clear();
         }
     }
 
@@ -113,37 +116,62 @@ public class Board {
      * @param jewel The Jewel to be added to the current selection.
      */
     public void addSelection(Jewel jewel) {
-        selection.add(jewel);
-
+        getSelection().add(jewel);
         //TODO Cleanup this method with better logic.
-        if (selection.size() == 1) {
-           selectionCursor  = new SelectionCursor(selection.get(0).getxPos(),
-        		   selection.get(0).getyPos());
-           spriteStore.addSprites(selectionCursor);
-           sceneNodes.getChildren().add(0, selectionCursor.getNode());
+        if (getSelection().size() == 1) {
+           selectionCursor = new SelectionCursor(getSelection().get(0).getxPos(), 
+        		   getSelection().get(0).getyPos());
+           spriteStore.addSprites(getSelectionCursor());
+           sceneNodes.getChildren().add(0, getSelectionCursor().getNode());
         }
         
         // 2 gems are selected, see if any combo's are made
-        if (selection.size() == 2) {
+        if (getSelection().size() == 2) {
 
-            if (moveWithinDomain(selection.get(0), selection.get(1))) {
+            if (moveWithinDomain(getSelection().get(0), getSelection().get(1))) {
                 System.out.println("Swapping jewels");
-                swapJewel(selection.get(0), selection.get(1));
+                swapJewel(getSelection().get(0), getSelection().get(1));
 
                 int comboCount = checkBoardCombos();
                 System.out.println("Combo Jewels on board: " + comboCount);
                 if (comboCount == 0) {
-                	swapJewel(selection.get(0), selection.get(1));
+                	setToReverse(getSelection().get(0), getSelection().get(1));
                 }
 
             }
-            sceneNodes.getChildren().remove(selectionCursor.getNode());
+            sceneNodes.getChildren().remove(getSelectionCursor().getNode());
             selectionCursor = null;
-            selection.clear();
+            getSelection().clear();
         }
     }
+    
+	/**
+     * Set up two jewels to be swapped, intended to undo an invalid move.
+     * @param j1 The first Jewel.
+     * @param j2 The second Jewel.
+     */
+    private void setToReverse(Jewel jewel1, Jewel jewel2) {
+		toReverseMove = true;
+		reverse1 = jewel1;
+		reverse2 = jewel2;
+	}
+    
+	/**
+     * Jewels set up to be swapped will swap if their current animations have finished.
+     */
+    private void tryToReverse() {
+    	assert (reverse1 != null);
+    	assert (reverse2 != null);
+ 		if (!reverse1.animationActive() && !reverse2.animationActive()) {
+ 			swapJewel(reverse1, reverse2);
+ 			toReverseMove = false;
+ 			reverse1 = null;
+ 			reverse2 = null;
+ 		}
+ 	}
+     
 
-    /**
+	/**
      * Checks if two Jewels are exactly one apart either horizontally
      * or vertically.
      * @param j1 The first Jewel.
@@ -324,8 +352,8 @@ public class Board {
             // TODO Make sure the Jewels are also removed from the spriteStore.
             // grid[jewel.getBoardX()][jewel.getBoardY()] = null;
         }
-        doGravity();
-        outOfMoves();
+      //  doGravity();
+      //  outOfMoves();
         return count;
     }
     
@@ -550,42 +578,62 @@ public class Board {
     }
     
     /**
+     * Function that checks for pairs and if found checks if a valid move is possible
+     * at that position.
+     * 
+     * @param x x-position in the grid to be checked for a pair
+     * @param y y-position in the grid to be checked for a pair
+     * @return returns true if a pair was found
+     */
+    private boolean checkForPair(int x, int y) {
+    	int type = grid[x][y].getType();
+		if (y < grid[0].length - 1 && type == grid[x][y + 1].getType()) {
+			if (verticalRow(x, y)) { 
+				return true;
+			}
+		}
+		if (x < grid.length - 1 && type == grid[x + 1][y].getType()) {
+			if (horizontalRow(x, y)) {
+				return true;
+			}
+		}
+		if (y < grid[0].length - 2 && type == grid[x][y + 2].getType()) {
+			if (verticalRowPossible(x, y)) {
+				return true;
+			}
+		}
+		if (x < grid.length - 2 && type == grid[x + 2][y].getType()) {
+			if (horizontalRowPossible(x, y)) {
+				return true;
+			}
+		}
+		return false;
+    }
+    
+    
+    /**
      * Function that checks if there are any moves possible.
      * 
      * <p>Iterates through all gems and looks for pairs or two or 
      * constructions like "xox" where another x could fill in.
      * For each case a different function is called which checks for
      * a valid move.</p>
+     * @return true if no moves possible
      */
-    public void outOfMoves() {
+    public boolean outOfMoves() {
+    	
     	for (int x = 0; x < grid.length; x++) {
 			for (int y = 0; y < grid[0].length; y++) {
-				int type = grid[x][y].getType();
-				if (y < grid[0].length - 1 && type == grid[x][y + 1].getType()) {
-					if (verticalRow(x, y)) { 
-						return; 
-					}
-				}
-				if (x < grid.length - 1 && type == grid[x + 1][y].getType()) {
-					if (horizontalRow(x, y)) {
-						return;
-					}
-				}
-				if (y < grid[0].length - 2 && type == grid[x][y + 2].getType()) {
-					if (verticalRowPossible(x, y)) {
-						return;
-					}
-				}
-				if (x < grid.length - 2 && type == grid[x + 2][y].getType()) {
-					if (horizontalRowPossible(x, y)) {
-						return;
-					}
+				if (checkForPair(x, y)) {
+					return false;
 				}
 			}
 		}
+    	
     	for (BoardObserver observer : observers) {
 			observer.boardOutOfMoves();
-		}
+    	}
+		return true;
     }
     
     /**
@@ -679,10 +727,16 @@ public class Board {
 	 * Update the board; check for combos, run gravity and fill empty spots .
 	 * 	 */
 	public void update() {
-		while (doGravity()) {
+		if (toReverseMove) {
+			tryToReverse();
+		} else {
     		checkBoardCombos();
-    	}
-		fillEmptySpots();
+			while (doGravity()) {
+	    		checkBoardCombos();
+	    	}
+			fillEmptySpots();
+			outOfMoves();
+		}
 	}
 	
 	/**
@@ -691,5 +745,21 @@ public class Board {
 	 */
 	public Jewel[][] getGrid() {
 		return grid;
+	}
+
+	/**
+	 * Getter function for the current selection (used for testing).
+	 * @return current selection
+	 */
+	public List<Jewel> getSelection() {
+		return selection;
+	}
+	
+	/**
+	 * Getter function for the current selectionCursor (used for testing).
+	 * @return current selectionCursor
+	 */
+	public SelectionCursor getSelectionCursor() {
+		return selectionCursor;
 	}
 }

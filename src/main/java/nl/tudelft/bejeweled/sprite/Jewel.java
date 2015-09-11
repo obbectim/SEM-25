@@ -1,9 +1,9 @@
 package nl.tudelft.bejeweled.sprite;
 
+import javafx.animation.FadeTransition;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.animation.FadeTransitionBuilder;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.util.Duration;
@@ -124,21 +124,21 @@ public class Jewel extends Sprite {
     public void implode(Group sceneGroup) {
         setvX(0);
         setvY(0);
-        FadeTransitionBuilder.create()
-                .node(getNode())
-                .duration(Duration.millis(ANIMATION_DURATION))
-                .fromValue(getNode().getOpacity())
-                .toValue(0)
-                .onFinished(new EventHandler<ActionEvent>() {
 
-                    @Override
-                    public void handle(ActionEvent arg0) {
-                        setDead(true);
-                        sceneGroup.getChildren().remove(getNode());
-                    }
-                })
-                .build()
-                .play();
+        FadeTransition ft = new FadeTransition(Duration.millis(ANIMATION_DURATION), getNode());
+        ft.setFromValue(1.0);
+        ft.setToValue(0.0);
+        ft.setCycleCount(1);
+        ft.setAutoReverse(false);
+        ft.setOnFinished(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                setDead(true);
+                sceneGroup.getChildren().remove(getNode());
+            }
+        });
+        ft.play();
     }
 
     /**
