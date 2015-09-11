@@ -9,6 +9,5 @@ Main contributors:
 
 *	Pim Veldhuisen
 *	Jan-Gerrit Harms
-*	Michel Jansen
 *	Amrit S Gill
 *	Jeroen Vrijenhoef
