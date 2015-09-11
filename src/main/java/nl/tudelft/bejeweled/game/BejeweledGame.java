@@ -23,7 +23,7 @@ public class BejeweledGame extends Game implements BoardObserver {
 	private static final int SPRITE_HEIGHT = 64;
 
 
-    /** The board class that maintains the jewels */
+    /** The board class that maintains the jewels. */
     private Board board;
 
     private BoardFactory boardFactory;
@@ -41,6 +41,10 @@ public class BejeweledGame extends Game implements BoardObserver {
 
     private Label scoreLabel;
 
+    /** The constructor for the bejeweled game. 
+    * @param framesPerSecond - The number of frames per second the game will attempt to render.
+    * @param windowTitle - The title displayed in the window.
+    */
     public BejeweledGame(int framesPerSecond, String windowTitle) {
         super(framesPerSecond, windowTitle);
         spriteStore = new SpriteStore();
@@ -48,12 +52,13 @@ public class BejeweledGame extends Game implements BoardObserver {
     }
 
     /**
-     *  Starts the game
+     *  Starts the game.
      */
     @Override
     public void start() {
-        if(inProgress)
+        if (inProgress) {
             return;
+        }
         inProgress = true;
         
         System.out.println("Game started");
@@ -78,12 +83,13 @@ public class BejeweledGame extends Game implements BoardObserver {
     }
 
     /**
-     *  Stops the game
+     *  Stops the game.
      */
     @Override
     public void stop() {
-        if(!inProgress)
+        if (!inProgress) {
             return;
+        }
 
         System.out.println("Game stopped");
 
@@ -113,7 +119,7 @@ public class BejeweledGame extends Game implements BoardObserver {
         gamePane.addEventFilter(MouseEvent.MOUSE_CLICKED,
                 new EventHandler<MouseEvent>() {
                     public void handle(MouseEvent event) {
-                        if(isInProgress() && event.getTarget() instanceof Pane) {
+                        if (isInProgress() && event.getTarget() instanceof Pane) {
                             board.boardClicked(true);
                         }
                     }
@@ -121,8 +127,12 @@ public class BejeweledGame extends Game implements BoardObserver {
         );
     }
     
-    protected void updateBoard() {
-        if(inProgress){
+    /**
+     * Updates all game logic, At this point this consists of updating 
+     * the board that is loaded for the game if the game is in progress.
+     */
+    protected void updateLogic() {
+        if (inProgress) {
         	board.update();
         }
     }
@@ -138,7 +148,11 @@ public class BejeweledGame extends Game implements BoardObserver {
     	score += 10; // add 10 points per jewel removed
         scoreLabel.setText(Integer.toString(score));
     }
-
+    
+    /**
+     *Check if the game is still in progress.
+     * @return true if the game is in progress.
+     */
     public boolean isInProgress() {
         return inProgress;
     }

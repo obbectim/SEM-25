@@ -66,7 +66,7 @@ public abstract class Game {
                     public void handle(javafx.event.ActionEvent event) {
 
                     	//update board
-                    	updateBoard();
+                    	updateLogic();
                     	
                         // update actors
                         updateSprites();
@@ -105,7 +105,7 @@ public abstract class Game {
      * Updates the board.
      *
      */
-    protected  void updateBoard() {
+    protected  void updateLogic() {
     	
     }
     
