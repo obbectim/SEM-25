@@ -49,13 +49,11 @@ public class BoardFactory {
         this.gridWidth = BejeweledGame.GRID_WIDTH;
         this.gridHeight = BejeweledGame.GRID_HEIGHT;
         this.spriteWidth = BejeweledGame.SPRITE_WIDTH;
-        this.spriteHeight = BejeweledGame.SPRITE_WIDTH;
-        
+        this.spriteHeight = BejeweledGame.SPRITE_WIDTH;  
         Jewel[][] grid = new Jewel[gridWidth][gridHeight];
         InputStream in = BoardFactory.class.getResourceAsStream(file);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String line;
-        int k = 0;
+        String line; int k = 0;
         try {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("|");  
@@ -68,13 +66,10 @@ public class BoardFactory {
                     grid[k][j] = jewel;
                     // add to actors in play (sprite objects)
                     spriteStore.addSprites(jewel);
-                    // add sprites
-                    sceneNodes.getChildren().add(0, jewel.getNode());
-                }
-                k++;
+                    sceneNodes.getChildren().add(0, jewel.getNode()); 
+                } k++;        
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return addEventHandler(grid, sceneNodes, gridWidth, gridHeight,
@@ -137,12 +132,13 @@ public class BoardFactory {
                 Jewel jewel = grid[i][j];
                 grid[i][j].getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
                         new EventHandler<MouseEvent>() {
-                            public void handle(MouseEvent event) {
-                                System.out.println("Jewel[" + jewel.getBoardX() + "][" + jewel.getBoardY() + "] " + event.getEventType());
-                                board.addSelection(jewel);
-                                event.consume();
-                            }
+                          public void handle(MouseEvent event) {
+                            System.out.println("Jewel[" + jewel.getBoardX() + "]"
+                         	+ "[" + jewel.getBoardY() + "] " + event.getEventType());
+                            board.addSelection(jewel);
+                            event.consume();
                         }
+                     }
                 );
             }
         }
