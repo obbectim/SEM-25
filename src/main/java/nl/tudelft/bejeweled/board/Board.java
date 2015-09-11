@@ -546,7 +546,7 @@ public class Board {
      * @param j Grid row
      */
     protected void addRandomJewel(int i, int j) {
-    	  Jewel jewel = new Jewel(rand.nextInt(NUMBER_OF_DIFFERENT_JEWEL_TYPES) + 1, i, j);
+    	  Jewel jewel = new Jewel(rand.nextInt(NUMBER_OF_JEWEL_TYPES) + 1, i, j);
           jewel.setxPos(i * spriteWidth);
           jewel.setyPos(j * spriteHeight);
           grid[i][j] = jewel;
