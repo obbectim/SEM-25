@@ -29,6 +29,8 @@ public class BejeweledGuiController implements Initializable {
     @FXML
     private Button buttonExit;
     @FXML
+    private Button buttonHint;
+    @FXML
     private Pane boardPane;
     @FXML
     private Label scoreLabel;
@@ -41,6 +43,8 @@ public class BejeweledGuiController implements Initializable {
         initializeStopButton();
         assert buttonExit != null;
         initializeExitButton();    
+        assert buttonHint != null;
+        initializeHintButton();
     }
     
     /**
@@ -85,6 +89,21 @@ public class BejeweledGuiController implements Initializable {
                  stage.close();
              }
          });
+    }
+    
+    /**
+     * Set hint button to create a hint to help the player.
+     */
+    public void initializeHintButton() {
+    	buttonHint.setOnAction(new EventHandler<ActionEvent>() {
+    		
+    		@Override
+    		public void handle(ActionEvent event) {
+    			System.out.println("Hint");
+    			
+    			game.showHint();
+    		}
+    	});
     }
     
     /**
