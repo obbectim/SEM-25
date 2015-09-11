@@ -97,7 +97,7 @@ public class Board {
         if(noJewelHit) {
             if(selectionCursor != null) {
                 // if there was a selection remove it
-                sceneNodes.getChildren().remove(selectionCursor.node);
+                sceneNodes.getChildren().remove(selectionCursor.getNode());
                 selectionCursor = null;
             }
             selection.clear();
@@ -115,9 +115,9 @@ public class Board {
         //TODO Cleanup this method with better logic.
 
         if (selection.size() == 1) {
-           selectionCursor  = new SelectionCursor(selection.get(0).xPos, selection.get(0).yPos);
+           selectionCursor  = new SelectionCursor(selection.get(0).getxPos(), selection.get(0).getyPos());
            spriteStore.addSprites(selectionCursor);
-           sceneNodes.getChildren().add(0, selectionCursor.node);
+           sceneNodes.getChildren().add(0, selectionCursor.getNode());
         }
         
         // 2 gems are selected, see if any combo's are made
@@ -134,7 +134,7 @@ public class Board {
                 }
 
             }
-            sceneNodes.getChildren().remove(selectionCursor.node);
+            sceneNodes.getChildren().remove(selectionCursor.getNode());
             selectionCursor = null;
             selection.clear();
 
@@ -180,12 +180,12 @@ public class Board {
             j1.setBoardX(j2.getBoardX());
             j2.setBoardX(tmp);
 
-            previousJ1 = j1.xPos;
-            j1.xPos = j2.xPos;
-            j1.node.setTranslateX(previousJ1 - j1.xPos);
-            previousJ2 = j2.xPos;
-            j2.xPos = previousJ1;
-            j2.node.setTranslateX(previousJ2 - j2.xPos);
+            previousJ1 = j1.getxPos();
+            j1.setxPos(j2.getxPos());
+            j1.getNode().setTranslateX(previousJ1 - j1.getxPos());
+            previousJ2 = j2.getxPos();
+            j2.setxPos(previousJ1);
+            j2.getNode().setTranslateX(previousJ2 - j2.getxPos());
 
            
         }
@@ -195,12 +195,12 @@ public class Board {
             j1.setBoardY(j2.getBoardY());
             j2.setBoardY(tmp);
 
-            previousJ1 = j1.yPos;
-            j1.yPos = j2.yPos;
-            j1.node.setTranslateY(previousJ1 - j1.yPos);
-            previousJ2 = j2.yPos;
-            j2.yPos = previousJ1;
-            j2.node.setTranslateY(previousJ2 - j2.yPos);
+            previousJ1 = j1.getyPos();
+            j1.setyPos(j2.getyPos());
+            j1.getNode().setTranslateY(previousJ1 - j1.getyPos());
+            previousJ2 = j2.getyPos();
+            j2.setyPos(previousJ1);
+            j2.getNode().setTranslateY(previousJ2 - j2.getyPos());
 
         }
 
@@ -284,7 +284,7 @@ public class Board {
             jewel.implode(sceneNodes);
 
             // remove the event filter
-            jewel.node.setOnMouseClicked(null);
+            jewel.getNode().setOnMouseClicked(null);
 
             updateScore();
 
@@ -477,7 +477,7 @@ public class Board {
 		for (int j = 1; j < gridHeight; j++) {
 			falling = false;
 			for (int i = 0; i < gridWidth; i++) {		
-					if (grid[i][j].isDead) {
+					if (grid[i][j].isDead()) {
 						System.out.println("Swap " + j + " and " + (j - 1));
 						swapJewel(grid[i][j], grid[i][j - 1]);
 						falling = true;
@@ -511,13 +511,13 @@ public class Board {
      */
     protected void addRandomJewel(int i, int j) {
     	  Jewel jewel = new Jewel(rand.nextInt((7 - 1) + 1) + 1, i, j);
-          jewel.xPos = i * spriteWidth;
-          jewel.yPos = j * spriteHeight;
+          jewel.setxPos(i * spriteWidth);
+          jewel.setyPos(j * spriteHeight);
           grid[i][j] = jewel;
           spriteStore.addSprites(jewel);
-          sceneNodes.getChildren().add(0, jewel.node);
+          sceneNodes.getChildren().add(0, jewel.getNode());
           setSpriteStore(spriteStore);
-          grid[i][j].node.addEventFilter(MouseEvent.MOUSE_CLICKED,
+          grid[i][j].getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
                   new EventHandler<MouseEvent>() {
                       public void handle(MouseEvent event) {
                           System.out.println("Jewel[" + jewel.getBoardX() + "][" + jewel.getBoardY() + "] " + event.getEventType());
@@ -535,7 +535,7 @@ public class Board {
      */
     public void fillEmptySpots() {
     	for (int i = 0; i < gridWidth; i++) {	
-    		if (grid[i][0].isDead) {
+    		if (grid[i][0].isDead()) {
     			addRandomJewel(i, 0);
             }
     	}

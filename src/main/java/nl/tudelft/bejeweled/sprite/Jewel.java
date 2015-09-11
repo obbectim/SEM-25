@@ -38,7 +38,7 @@ public class Jewel extends Sprite {
         jewelImageView.setImage(jewelImage);
         jewelImageView.setStyle("-fx-background-color:transparent;");
 
-        node = jewelImageView;
+        setNode(jewelImageView);
     }
 
     /**
@@ -47,10 +47,10 @@ public class Jewel extends Sprite {
     @Override
     public void update() {
     	updateVelocity();
-        node.setTranslateX(node.getTranslateX() - vX);
-        node.setTranslateY(node.getTranslateY() - vY);
-        node.setLayoutX(xPos);
-        node.setLayoutY(yPos);
+        getNode().setTranslateX(getNode().getTranslateX() - vX);
+        getNode().setTranslateY(getNode().getTranslateY() - vY);
+        getNode().setLayoutX(getxPos());
+        getNode().setLayoutY(getyPos());
     }
     
     /**
@@ -58,21 +58,21 @@ public class Jewel extends Sprite {
      */
     private void updateVelocity() {
     	//Update x velocity
-    	if (node.getTranslateX() > MAX_SPEED_X) {
+    	if (getNode().getTranslateX() > MAX_SPEED_X) {
     		vX = MAX_SPEED_X;
-    	} else if (node.getTranslateX() < -MAX_SPEED_X) {
+    	} else if (getNode().getTranslateX() < -MAX_SPEED_X) {
         		vX = -MAX_SPEED_X;
         } else {
-        		vX = node.getTranslateX();
+        		vX = getNode().getTranslateX();
     	}
 
     	//Update x velocity
-    	if (node.getTranslateY() > MAX_SPEED_Y) {
+    	if (getNode().getTranslateY() > MAX_SPEED_Y) {
     		vY = MAX_SPEED_Y;
-    	} else if (node.getTranslateY() < -MAX_SPEED_Y) {
+    	} else if (getNode().getTranslateY() < -MAX_SPEED_Y) {
         		vY = -MAX_SPEED_Y;
     	} else {
-        		vY = node.getTranslateY();
+        		vY = getNode().getTranslateY();
         	}
     }
     
@@ -125,16 +125,16 @@ public class Jewel extends Sprite {
         vX = 0;
         vY = 0;
         FadeTransitionBuilder.create()
-                .node(node)
+                .node(getNode())
                 .duration(Duration.millis(ANIMATION_DURATION))
-                .fromValue(node.getOpacity())
+                .fromValue(getNode().getOpacity())
                 .toValue(0)
                 .onFinished(new EventHandler<ActionEvent>() {
 
                     @Override
                     public void handle(ActionEvent arg0) {
-                        isDead = true;
-                        sceneGroup.getChildren().remove(node);
+                        setDead(true);
+                        sceneGroup.getChildren().remove(getNode());
                     }
                 })
                 .build()
@@ -147,6 +147,6 @@ public class Jewel extends Sprite {
      * not showing the sprite anymore.
      */
     public void simpleImplode() {
-        isDead = true;
+        setDead(true);
     }
 }

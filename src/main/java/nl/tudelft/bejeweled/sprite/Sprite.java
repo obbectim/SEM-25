@@ -10,35 +10,63 @@ import javafx.scene.Node;
  * Class to hold basic Sprite information in the game.
  */
 public abstract class Sprite {
-    /** Animation for the node */
-    public List animations = new ArrayList<>();
+    /** Animation for the node. */
+    protected List animations = new ArrayList<>();
 
-    /** Current display node */
-    public Node node;
+    /** Current display node. */
+    private Node node;
 
-    /** X  screen position */
-    public double xPos;
+    /** X  screen position. */
+    private double xPos;
 
-    public double finalXPos;
+    /** Y screen position. */
+    private double yPos;
 
-    /** Y screen position */
-    public double yPos;
+    /** velocity vector x direction. */
+    protected double vX = 0;
 
-    public double finalYPos;
+    /** velocity vector y direction. */
+    protected double vY = 0;
 
-    /** velocity vector x direction */
-    public double vX = 0;
+    protected Boolean isMoving;
 
-    /** velocity vector y direction */
-    public double vY = 0;
-
-    public Boolean isMoving;
-
-    /** exploded? */
-    public boolean isDead = false;
+    /** Status variable, true if the sprite should be removed */
+    private boolean isDead = false;
 
     /**
      * Updates this sprite object's velocity, or animations.
      */
     public abstract void update();
+
+	public Node getNode() {
+		return node;
+	}
+
+	public void setNode(Node node) {
+		this.node = node;
+	}
+
+	public double getxPos() {
+		return xPos;
+	}
+
+	public void setxPos(double xPos) {
+		this.xPos = xPos;
+	}
+
+	public double getyPos() {
+		return yPos;
+	}
+
+	public void setyPos(double yPos) {
+		this.yPos = yPos;
+	}
+
+	public boolean isDead() {
+		return isDead;
+	}
+
+	public void setDead(boolean isDead) {
+		this.isDead = isDead;
+	}
 }
