@@ -58,8 +58,7 @@ public class BoardFactory {
         int k = 0;
         try {
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("|");
-                
+                String[] parts = line.split("|");  
                 for (int j = 0; j < gridHeight; j++) {
                     int amr = Integer.parseInt(parts[j]);
                     System.out.println(amr);
@@ -67,10 +66,8 @@ public class BoardFactory {
                     jewel.setxPos(k * spriteWidth);
                     jewel.setyPos(j * spriteHeight);
                     grid[k][j] = jewel;
-                    
                     // add to actors in play (sprite objects)
                     spriteStore.addSprites(jewel);
-                    
                     // add sprites
                     sceneNodes.getChildren().add(0, jewel.getNode());
                 }
@@ -80,30 +77,8 @@ public class BoardFactory {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
-        Board board = new Board(grid, sceneNodes);
-
-
-        
-        board.setSpriteStore(spriteStore);
-        
-        // add event handlers.
-        for (int i = 0; i < gridWidth; i++) {
-            for (int j = 0; j < gridHeight; j++) {
-                Jewel jewel = grid[i][j];
-                grid[i][j].getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
-                                               new EventHandler<MouseEvent>() {
-                                                   public void handle(MouseEvent event) {
-                                                       System.out.println("Jewel[" + jewel.getBoardX() + "][" + jewel.getBoardY() + "] " + event.getEventType());
-                                                       board.addSelection(jewel);
-                                                       event.consume();
-                                                   }
-                                               }
-                                               );
-            }
-        }
-        
-        return board;
+        return addEventHandler(grid, sceneNodes, gridWidth, gridHeight,
+       		 spriteWidth,  spriteHeight);
     }
     /**
      * Generates a new board.
@@ -136,7 +111,24 @@ public class BoardFactory {
             }
         }
 
-        Board board = new Board(grid, sceneNodes);
+        return addEventHandler(grid, sceneNodes, gridWidth, gridHeight,
+        		 spriteWidth,  spriteHeight);
+    }
+
+    /**
+     * Event Handler.
+     * @param grid The grid containing jewels
+     * @param sceneNodes The group container for the Jewel nodes.
+     * @param gridWidth Width of the board in squares.
+     * @param gridHeight Height of the board in squares.
+     * @param spriteWidth Width of the sprites in pixels.
+     * @param spriteHeight Height of the sprites in pixels.
+     * @return A new Board.
+     * 
+     * */
+	public Board addEventHandler(Jewel[][] grid, Group sceneNodes, int gridWidth, int gridHeight,
+    		int spriteWidth, int spriteHeight) {
+		Board board = new Board(grid, sceneNodes, gridWidth, gridHeight, spriteWidth, spriteHeight);
         board.setSpriteStore(spriteStore);
 
         // add event handlers.
@@ -156,5 +148,6 @@ public class BoardFactory {
         }
 
         return board;
-    }
+		
+	}
 }
