@@ -58,15 +58,15 @@ public class BoardFactory {
                     int amr = Integer.parseInt(parts[j]);
                     System.out.println(amr);
                     Jewel jewel = new Jewel(amr, k, j);
-                    jewel.xPos = k * spriteWidth;
-                    jewel.yPos = j * spriteHeight;
+                    jewel.setxPos(k * spriteWidth);
+                    jewel.setyPos(j * spriteHeight);
                     grid[k][j] = jewel;
                     
                     // add to actors in play (sprite objects)
                     spriteStore.addSprites(jewel);
                     
                     // add sprites
-                    sceneNodes.getChildren().add(0, jewel.node);
+                    sceneNodes.getChildren().add(0, jewel.getNode());
                 }
                 k++;
             }
@@ -82,7 +82,7 @@ public class BoardFactory {
         for (int i = 0; i < gridWidth; i++) {
             for (int j = 0; j < gridHeight; j++) {
                 Jewel jewel = grid[i][j];
-                grid[i][j].node.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                grid[i][j].getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
                                                new EventHandler<MouseEvent>() {
                                                    public void handle(MouseEvent event) {
                                                        System.out.println("Jewel[" + jewel.getBoardX() + "][" + jewel.getBoardY() + "] " + event.getEventType());
@@ -112,17 +112,17 @@ public class BoardFactory {
         // create the boards jewels
         for (int i = 0; i < gridWidth; i++) {
             for (int j = 0; j < gridHeight; j++) {
-               Jewel jewel = new Jewel(rand.nextInt((7 - 1) + 1) + 1, i, j);
+               Jewel jewel = new Jewel(rand.nextInt(Board.NUMBER_OF_DIFFERENT_JEWEL_TYPES) + 1, i, j);
             //	Jewel jewel = new Jewel((i+j)%7+1, i, j);
-                jewel.xPos = i * spriteWidth;
-                jewel.yPos = j * spriteHeight;
+                jewel.setxPos(i * spriteWidth);
+                jewel.setyPos(j * spriteHeight);
                 grid[i][j] = jewel;
 
                 // add to actors in play (sprite objects)
                 spriteStore.addSprites(jewel);
 
                 // add sprites
-                sceneNodes.getChildren().add(0, jewel.node);
+                sceneNodes.getChildren().add(0, jewel.getNode());
             }
         }
 
@@ -133,7 +133,7 @@ public class BoardFactory {
         for (int i = 0; i < gridWidth; i++) {
             for (int j = 0; j < gridHeight; j++) {
                 Jewel jewel = grid[i][j];
-                grid[i][j].node.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                grid[i][j].getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
                         new EventHandler<MouseEvent>() {
                             public void handle(MouseEvent event) {
                                 System.out.println("Jewel[" + jewel.getBoardX() + "][" + jewel.getBoardY() + "] " + event.getEventType());

@@ -24,15 +24,15 @@ public class SelectionCursor extends Sprite {
         cursorImageView.setImage(cursorImage);
         cursorImageView.setStyle("-fx-background-color:transparent;");
 
-        node = cursorImageView;
+        setNode(cursorImageView);
 	}
 	
     /**
      * Updates the SelectionCursor graphics.
      */
 	public void update() {
-        node.setLayoutX(xPos);
-        node.setLayoutY(yPos);
+        getNode().setLayoutX(xPos);
+        getNode().setLayoutY(yPos);
 	}
 	
 
