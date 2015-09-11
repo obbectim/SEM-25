@@ -52,7 +52,8 @@ public class Board {
      * @param spriteWidth Width of the sprites in pixels.
      * @param spriteHeight Height of the sprites in pixels.
      */
-    public Board(Jewel[][] grid, Group sceneNodes, int gridWidth, int gridHeight, int spriteWidth, int spriteHeight) {
+    public Board(Jewel[][] grid, Group sceneNodes, int gridWidth, int gridHeight, 
+    		int spriteWidth, int spriteHeight) {
         this.grid = grid;
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
@@ -92,12 +93,12 @@ public class Board {
     }
 
     /**
-     * Handler method for detecting a click on the board
+     * Handler method for detecting a click on the board.
      * @param noJewelHit Boolean determining if mouse is over a Jewel or not
      */
     public void boardClicked(Boolean noJewelHit) {
-        if(noJewelHit) {
-            if(selectionCursor != null) {
+        if (noJewelHit) {
+            if (selectionCursor != null) {
                 // if there was a selection remove it
                 sceneNodes.getChildren().remove(selectionCursor.getNode());
                 selectionCursor = null;
@@ -115,9 +116,9 @@ public class Board {
         selection.add(jewel);
 
         //TODO Cleanup this method with better logic.
-
         if (selection.size() == 1) {
-           selectionCursor  = new SelectionCursor(selection.get(0).getxPos(), selection.get(0).getyPos());
+           selectionCursor  = new SelectionCursor(selection.get(0).getxPos(),
+        		   selection.get(0).getyPos());
            spriteStore.addSprites(selectionCursor);
            sceneNodes.getChildren().add(0, selectionCursor.getNode());
         }
@@ -139,7 +140,6 @@ public class Board {
             sceneNodes.getChildren().remove(selectionCursor.getNode());
             selectionCursor = null;
             selection.clear();
-
         }
     }
 
@@ -158,6 +158,47 @@ public class Board {
         return false;
     }
 
+    
+    /**
+     * Performs a horizontal swap of two Jewels.
+     * @param j1 First jewel to swap
+     * @param j2 Second jewel to swap
+     */
+    private void horizontalSwap(Jewel j1, Jewel j2) {
+    	int tmp;
+    	double previousJ1, previousJ2;
+    	tmp = j1.getBoardX();
+        j1.setBoardX(j2.getBoardX());
+        j2.setBoardX(tmp);
+
+        previousJ1 = j1.getxPos();
+        j1.setxPos(j2.getxPos());
+        j1.getNode().setTranslateX(previousJ1 - j1.getxPos());
+        previousJ2 = j2.getxPos();
+        j2.setxPos(previousJ1);
+        j2.getNode().setTranslateX(previousJ2 - j2.getxPos());
+    }
+    
+    /**
+     * Performs a vertical Swap of two Jewels.
+     * @param j1 First jewel to swap
+     * @param j2 Second jewel to swap
+     */
+    private void verticalSwap(Jewel j1, Jewel j2) {
+    	int tmp;
+    	double previousJ1, previousJ2;
+    	tmp = j1.getBoardY();
+        j1.setBoardY(j2.getBoardY());
+        j2.setBoardY(tmp);
+
+        previousJ1 = j1.getyPos();
+        j1.setyPos(j2.getyPos());
+        j1.getNode().setTranslateY(previousJ1 - j1.getyPos());
+        previousJ2 = j2.getyPos();
+        j2.setyPos(previousJ1);
+        j2.getNode().setTranslateY(previousJ2 - j2.getyPos());
+    }
+    
     /**
      * Swaps two Jewel's with one another.
      * Both the grid positions as the graphics positions are updated.
@@ -173,36 +214,14 @@ public class Board {
         y2 = j2.getBoardY();
 
         Jewel tmpJewel;
-        int tmp;
-        double previousJ1, previousJ2;
         // find out what direction the change is
         // horizontal swap
         if (Math.abs(j1.getBoardX() - j2.getBoardX()) == 1) {
-            tmp = j1.getBoardX();
-            j1.setBoardX(j2.getBoardX());
-            j2.setBoardX(tmp);
-
-            previousJ1 = j1.getxPos();
-            j1.setxPos(j2.getxPos());
-            j1.getNode().setTranslateX(previousJ1 - j1.getxPos());
-            previousJ2 = j2.getxPos();
-            j2.setxPos(previousJ1);
-            j2.getNode().setTranslateX(previousJ2 - j2.getxPos());
-
-           
+            horizontalSwap(j1, j2);
         }
         else if (Math.abs(j1.getBoardY() - j2.getBoardY()) == 1) {
             // vertical swap
-            tmp = j1.getBoardY();
-            j1.setBoardY(j2.getBoardY());
-            j2.setBoardY(tmp);
-
-            previousJ1 = j1.getyPos();
-            j1.setyPos(j2.getyPos());
-            j1.getNode().setTranslateY(previousJ1 - j1.getyPos());
-            previousJ2 = j2.getyPos();
-            j2.setyPos(previousJ1);
-            j2.getNode().setTranslateY(previousJ2 - j2.getyPos());
+            verticalSwap(j1, j2);
 
         }
 
@@ -212,30 +231,25 @@ public class Board {
     }
 
     /**
-     * Check the board for any combo Jewels.
-     * @return The number of Jewels removed from the game.
+     * Checks the board for combos in columns.
+     * @param comboList List to store the combo in
      */
-    public int checkBoardCombos() {
-        List<Jewel> comboList = new ArrayList<>();
-
+    private void checkVerticalCombo(List<Jewel> comboList) {
         // list to hold current selection of combo
         Stack<Jewel> current = new Stack<>();
-
-        //TODO Find nicer implementation to find combos, maybe with resursion.
-        int count;
         int matches;
         int type;
 
         // first check columns for combos
         for (int col = 0; col < grid.length; col++) {
             matches = 0;
-            type = 0; //Reserve 0 for the empty state. If we make it a normal gem type, then only 2 are needed to match for the start.
+            type = 0;
             for (int i = 0; i < grid[0].length; i++) {
                 if (grid[col][i].getType() == type && type != 0) {
                     matches++;
                     current.push(grid[col][i]);
-                }
-                if (grid[col][i].getType() != type || i == grid[0].length - 1) { //subtract 1 because arrays start at 0
+                } //subtract 1 because arrays start at 0
+                if (grid[col][i].getType() != type || i == grid[0].length - 1) {
                     if (matches >= MINIMAL_COMBO_LENGTH) {
                         while (!current.empty()) {
                             comboList.add(current.pop());
@@ -248,18 +262,26 @@ public class Board {
                 }
             }
         }
-
-        // then do the rows
-        current.clear();
+    }
+    
+    /** Checks the board for combos in rows.
+     * @param comboList List to store the combo in
+     */
+    private void checkHorizontalCombo(List<Jewel> comboList) {
+        // list to hold current selection of combo
+        Stack<Jewel> current = new Stack<>();
+        int matches;
+        int type;
+        
         for (int row = 0; row < grid[0].length; row++) {
             matches = 0;
-            type = 0; //Reserve 0 for the empty state. If we make it a normal gem type, then only 2 are needed to match for the start.
+            type = 0;
             for (int i = 0; i < grid.length; i++) {
                 if (grid[i][row].getType() == type && type != 0) {
                     matches++;
                     current.push(grid[i][row]);
                 }
-                if (grid[i][row].getType() != type || i == grid[0].length - 1) { //subtract 1 because arrays start at 0
+                if (grid[i][row].getType() != type || i == grid[0].length - 1) {
                     if (matches >= MINIMAL_COMBO_LENGTH) {
                         while (!current.empty()) {
                             comboList.add(current.pop());
@@ -272,36 +294,156 @@ public class Board {
                 }
             }
         }
+    }
+    
+    /**
+     * Check the board for any combo Jewels.
+     * @return The number of Jewels removed from the game.
+     */
+    public int checkBoardCombos() {
+        List<Jewel> comboList = new ArrayList<>();
 
+        checkVerticalCombo(comboList);
+        
+        checkHorizontalCombo(comboList);
+        
         // remove duplicates by putting the list in set
         Set<Jewel> comboSet = new HashSet<>();
         comboSet.addAll(comboList);
         comboList.clear();
         comboList.addAll(comboSet);
-        count = comboList.size();
+        int count = comboList.size();
 
-        for (Iterator<Jewel> jewelIterator = comboList.iterator(); jewelIterator.hasNext(); ) {
+        for (Iterator<Jewel> jewelIterator = comboList.iterator(); jewelIterator.hasNext();) {
             Jewel jewel = jewelIterator.next();
             // remove the JavaFX nodes from the scene group and animate an implosion
             jewel.implode(sceneNodes);
-
             // remove the event filter
             jewel.getNode().setOnMouseClicked(null);
-
             updateScore();
-
-            // remove the Jewel from the Grid
             // TODO Make sure the Jewels are also removed from the spriteStore.
             // grid[jewel.getBoardX()][jewel.getBoardY()] = null;
         }
-
         doGravity();
-
         outOfMoves();
-        
         return count;
     }
     
+    
+    /**
+     * Checks the left most completion option for a valid move.
+     * 
+     * @param jewels Grid of jewels
+     * @param x x-position of the start of the row to be completed
+     * @param y y-position of the start of the row to be completed
+     * @return true if the option is possible, otherwise false
+     */
+    private boolean checkLeft(Jewel[][] jewels, int x, int y) {
+    	if (y > 0) {
+    		if (y > 1 && jewels[x][y - 2].getType() == jewels[x][y].getType()) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
+    
+    /**
+     * Checks the left-top completion option for a valid move.
+     * 
+     * @param jewels Grid of jewels
+     * @param x x-position of the start of the row to be completed
+     * @param y y-position of the start of the row to be completed
+     * @return true if the option is possible, otherwise false
+     */
+    private boolean checkLeftTop(Jewel[][] jewels, int x, int y) {
+    	if (y > 0) {
+    		if (x > 0 && jewels[x - 1][y - 1].getType() == jewels[x][y].getType()) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
+    
+    /**
+     * Checks the left-bottom completion option for a valid move.
+     * 
+     * @param jewels Grid of jewels
+     * @param x x-position of the start of the row to be completed
+     * @param y y-position of the start of the row to be completed
+     * @return true if the option is possible, otherwise false
+     */
+    private boolean checkLeftBottom(Jewel[][] jewels, int x, int y) {
+    	if (y > 0) {
+    		if (x < jewels.length - 1 && jewels[x + 1][y - 1].getType()
+    				== jewels[x][y].getType()) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
+    
+    /**
+     * Checks the right most completion option for a valid move.
+     * 
+     * @param jewels Grid of jewels
+     * @param x x-position of the start of the row to be completed
+     * @param y y-position of the start of the row to be completed
+     * @return true if the option is possible, otherwise false
+     */
+    private boolean checkRight(Jewel[][] jewels, int x, int y) {
+    	final int three = 3;
+    	
+    	if (y < jewels[0].length - 2) {
+    		if (y < jewels[0].length - three && jewels[x][y + three].getType() 
+    				== jewels[x][y].getType()) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
+    
+    /**
+     * Checks the right-top completion option for a valid move.
+     * 
+     * @param jewels Grid of jewels
+     * @param x x-position of the start of the row to be completed
+     * @param y y-position of the start of the row to be completed
+     * @return true if the option is possible, otherwise false
+     */
+    private boolean checkRightTop(Jewel[][] jewels, int x, int y) {
+    	if (y < jewels[0].length - 2) {
+    		
+    		if (x > 0 && jewels[x - 1][y + 2].getType() == jewels[x][y].getType()) {
+    			return true;
+    		}
+    		
+    	}
+    	
+    	return false;
+    }
+    
+    /**
+     * Checks the right-top completion option for a valid move.
+     * 
+     * @param jewels Grid of jewels
+     * @param x x-position of the start of the row to be completed
+     * @param y y-position of the start of the row to be completed
+     * @return true if the option is possible, otherwise false
+     */
+    private boolean checkRightBottom(Jewel[][] jewels, int x, int y) {
+    	if (y < jewels[0].length - 2) {
+    		if (x < jewels.length - 1 && jewels[x + 1][y + 2].getType() 
+    				== jewels[x][y].getType()) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
     
     /**
      * Checks if a pair of similar jewels can be extended by a valid move (done for a vertical pair
@@ -311,38 +453,27 @@ public class Board {
      * @param y y-position of the first jewel of the pair to be extended
      * @return if valid move is possible list of jewels to swap, otherwise empty list
      */
-    public ArrayList<Integer> validMove(Jewel[][] jewels, int x, int y) {
-    	/**
-    	 * Check completion at left end of the pair (i,j-1)
-    	 */
-    	if (y > 0) {
-    		if (y > 1 && jewels[x][y - 2].getType() == jewels[x][y].getType()) {
-    			return new ArrayList<Integer>(Arrays.asList(x, y - 1, x, y - 2));
-    		}
-    		if (x > 0 && jewels[x - 1][y - 1].getType() == jewels[x][y].getType()) {
-    			return new ArrayList<Integer>(Arrays.asList(x, y - 1, x - 1, y - 1));
-    		}
-    		if (x < jewels.length - 1 && jewels[x + 1][y - 1].getType() == jewels[x][y].getType()) {
-    			return new ArrayList<Integer>(Arrays.asList(x, y - 1, x + 1, y - 1));
-    		}
-    	}
-    	
-    	/**
-    	 * Check completion at right end of the pair (i,j+2)
-    	 */
-    	if (y < jewels[0].length - 2) {
-    		if (y < jewels[0].length - 3 && jewels[x][y + 3].getType() == jewels[x][y].getType()) {
-    			return new ArrayList<Integer>(Arrays.asList(x, y + 2, x, y + 3));
-    		}
-    		if (x > 0 && jewels[x - 1][y + 2].getType() == jewels[x][y].getType()) {
-    			return new ArrayList<Integer>(Arrays.asList(x, y + 2, x - 1, y + 2));
-    		}
-    		if (x < jewels.length - 1 && jewels[x + 1][y + 2].getType() == jewels[x][y].getType()) {
-    			return new ArrayList<Integer>(Arrays.asList(x, y + 2, x + 1, y + 2));
-    		}
-    	}
-    	
-    	return new ArrayList<Integer>();
+    public List<Jewel> validMove(Jewel[][] jewels, int x, int y) {
+    	final int three = 3;
+		if (checkLeft(jewels, x, y)) {
+			return Arrays.asList(grid[x][y - 1], grid[x][y - 2]);
+		}
+		if (checkLeftTop(jewels, x, y)) {
+			return Arrays.asList(grid[x][y - 1], grid[x - 1][y - 1]);
+		}
+		if (checkLeftBottom(jewels, x, y)) {
+			return Arrays.asList(grid[x][y - 1], grid[x + 1][y - 1]);
+		}
+		if (checkRight(jewels, x, y)) {
+			return Arrays.asList(grid[x][y + 2], grid[x][y + three]);
+		}
+		if (checkRightTop(jewels, x, y)) {
+			return Arrays.asList(grid[x][y + 2], grid[x - 1][y + 2]);
+		}
+		if (checkRightBottom(jewels, x, y)) {
+			return Arrays.asList(grid[x][y + 2], grid[x + 1][y + 2]);
+		}
+    	return new ArrayList<Jewel>();
     }
     
     /**
@@ -351,13 +482,10 @@ public class Board {
      * @param y y-position of first jewel of the vertical pair
      */
     private boolean verticalRow(int x, int y) {
-    	ArrayList<Integer> swap = validMove(grid, x, y);
-    	System.out.println(swap);
+    	List<Jewel> swap = validMove(grid, x, y);
     	if (swap.isEmpty()) {
     		return false;
     	}
-    	System.out.print("Switch (" + swap.get(0) + "," + swap.get(1) + ") with (");
-    	System.out.println(swap.get(2) + "," + swap.get(3) + ")");
     	return true;
     }
     
@@ -377,13 +505,10 @@ public class Board {
 			}
 		}
     	
-    	ArrayList<Integer> swap = validMove(transposed, y, x);
-    	System.out.println(swap);
+    	List<Jewel> swap = validMove(transposed, y, x);
     	if (swap.isEmpty()) {
     		return false;
     	}
-    	System.out.print("Switch (" + swap.get(1) + "," + swap.get(0) + ") with (");
-    	System.out.println(swap.get(3) + "," + swap.get(2) + ")");
     	return true;
     }
     
@@ -414,8 +539,6 @@ public class Board {
      */
     private boolean verticalRowPossible(int x, int y) {
     	if (x > 0 && grid[x - 1][y + 1].getType() == grid[x][y].getType()) {
-    		System.out.print("Switch (" + x + "," + (y + 1) + ") with (");
-        	System.out.println((x - 1) + "," + (y + 1) + ")");
         	return true;
     	}
     	if (x < grid.length - 1 && grid[x + 1][y + 1].getType() == grid[x][y].getType()) {
@@ -428,46 +551,41 @@ public class Board {
     
     /**
      * Function that checks if there are any moves possible.
+     * 
+     * <p>Iterates through all gems and looks for pairs or two or 
+     * constructions like "xox" where another x could fill in.
+     * For each case a different function is called which checks for
+     * a valid move.</p>
      */
     public void outOfMoves() {
-    	/**
-    	 * Iterate through all gems and look for pairs of two,
-    	 * which could be a possible row to complete
-    	 */
     	for (int x = 0; x < grid.length; x++) {
 			for (int y = 0; y < grid[0].length; y++) {
-				if (y < grid[0].length - 1 && grid[x][y].getType() == grid[x][y + 1].getType()) {
-					System.out.println("vertical row found at " + x + ", " + y);
-					if (verticalRow(x, y)) {
-						return;
+				int type = grid[x][y].getType();
+				if (y < grid[0].length - 1 && type == grid[x][y + 1].getType()) {
+					if (verticalRow(x, y)) { 
+						return; 
 					}
 				}
-				if (x < grid.length - 1 && grid[x][y].getType() == grid[x + 1][y].getType()) {
-					System.out.println("horizontal row found at " + x + ", " + y);
+				if (x < grid.length - 1 && type == grid[x + 1][y].getType()) {
 					if (horizontalRow(x, y)) {
 						return;
 					}
 				}
-				if (y < grid[0].length - 2 && grid[x][y].getType() == grid[x][y + 2].getType()) {
-					System.out.println("vertical row possible at " + x + ", " + y);
+				if (y < grid[0].length - 2 && type == grid[x][y + 2].getType()) {
 					if (verticalRowPossible(x, y)) {
 						return;
 					}
 				}
-				if (x < grid.length - 2 && grid[x][y].getType() == grid[x + 2][y].getType()) {
-					System.out.println("horizontal row possible at " + x + ", " + y);
+				if (x < grid.length - 2 && type == grid[x + 2][y].getType()) {
 					if (horizontalRowPossible(x, y)) {
 						return;
 					}
 				}
 			}
 		}
-    	
-    	// if the flow arrives here then no move was found; inform the observers
     	for (BoardObserver observer : observers) {
 			observer.boardOutOfMoves();
 		}
-    	
     }
     
     /**
@@ -522,7 +640,6 @@ public class Board {
           grid[i][j].getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
                   new EventHandler<MouseEvent>() {
                       public void handle(MouseEvent event) {
-                          System.out.println("Jewel[" + jewel.getBoardX() + "][" + jewel.getBoardY() + "] " + event.getEventType());
                           addSelection(jewel);
                           event.consume();
                       }
