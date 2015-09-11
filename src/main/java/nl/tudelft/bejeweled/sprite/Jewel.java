@@ -47,8 +47,8 @@ public class Jewel extends Sprite {
     @Override
     public void update() {
     	updateVelocity();
-        getNode().setTranslateX(getNode().getTranslateX() - vX);
-        getNode().setTranslateY(getNode().getTranslateY() - vY);
+        getNode().setTranslateX(getNode().getTranslateX() - getvX());
+        getNode().setTranslateY(getNode().getTranslateY() - getvY());
         getNode().setLayoutX(getxPos());
         getNode().setLayoutY(getyPos());
     }
@@ -59,20 +59,20 @@ public class Jewel extends Sprite {
     private void updateVelocity() {
     	//Update x velocity
     	if (getNode().getTranslateX() > MAX_SPEED_X) {
-    		vX = MAX_SPEED_X;
+    		setvX(MAX_SPEED_X);
     	} else if (getNode().getTranslateX() < -MAX_SPEED_X) {
-        		vX = -MAX_SPEED_X;
+        		setvX(-MAX_SPEED_X);
         } else {
-        		vX = getNode().getTranslateX();
+        		setvX(getNode().getTranslateX());
     	}
 
     	//Update x velocity
     	if (getNode().getTranslateY() > MAX_SPEED_Y) {
-    		vY = MAX_SPEED_Y;
+    		setvY(MAX_SPEED_Y);
     	} else if (getNode().getTranslateY() < -MAX_SPEED_Y) {
-        		vY = -MAX_SPEED_Y;
+        		setvY(-MAX_SPEED_Y);
     	} else {
-        		vY = getNode().getTranslateY();
+        		setvY(getNode().getTranslateY());
         	}
     }
     
@@ -122,8 +122,8 @@ public class Jewel extends Sprite {
      * @param sceneGroup Game scene group to remove the Jewel from.
      */
     public void implode(Group sceneGroup) {
-        vX = 0;
-        vY = 0;
+        setvX(0);
+        setvY(0);
         FadeTransitionBuilder.create()
                 .node(getNode())
                 .duration(Duration.millis(ANIMATION_DURATION))
