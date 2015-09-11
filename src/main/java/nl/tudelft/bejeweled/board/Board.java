@@ -100,12 +100,12 @@ public class Board {
      */
     public void boardClicked(Boolean noJewelHit) {
         if(noJewelHit) {
-            if(selectionCursor != null) {
+            if(getSelectionCursor() != null) {
                 // if there was a selection remove it
-                sceneNodes.getChildren().remove(selectionCursor.getNode());
+                sceneNodes.getChildren().remove(getSelectionCursor().getNode());
                 selectionCursor = null;
             }
-            selection.clear();
+            getSelection().clear();
         }
     }
 
@@ -115,33 +115,33 @@ public class Board {
      * @param jewel The Jewel to be added to the current selection.
      */
     public void addSelection(Jewel jewel) {
-        selection.add(jewel);
+        getSelection().add(jewel);
 
         //TODO Cleanup this method with better logic.
 
-        if (selection.size() == 1) {
-           selectionCursor  = new SelectionCursor(selection.get(0).getxPos(), selection.get(0).getyPos());
-           spriteStore.addSprites(selectionCursor);
-           sceneNodes.getChildren().add(0, selectionCursor.getNode());
+        if (getSelection().size() == 1) {
+           selectionCursor = new SelectionCursor(getSelection().get(0).getxPos(), getSelection().get(0).getyPos());
+           spriteStore.addSprites(getSelectionCursor());
+           sceneNodes.getChildren().add(0, getSelectionCursor().getNode());
         }
         
         // 2 gems are selected, see if any combo's are made
-        if (selection.size() == 2) {
+        if (getSelection().size() == 2) {
 
-            if (moveWithinDomain(selection.get(0), selection.get(1))) {
+            if (moveWithinDomain(getSelection().get(0), getSelection().get(1))) {
                 System.out.println("Swapping jewels");
-                swapJewel(selection.get(0), selection.get(1));
+                swapJewel(getSelection().get(0), getSelection().get(1));
 
                 int comboCount = checkBoardCombos();
                 System.out.println("Combo Jewels on board: " + comboCount);
                 if (comboCount == 0) {
-                	setToReverse(selection.get(0), selection.get(1));
+                	setToReverse(getSelection().get(0), getSelection().get(1));
                 }
 
             }
-            sceneNodes.getChildren().remove(selectionCursor.getNode());
+            sceneNodes.getChildren().remove(getSelectionCursor().getNode());
             selectionCursor = null;
-            selection.clear();
+            getSelection().clear();
 
         }
     }
@@ -324,9 +324,9 @@ public class Board {
             // grid[jewel.getBoardX()][jewel.getBoardY()] = null;
         }
 
-        doGravity();
+      //  doGravity();
 
-        outOfMoves();
+      //  outOfMoves();
         
         return count;
     }
@@ -594,10 +594,12 @@ public class Board {
 		if(toReverseMove) {
 			tryToReverse();
 		} else {
+    		checkBoardCombos();
 			while (doGravity()) {
 	    		checkBoardCombos();
 	    	}
 			fillEmptySpots();
+			outOfMoves();
 		}
 	}
 	
@@ -607,5 +609,21 @@ public class Board {
 	 */
 	public Jewel[][] getGrid() {
 		return grid;
+	}
+
+	/**
+	 * Getter function for the current selection (used for testing).
+	 * @return current selection
+	 */
+	public List<Jewel> getSelection() {
+		return selection;
+	}
+	
+	/**
+	 * Getter function for the current selectionCursor (used for testing).
+	 * @return current selectionCursor
+	 */
+	public SelectionCursor getSelectionCursor() {
+		return selectionCursor;
 	}
 }
