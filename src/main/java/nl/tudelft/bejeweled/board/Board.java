@@ -12,6 +12,7 @@ import java.util.Stack;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
+import nl.tudelft.bejeweled.game.BejeweledGame;
 import nl.tudelft.bejeweled.sprite.Jewel;
 import nl.tudelft.bejeweled.sprite.SelectionCursor;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
@@ -26,7 +27,7 @@ public class Board {
 	private int spriteWidth;
 	private int spriteHeight;
 	private static final int MINIMAL_COMBO_LENGTH = 3;
-	public static final int NUMBER_OF_DIFFERENT_JEWEL_TYPES = 7;
+	public static final int NUMBER_OF_JEWEL_TYPES = 7;
 
 
     private List<Jewel> selection = new ArrayList<Jewel>();
@@ -55,14 +56,16 @@ public class Board {
      * @param spriteWidth Width of the sprites in pixels.
      * @param spriteHeight Height of the sprites in pixels.
      */
-    public Board(Jewel[][] grid, Group sceneNodes, int gridWidth, int gridHeight, int spriteWidth, int spriteHeight) {
-        this.grid = grid;
-        this.gridWidth = gridWidth;
-        this.gridHeight = gridHeight;
-        this.spriteWidth = spriteWidth;
-        this.spriteHeight = spriteHeight;
 
+    public Board(Jewel[][] grid, Group sceneNodes) {
+        this.gridWidth = BejeweledGame.GRID_WIDTH;
+        this.gridHeight = BejeweledGame.GRID_HEIGHT;
+        this.spriteWidth = BejeweledGame.SPRITE_WIDTH;
+        this.spriteHeight = BejeweledGame.SPRITE_WIDTH;
+        
+        this.grid = grid;
         this.sceneNodes = sceneNodes;
+        
         this.observers = new ArrayList<>();
     }
 
@@ -543,7 +546,7 @@ public class Board {
      * @param j Grid row
      */
     protected void addRandomJewel(int i, int j) {
-    	  Jewel jewel = new Jewel(rand.nextInt(NUMBER_OF_DIFFERENT_JEWEL_TYPES) + 1, i, j);
+    	  Jewel jewel = new Jewel(rand.nextInt(NUMBER_OF_JEWEL_TYPES) + 1, i, j);
           jewel.setxPos(i * spriteWidth);
           jewel.setyPos(j * spriteHeight);
           grid[i][j] = jewel;

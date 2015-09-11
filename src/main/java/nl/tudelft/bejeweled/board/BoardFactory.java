@@ -1,5 +1,6 @@
 package nl.tudelft.bejeweled.board;
 
+import nl.tudelft.bejeweled.game.BejeweledGame;
 import nl.tudelft.bejeweled.sprite.Jewel;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
@@ -19,6 +20,10 @@ import java.util.Random;
  * Factory class for creating the board class
  */
 public class BoardFactory {
+	private int gridWidth;
+	private int gridHeight;
+	private int spriteWidth;
+	private int spriteHeight;
 
     /**
      * The sprite store providing the sprites for the game.
@@ -38,13 +43,14 @@ public class BoardFactory {
      * Generates a new board from text file.
      * @param file Name of the board configuration file.
      * @param sceneNodes The group container for the Jewel nodes.
-     * @param gridWidth Width of the board in squares.
-     * @param gridHeight Height of the board in squares.
-     * @param spriteWidth Width of the sprites in pixels.
-     * @param spriteHeight Height of the sprites in pixels.
      * @return A new Board.
      */
-    public Board fromTextGenerateBoard(String file, Group sceneNodes, int gridWidth, int gridHeight, int spriteWidth, int spriteHeight) {
+    public Board fromTextGenerateBoard(String file, Group sceneNodes) {
+        this.gridWidth = BejeweledGame.GRID_WIDTH;
+        this.gridHeight = BejeweledGame.GRID_HEIGHT;
+        this.spriteWidth = BejeweledGame.SPRITE_WIDTH;
+        this.spriteHeight = BejeweledGame.SPRITE_WIDTH;
+        
         Jewel[][] grid = new Jewel[gridWidth][gridHeight];
         InputStream in = BoardFactory.class.getResourceAsStream(file);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -75,7 +81,10 @@ public class BoardFactory {
             e.printStackTrace();
         }
         
-        Board board = new Board(grid, sceneNodes, gridWidth, gridHeight, spriteWidth, spriteHeight);
+        Board board = new Board(grid, sceneNodes);
+
+
+        
         board.setSpriteStore(spriteStore);
         
         // add event handlers.
@@ -99,20 +108,21 @@ public class BoardFactory {
     /**
      * Generates a new board.
      * @param sceneNodes The group container for the Jewel nodes.
-     * @param gridWidth Width of the board in squares.
-     * @param gridHeight Height of the board in squares.
-     * @param spriteWidth Width of the sprites in pixels.
-     * @param spriteHeight Height of the sprites in pixels.
      * @return A new Board.
      */
-    public Board generateBoard(Group sceneNodes, int gridWidth, int gridHeight, int spriteWidth, int spriteHeight) {
+    public Board generateBoard(Group sceneNodes) {
+        this.gridWidth = BejeweledGame.GRID_WIDTH;
+        this.gridHeight = BejeweledGame.GRID_HEIGHT;
+        this.spriteWidth = BejeweledGame.SPRITE_WIDTH;
+        this.spriteHeight = BejeweledGame.SPRITE_WIDTH;
+        
         Random rand = new Random();
         Jewel[][] grid = new Jewel[gridWidth][gridHeight];
 
         // create the boards jewels
         for (int i = 0; i < gridWidth; i++) {
             for (int j = 0; j < gridHeight; j++) {
-               Jewel jewel = new Jewel(rand.nextInt(Board.NUMBER_OF_DIFFERENT_JEWEL_TYPES) + 1, i, j);
+               Jewel jewel = new Jewel(rand.nextInt(Board.NUMBER_OF_JEWEL_TYPES) + 1, i, j);
             //	Jewel jewel = new Jewel((i+j)%7+1, i, j);
                 jewel.setxPos(i * spriteWidth);
                 jewel.setyPos(j * spriteHeight);
@@ -126,7 +136,7 @@ public class BoardFactory {
             }
         }
 
-        Board board = new Board(grid, sceneNodes, gridWidth, gridHeight, spriteWidth, spriteHeight);
+        Board board = new Board(grid, sceneNodes);
         board.setSpriteStore(spriteStore);
 
         // add event handlers.
