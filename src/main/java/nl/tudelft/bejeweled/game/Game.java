@@ -78,10 +78,12 @@ public abstract class Game {
                 }); // oneFrame
 
         // sets the game world's game loop (Timeline)
-        setGameLoop(TimelineBuilder.create()
-                .cycleCount(Animation.INDEFINITE)
-                .keyFrames(oneFrame)
-                .build());
+        final Timeline gameLoop = new Timeline();
+        gameLoop.setCycleCount(Animation.INDEFINITE);
+        gameLoop.getKeyFrames().add(oneFrame);
+        gameLoop.play();
+
+        setGameLoop(gameLoop);
     }
 
     /**
