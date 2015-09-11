@@ -1,3 +1,5 @@
+![build status](https://travis-ci.org/asgill/SEM-25.svg?branch=master)
+
 # SEM-25
 
 About
