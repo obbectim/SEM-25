@@ -26,6 +26,8 @@ public class Board {
 	private int spriteWidth;
 	private int spriteHeight;
 	private static final int MINIMAL_COMBO_LENGTH = 3;
+	public static final int NUMBER_OF_DIFFERENT_JEWEL_TYPES = 7;
+
 
     private List<Jewel> selection = new ArrayList<Jewel>();
     
@@ -510,7 +512,7 @@ public class Board {
      * @param j Grid row
      */
     protected void addRandomJewel(int i, int j) {
-    	  Jewel jewel = new Jewel(rand.nextInt((7 - 1) + 1) + 1, i, j);
+    	  Jewel jewel = new Jewel(rand.nextInt(NUMBER_OF_DIFFERENT_JEWEL_TYPES) + 1, i, j);
           jewel.setxPos(i * spriteWidth);
           jewel.setyPos(j * spriteHeight);
           grid[i][j] = jewel;
