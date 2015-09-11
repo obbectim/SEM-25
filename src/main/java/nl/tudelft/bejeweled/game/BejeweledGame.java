@@ -17,10 +17,10 @@ import nl.tudelft.bejeweled.sprite.SpriteStore;
  * Bejeweled Game class.
  */
 public class BejeweledGame extends Game implements BoardObserver {
-	private static final int GRID_WIDTH = 8;
-	private static final int GRID_HEIGHT = 8;
-	private static final int SPRITE_WIDTH = 64;
-	private static final int SPRITE_HEIGHT = 64;
+	public static final int GRID_WIDTH = 8;
+	public static final int GRID_HEIGHT = 8;
+	public static final int SPRITE_WIDTH = 64;
+	public static final int SPRITE_HEIGHT = 64;
 
 
     /** The board class that maintains the jewels. */
@@ -72,7 +72,7 @@ public class BejeweledGame extends Game implements BoardObserver {
                 gamePane.getHeight()).getRoot());
 
         // generate the jewels
-        board = boardFactory.generateBoard(getSceneNodes(), GRID_WIDTH, GRID_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT);
+        board = boardFactory.generateBoard(getSceneNodes());
 
         // start observing the board for callback events
         board.addObserver(this);
@@ -145,7 +145,8 @@ public class BejeweledGame extends Game implements BoardObserver {
 
     @Override
     public void boardJewelRemoved() {
-    	score += 10; // add 10 points per jewel removed
+    	final int point = 10;
+    	score += point; // add 10 points per jewel removed
         scoreLabel.setText(Integer.toString(score));
     }
     

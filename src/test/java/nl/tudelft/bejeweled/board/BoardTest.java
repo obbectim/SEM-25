@@ -19,11 +19,6 @@ import nl.tudelft.bejeweled.sprite.SpriteStore;
  * @author Pim Veldhuisen
  */
 public class BoardTest {
-	private static final int GRID_WIDTH = 8;
-	private static final int GRID_HEIGHT = 8;
-	private static final int SPRITE_WIDTH = 64;
-	private static final int SPRITE_HEIGHT = 64;
-	
 	private static final int TEST_RESULT_SIZE_1 = 1;
 	private static final int TEST_RESULT_SIZE_2 = 0;
 	
@@ -40,7 +35,7 @@ public class BoardTest {
 		boardFactory = new BoardFactory(mockSpriteStore);
 		mockGroup = mock(javafx.scene.Group.class);
 		when(mockGroup.getChildren()).thenReturn(mock(ObservableList.class));
-		selectionBoard = boardFactory.generateBoard(mockGroup, GRID_WIDTH, GRID_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT);
+		selectionBoard = boardFactory.generateBoard(mockGroup);
 	}
 	
 	/**

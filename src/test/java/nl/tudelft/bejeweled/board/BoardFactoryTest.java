@@ -1,6 +1,6 @@
 package nl.tudelft.bejeweled.board;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,11 +10,11 @@ import javafx.scene.layout.Pane;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 import nl.tudelft.bejeweled.sprite.Jewel;
 
+/**
+ * Test for BoardFactory to verify that board 
+ * with no empty fields is created.
+ */
 public class BoardFactoryTest {
-	private static final int GRID_WIDTH = 8;
-	private static final int GRID_HEIGHT = 8;
-	private static final int SPRITE_WIDTH = 64;
-	private static final int SPRITE_HEIGHT = 64;
 	/**
 	 * The factory under test.
 	 */
@@ -40,10 +40,10 @@ public class BoardFactoryTest {
 	public void noEmptySquares() {
 		// generate the jewels
 		Group nodes = new Group();
-        Board board = factory.generateBoard(nodes, GRID_WIDTH, GRID_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT);
+        Board board = factory.generateBoard(nodes);
         Jewel[][] grid = board.getGrid();
-        for (int i = 0; i < grid.length; i++) {
-			for (int j = 0; j < grid[0].length; j++){
+        for (int i = 0; i < grid.length; i++) { 
+			for (int j = 0; j < grid[0].length; j++) {
 				assertNotNull(grid[i][j]);
 			}
 		}
