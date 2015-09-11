@@ -41,4 +41,11 @@ public abstract class Sprite {
      * Updates this sprite object's velocity, or animations.
      */
     public abstract void update();
+	 /**
+     * Method to check is an animation for this sprite is still in progress.
+     * @return true if the animation is still active
+     */
+	public boolean animationActive() {
+		return (getNode().getTranslateX() != 0 || getNode().getTranslateY() != 0);
+	}
 }

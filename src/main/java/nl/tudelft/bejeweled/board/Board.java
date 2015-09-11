@@ -40,6 +40,9 @@ public class Board {
 
 	private SpriteStore spriteStore;
 	private SelectionCursor selectionCursor;
+	private boolean toReverseMove = false;
+	private Jewel reverse1;
+	private Jewel reverse2;
 
     /**
      * Constructor for the board class.
@@ -130,7 +133,7 @@ public class Board {
                 int comboCount = checkBoardCombos();
                 System.out.println("Combo Jewels on board: " + comboCount);
                 if (comboCount == 0) {
-                	swapJewel(selection.get(0), selection.get(1));
+                	setToReverse(selection.get(0), selection.get(1));
                 }
 
             }
@@ -140,8 +143,34 @@ public class Board {
 
         }
     }
+    
+	/**
+     * Set up two jewels to be swapped, intended to undo an invalid move.
+     * @param j1 The first Jewel.
+     * @param j2 The second Jewel.
+     */
+    private void setToReverse(Jewel jewel1, Jewel jewel2) {
+		toReverseMove = true;
+		reverse1 = jewel1;
+		reverse2 = jewel2;
+	}
+    
+	/**
+     * Jewels set up to be swapped will swap if their current animations have finished.
+     */
+    private void tryToReverse() {
+    	assert (reverse1 != null);
+    	assert (reverse2 != null);
+ 		if (!reverse1.animationActive() && !reverse2.animationActive()) {
+ 			swapJewel(reverse1, reverse2);
+ 			toReverseMove = false;
+ 			reverse1 = null;
+ 			reverse2 = null;
+ 		}
+ 	}
+     
 
-    /**
+	/**
      * Checks if two Jewels are exactly one apart either horizontally
      * or vertically.
      * @param j1 The first Jewel.
@@ -560,10 +589,14 @@ public class Board {
 	 * Update the board; check for combos, run gravity and fill empty spots .
 	 * 	 */
 	public void update() {
-		while (doGravity()) {
-    		checkBoardCombos();
-    	}
-		fillEmptySpots();
+		if(toReverseMove) {
+			tryToReverse();
+		} else {
+			while (doGravity()) {
+	    		checkBoardCombos();
+	    	}
+			fillEmptySpots();
+		}
 	}
 	
 	/**
