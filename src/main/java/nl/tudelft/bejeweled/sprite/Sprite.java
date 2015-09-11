@@ -132,4 +132,12 @@ public abstract class Sprite {
 	public void setvY(double vY) {
 		this.vY = vY;
 	}
+	
+	 /**
+    * Method to check is an animation for this sprite is still in progress.
+    * @return true if the animation is still active
+    */
+	public boolean animationActive() {
+		return (getNode().getTranslateX() != 0 || getNode().getTranslateY() != 0);
+	}
 }
