@@ -36,10 +36,17 @@ public class BejeweledGuiController implements Initializable {
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
         assert buttonStart != null;
+        initializeStartButton();
         assert buttonStop != null;
+        initializeStopButton();
         assert buttonExit != null;
-
-        // set button event handles
+        initializeExitButton();    
+    }
+    
+    /**
+     * Sets start button to start the game.
+     * */
+    public void initializeStartButton() {
         buttonStart.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -47,7 +54,12 @@ public class BejeweledGuiController implements Initializable {
                 game.start();
             }
         });
-
+    }
+    
+    /**
+     * Sets stop button to stop the game.
+     * */
+    public void initializeStopButton() {
         buttonStop.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -55,21 +67,26 @@ public class BejeweledGuiController implements Initializable {
                 game.stop();
             }
         });
-
-        buttonExit.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Exit");
-
-                // get a handle to the stage
-                Stage stage = (Stage) buttonExit.getScene().getWindow();
-                game.stop();
-                stage.close();
-            }
-        });
     }
+    
+    /**
+     * Sets exit button to exit the game.
+     * */
+    public void initializeExitButton() {
+    	 buttonExit.setOnAction(new EventHandler<ActionEvent>() {
 
+             @Override
+             public void handle(ActionEvent event) {
+                 System.out.println("Exit");
+
+                 // get a handle to the stage
+                 Stage stage = (Stage) buttonExit.getScene().getWindow();
+                 game.stop();
+                 stage.close();
+             }
+         });
+    }
+    
     /**
      * Setter method for game.
      * @param game The current game
