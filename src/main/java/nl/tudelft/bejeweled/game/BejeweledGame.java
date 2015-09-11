@@ -1,11 +1,15 @@
 package nl.tudelft.bejeweled.game;
 
+import javafx.animation.FadeTransition;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import javafx.util.Duration;
 import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.board.BoardFactory;
 import nl.tudelft.bejeweled.board.BoardObserver;
@@ -139,7 +143,30 @@ public class BejeweledGame extends Game implements BoardObserver {
     
     @Override
     public void boardOutOfMoves() {
-    	// TODO: Show a text like "Game over"
+
+        final Label label = new Label("Game Over");
+        label.setFont(new Font("Arial", 55));
+
+        // position the label
+        //TODO Position this label nicely in the center
+        label.setLayoutX(100);
+        label.setLayoutY(200);
+        gamePane.getChildren().add(label);
+
+        FadeTransition ft = new FadeTransition(Duration.millis(3000), label);
+        ft.setFromValue(1.0);
+        ft.setToValue(0.0);
+        ft.setCycleCount(1);
+        ft.setAutoReverse(false);
+        ft.setOnFinished(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                gamePane.getChildren().remove(label);
+            }
+        });
+        ft.play();
+
     	stop();
     }
 
