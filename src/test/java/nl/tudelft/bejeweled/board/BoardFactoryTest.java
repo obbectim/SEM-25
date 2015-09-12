@@ -1,6 +1,7 @@
 package nl.tudelft.bejeweled.board;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class BoardFactoryTest {
 	 */
 	@Before
 	public void setUp() {
-		spriteStore = new SpriteStore();
+		spriteStore = mock(SpriteStore.class);
         factory = new BoardFactory(spriteStore);
 	}
 	
