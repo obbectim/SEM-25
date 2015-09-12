@@ -145,8 +145,8 @@ public class Board {
     
 	/**
      * Set up two jewels to be swapped, intended to undo an invalid move.
-     * @param j1 The first Jewel.
-     * @param j2 The second Jewel.
+     * @param jewel1 The first Jewel.
+     * @param jewel2 The second Jewel.
      */
     private void setToReverse(Jewel jewel1, Jewel jewel2) {
 		toReverseMove = true;
@@ -699,6 +699,15 @@ public class Board {
             }
     	}
     }
+
+    public void fillNullSpots() {
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid[x].length; y++) {
+                if(grid[x][y] == null)
+                    addRandomJewel(x, y);
+            }
+        }
+    }
     
     /**
 	 * Getter function for the current spriteStore.
@@ -754,4 +763,13 @@ public class Board {
 	public SelectionCursor getSelectionCursor() {
 		return selectionCursor;
 	}
+
+    public void resetGrid() {
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid[x].length; y++) {
+                grid[x][y].implode(sceneNodes);
+                grid[x][y] = null;
+            }
+        }
+    }
 }
