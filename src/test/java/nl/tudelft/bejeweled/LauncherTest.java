@@ -44,7 +44,12 @@ public class LauncherTest extends ApplicationTest {
             public void run() {
                 game.start();
                 assertTrue(game.isInProgress());
+            }
+        });
 
+        // start and stop the game concurrently with JavaFX thread
+        Platform.runLater(new Runnable() {
+            public void run() {
                 game.stop();
                 assertFalse(game.isInProgress());
             }
