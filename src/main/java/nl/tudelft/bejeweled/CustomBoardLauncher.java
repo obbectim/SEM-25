@@ -28,6 +28,11 @@ public class CustomBoardLauncher extends Launcher {
         return boardLocation;
     }
 
+    /**
+     * Creates the board the game wil use from file.
+     * @param sceneNodes The group containing the jewel nodes.
+     * @return The board.
+     */
     @Override
     public Board makeBoard(Group sceneNodes) {
         return getBoardFactory().fromTextGenerateBoard(boardLocation, sceneNodes);

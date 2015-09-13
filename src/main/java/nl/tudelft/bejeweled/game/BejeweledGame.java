@@ -188,4 +188,20 @@ public class BejeweledGame extends Game implements BoardObserver {
     public boolean isInProgress() {
         return inProgress;
     }
+
+    /**
+     * Getter method for the board.
+     * @return The board
+     */
+    public Board getBoard() {
+        return board;
+    }
+
+    /**
+     * Getter method for the score.
+     * @return The current score
+     */
+    public int getScore() {
+        return score;
+    }
 }
