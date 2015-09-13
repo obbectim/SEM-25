@@ -10,6 +10,9 @@ import nl.tudelft.bejeweled.board.Board;
  */
 public class CustomBoardLauncher extends Launcher {
 
+    /**
+     * The location of the board.
+     */
     private String boardLocation = "/board.txt";
 
     /**
@@ -21,8 +24,8 @@ public class CustomBoardLauncher extends Launcher {
     }
 
     /**
-     * Gets the location of the map file for the level.
-     * @return The map location.
+     * Gets the location of the board file for the board.
+     * @return The board location.
      */
     public String getLocation() {
         return boardLocation;
@@ -35,6 +38,7 @@ public class CustomBoardLauncher extends Launcher {
      */
     @Override
     public Board makeBoard(Group sceneNodes) {
-        return getBoardFactory().fromTextGenerateBoard(boardLocation, sceneNodes);
+        return getBoardFactory().fromTextGenerateBoard(boardLocation,
+                sceneNodes);
     }
 }

@@ -4,17 +4,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import javafx.application.Platform;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.CustomBoardLauncher;
-import nl.tudelft.bejeweled.Launcher;
-import nl.tudelft.bejeweled.game.BejeweledGame;
 import org.junit.After;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
 /**
  * Created by Jeroen on 12-9-2015.
+ * Test class for end to end testing the game.
  */
 public class BejeweledGameTest extends ApplicationTest {
 

@@ -88,6 +88,7 @@ public abstract class Game {
 
     /**
      * Initialise the game world by update the JavaFX Stage.
+     * @param board The board of the game.
      * @param gamePane The primary scene.
      * @param scoreLabel The label for the score.
      */

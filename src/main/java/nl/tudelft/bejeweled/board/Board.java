@@ -700,11 +700,16 @@ public class Board {
     	}
     }
 
+    /**
+     * This function fille the null spots in the grid[][] with Jewels
+     * at the start of the game.
+     */
     public void fillNullSpots() {
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid[x].length; y++) {
-                if(grid[x][y] == null)
+                if (grid[x][y] == null) {
                     addRandomJewel(x, y);
+                }
             }
         }
     }
