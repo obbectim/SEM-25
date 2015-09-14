@@ -541,8 +541,6 @@ public class Board {
     	final int three = 3;
     	List<Integer> indices = validMove(transposed, y, x);
     	if (!indices.isEmpty()) {
-    		System.out.print("Switch "+indices.get(1)+","+indices.get(0)+" with ");
-    		System.out.println(indices.get(three)+ "," + indices.get(2));
     		return Arrays.asList(grid[indices.get(1)][indices.get(0)], 
     	                                          grid[indices.get(three)][indices.get(2)]);
     	}
@@ -557,10 +555,10 @@ public class Board {
     private List<Jewel> horizontalRowPossible(int x, int y) {
     	if (y > 0 && grid[x + 1][y - 1].getType() == grid[x][y].getType()) {
     		
-        	return Arrays.asList(grid[x+1][y], grid[x+1][y-1]);
+        	return Arrays.asList(grid[x + 1][y], grid[x + 1][y - 1]);
     	}
     	if (y < grid[0].length - 1 && grid[x + 1][y + 1].getType() == grid[x][y].getType()) {
-    		return Arrays.asList(grid[x+1][y], grid[x+1][y+1]);
+    		return Arrays.asList(grid[x + 1][y], grid[x + 1][y + 1]);
     	}
     	
     	return new ArrayList<Jewel>();
@@ -573,10 +571,10 @@ public class Board {
      */
     private List<Jewel> verticalRowPossible(int x, int y) {
     	if (x > 0 && grid[x - 1][y + 1].getType() == grid[x][y].getType()) {
-    		return Arrays.asList(grid[x][y+1], grid[x-1][y+1]);
+    		return Arrays.asList(grid[x][y + 1], grid[x - 1][y + 1]);
     	}
     	if (x < grid.length - 1 && grid[x + 1][y + 1].getType() == grid[x][y].getType()) {
-    		return Arrays.asList(grid[x][y+1], grid[x+1][y+1]);
+    		return Arrays.asList(grid[x][y + 1], grid[x + 1][y + 1]);
     	}
     	return new ArrayList<Jewel>();
     }
@@ -597,22 +595,26 @@ public class Board {
     	int type = grid[x][y].getType();
     	List<Jewel> swap;
 		if (y < grid[0].length - 1 && type == grid[x][y + 1].getType()) {
-			if (!(swap = verticalRow(x, y)).isEmpty()) { 
+			swap = verticalRow(x, y);
+			if (!swap.isEmpty()) { 
 				return swap;
 			}
 		}
 		if (x < grid.length - 1 && type == grid[x + 1][y].getType()) {
-			if (!(swap = horizontalRow(x, y)).isEmpty()) {
+			swap = horizontalRow(x, y);
+			if (!swap.isEmpty()) {
 				return swap;
 			}
 		}
 		if (y < grid[0].length - 2 && type == grid[x][y + 2].getType()) {
-			if (!(swap = verticalRowPossible(x, y)).isEmpty()) {
+			swap = verticalRowPossible(x, y);
+			if (!swap.isEmpty()) {
 				return swap;
 			}
 		}
 		if (x < grid.length - 2 && type == grid[x + 2][y].getType()) {
-			if (!(swap = horizontalRowPossible(x, y)).isEmpty()) {
+			swap = horizontalRowPossible(x, y);
+			if (!swap.isEmpty()) {
 				return swap;
 			}
 		}
@@ -773,7 +775,8 @@ public class Board {
 		
 		for (int x = 0; x < grid.length; x++) {
 			for (int y = 0; y < grid[0].length; y++) {
-				if (!(swap = checkForPair(x, y)).isEmpty()) {
+				swap = checkForPair(x, y);
+				if (!swap.isEmpty()) {
 					System.out.println("Found a possible move");
 					System.out.println(swap);
 					addSelection(swap.get(1));
