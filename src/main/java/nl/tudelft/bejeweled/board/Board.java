@@ -539,8 +539,10 @@ public class Board {
 		}
     	
     	final int three = 3;
-    	List<Integer> indices = validMove(grid, x, y);
+    	List<Integer> indices = validMove(transposed, y, x);
     	if (!indices.isEmpty()) {
+    		System.out.print("Switch "+indices.get(1)+","+indices.get(0)+" with ");
+    		System.out.println(indices.get(three)+ "," + indices.get(2));
     		return Arrays.asList(grid[indices.get(1)][indices.get(0)], 
     	                                          grid[indices.get(three)][indices.get(2)]);
     	}
