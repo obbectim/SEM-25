@@ -771,14 +771,12 @@ public class Board {
 	 */
 	public void showHint() {
 		
-		List<Jewel> swap = new ArrayList<Jewel>();
+		List<Jewel> swap;
 		
 		for (int x = 0; x < grid.length; x++) {
 			for (int y = 0; y < grid[0].length; y++) {
 				swap = checkForPair(x, y);
 				if (!swap.isEmpty()) {
-					System.out.println("Found a possible move");
-					System.out.println(swap);
 					addSelection(swap.get(1));
 					return;
 				}
