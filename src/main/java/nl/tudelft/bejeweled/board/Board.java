@@ -12,6 +12,7 @@ import java.util.Stack;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
+import nl.tudelft.bejeweled.game.BejeweledGame;
 import nl.tudelft.bejeweled.sprite.Jewel;
 import nl.tudelft.bejeweled.sprite.SelectionCursor;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
@@ -26,7 +27,7 @@ public class Board {
 	private int spriteWidth;
 	private int spriteHeight;
 	private static final int MINIMAL_COMBO_LENGTH = 3;
-	public static final int NUMBER_OF_DIFFERENT_JEWEL_TYPES = 7;
+	public static final int NUMBER_OF_JEWEL_TYPES = 7;
 
 
     private List<Jewel> selection = new ArrayList<Jewel>();
@@ -50,20 +51,16 @@ public class Board {
      * Constructor for the board class.
      * @param grid Two-dimensional grid holding all Jewel sprites.
      * @param sceneNodes The JavaFX group container for the Jewel Nodes.
-     * @param gridWidth Width of the board in squares.
-     * @param gridHeight Height of the board in squares.
-     * @param spriteWidth Width of the sprites in pixels.
-     * @param spriteHeight Height of the sprites in pixels.
      */
-    public Board(Jewel[][] grid, Group sceneNodes, int gridWidth, int gridHeight, 
-    		int spriteWidth, int spriteHeight) {
+    public Board(Jewel[][] grid, Group sceneNodes) {
+        this.gridWidth = BejeweledGame.GRID_WIDTH;
+        this.gridHeight = BejeweledGame.GRID_HEIGHT;
+        this.spriteWidth = BejeweledGame.SPRITE_WIDTH;
+        this.spriteHeight = BejeweledGame.SPRITE_WIDTH;
+        
         this.grid = grid;
-        this.gridWidth = gridWidth;
-        this.gridHeight = gridHeight;
-        this.spriteWidth = spriteWidth;
-        this.spriteHeight = spriteHeight;
-
         this.sceneNodes = sceneNodes;
+        
         this.observers = new ArrayList<>();
     }
 
@@ -108,6 +105,7 @@ public class Board {
             }
             getSelection().clear();
         }
+        
     }
 
     /**
@@ -352,8 +350,10 @@ public class Board {
             // TODO Make sure the Jewels are also removed from the spriteStore.
             // grid[jewel.getBoardX()][jewel.getBoardY()] = null;
         }
-      //  doGravity();
-      //  outOfMoves();
+        //  doGravity();
+        //  outOfMoves();
+        doGravity();
+        outOfMoves();
         return count;
     }
     
@@ -580,8 +580,12 @@ public class Board {
     }
     
     /**
-     * Function that checks for pairs and if found checks if a valid move is possible
-     * at that position.
+     * Function that checks if there are any moves possible.
+     * 
+     * <p>Iterates through all gems and looks for pairs or two or 
+     * constructions like "xox" where another x could fill in.
+     * For each case a different function is called which checks for
+     * a valid move.</p>
      * 
      * @param x x-position in the grid to be checked for a pair
      * @param y y-position in the grid to be checked for a pair
@@ -613,18 +617,11 @@ public class Board {
 		return new ArrayList<Jewel>();
     }
     
-    
     /**
      * Function that checks if there are any moves possible.
-     * 
-     * <p>Iterates through all gems and looks for pairs or two or 
-     * constructions like "xox" where another x could fill in.
-     * For each case a different function is called which checks for
-     * a valid move.</p>
      * @return true if no moves possible
      */
     public boolean outOfMoves() {
-    	
     	for (int x = 0; x < grid.length; x++) {
 			for (int y = 0; y < grid[0].length; y++) {
 				if (!checkForPair(x, y).isEmpty()) {
@@ -632,7 +629,6 @@ public class Board {
 				}
 			}
 		}
-    	
     	for (BoardObserver observer : observers) {
 			observer.boardOutOfMoves();
     	}
@@ -681,7 +677,7 @@ public class Board {
      * @param j Grid row
      */
     protected void addRandomJewel(int i, int j) {
-    	  Jewel jewel = new Jewel(rand.nextInt(NUMBER_OF_DIFFERENT_JEWEL_TYPES) + 1, i, j);
+    	  Jewel jewel = new Jewel(rand.nextInt(NUMBER_OF_JEWEL_TYPES) + 1, i, j);
           jewel.setxPos(i * spriteWidth);
           jewel.setyPos(j * spriteHeight);
           grid[i][j] = jewel;

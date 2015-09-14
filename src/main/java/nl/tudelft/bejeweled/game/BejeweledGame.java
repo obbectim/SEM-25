@@ -1,11 +1,15 @@
 package nl.tudelft.bejeweled.game;
 
+import javafx.animation.FadeTransition;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import javafx.util.Duration;
 import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.board.BoardFactory;
 import nl.tudelft.bejeweled.board.BoardObserver;
@@ -17,10 +21,10 @@ import nl.tudelft.bejeweled.sprite.SpriteStore;
  * Bejeweled Game class.
  */
 public class BejeweledGame extends Game implements BoardObserver {
-	private static final int GRID_WIDTH = 8;
-	private static final int GRID_HEIGHT = 8;
-	private static final int SPRITE_WIDTH = 64;
-	private static final int SPRITE_HEIGHT = 64;
+	public static final int GRID_WIDTH = 8;
+	public static final int GRID_HEIGHT = 8;
+	public static final int SPRITE_WIDTH = 64;
+	public static final int SPRITE_HEIGHT = 64;
 
 
     /** The board class that maintains the jewels. */
@@ -72,7 +76,7 @@ public class BejeweledGame extends Game implements BoardObserver {
                 gamePane.getHeight()).getRoot());
 
         // generate the jewels
-        board = boardFactory.generateBoard(getSceneNodes(), GRID_WIDTH, GRID_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT);
+        board = boardFactory.generateBoard(getSceneNodes());
 
         // start observing the board for callback events
         board.addObserver(this);
@@ -139,13 +143,37 @@ public class BejeweledGame extends Game implements BoardObserver {
     
     @Override
     public void boardOutOfMoves() {
-    	// TODO: Show a text like "Game over"
+
+        final Label label = new Label("Game Over");
+        label.setFont(new Font("Arial", 55));
+
+        // position the label
+        //TODO Position this label nicely in the center
+        label.setLayoutX(100);
+        label.setLayoutY(200);
+        gamePane.getChildren().add(label);
+
+        FadeTransition ft = new FadeTransition(Duration.millis(3000), label);
+        ft.setFromValue(1.0);
+        ft.setToValue(0.0);
+        ft.setCycleCount(1);
+        ft.setAutoReverse(false);
+        ft.setOnFinished(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                gamePane.getChildren().remove(label);
+            }
+        });
+        ft.play();
+
     	stop();
     }
 
     @Override
     public void boardJewelRemoved() {
-    	score += 10; // add 10 points per jewel removed
+    	final int point = 10;
+    	score += point; // add 10 points per jewel removed
         scoreLabel.setText(Integer.toString(score));
     }
     
