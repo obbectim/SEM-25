@@ -68,6 +68,7 @@ public class BejeweledGame extends Game implements BoardObserver {
         System.out.println("Game started");
 
         score = 0;
+        scoreLabel.setText(Integer.toString(score));
 
         // Create the group that holds all the jewel nodes and create a game scene
         setSceneNodes(new Group());
