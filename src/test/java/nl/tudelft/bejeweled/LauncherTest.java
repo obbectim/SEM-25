@@ -1,9 +1,7 @@
 package nl.tudelft.bejeweled;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
-import javafx.application.Platform;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.game.BejeweledGame;
 import org.junit.After;
@@ -33,8 +31,9 @@ public class LauncherTest extends ApplicationTest {
      * First test.
      */
     @Test
-    public void testExitGame() {
-        BejeweledGame game = launcher.getGame();
+
+    public void testStartGame() {
+        BejeweledGame game = (BejeweledGame)launcher.getGame();
         assertFalse(game.isInProgress());
 
         clickOn("#buttonExit");
