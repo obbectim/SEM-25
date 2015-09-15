@@ -2,6 +2,7 @@ package nl.tudelft.bejeweled;
 
 import static org.junit.Assert.assertFalse;
 
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.game.BejeweledGame;
 import org.junit.After;
@@ -14,7 +15,7 @@ import org.testfx.framework.junit.ApplicationTest;
  */
 public class LauncherTest extends ApplicationTest {
 
-    private CustomBoardLauncher launcher = new CustomBoardLauncher();
+    private Launcher launcher = new Launcher();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -25,7 +26,9 @@ public class LauncherTest extends ApplicationTest {
      * Quit the user interface when we're done.
      */
     @After
-    public void tearDown() { }
+    public void tearDown() {
+        closeCurrentWindow();
+    }
 
     /**
      * First test.
