@@ -180,7 +180,9 @@ public class BejeweledGame extends Game implements BoardObserver {
     @Override
     public void showHint() {
     	
-    	board.showHint();
+    	if (board != null) {
+    		board.showHint();
+    	}
     	
     }
     
