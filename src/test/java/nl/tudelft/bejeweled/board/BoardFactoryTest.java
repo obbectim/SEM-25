@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javafx.scene.Group;
-import javafx.scene.layout.Pane;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 import nl.tudelft.bejeweled.sprite.Jewel;
 
@@ -22,8 +21,6 @@ public class BoardFactoryTest {
 	private BoardFactory factory;
 	
 	private SpriteStore spriteStore;
-	
-	private Pane gamePane = new Pane();
 	
 	/**
 	 * Creates the factory object.

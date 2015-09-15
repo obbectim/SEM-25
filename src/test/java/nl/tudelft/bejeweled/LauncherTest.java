@@ -18,8 +18,6 @@ public class LauncherTest extends ApplicationTest {
 
     private Launcher launcher = new Launcher();
 
-    private Stage stage;
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         launcher.launchGame(primaryStage);
