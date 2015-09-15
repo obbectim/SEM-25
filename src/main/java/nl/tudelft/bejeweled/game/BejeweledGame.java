@@ -43,9 +43,11 @@ public class BejeweledGame extends Game implements BoardObserver {
 
     private Label scoreLabel;
 
-    /** The constructor for the bejeweled game. 
-    * @param framesPerSecond - The number of frames per second the game will attempt to render.
-    * @param windowTitle - The title displayed in the window.
+    /**
+     * The constructor for the bejeweled game.
+     * @param framesPerSecond - The number of frames per second the game will attempt to render.
+     * @param windowTitle - The title displayed in the window.
+     * @param spriteStore - The spriteStore.
     */
     public BejeweledGame(int framesPerSecond, String windowTitle, SpriteStore spriteStore) {
         super(framesPerSecond, windowTitle);
