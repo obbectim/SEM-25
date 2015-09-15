@@ -16,21 +16,19 @@ import nl.tudelft.bejeweled.sprite.SpriteStore;
  */
 public class Launcher extends Application {
 
+    /** The frames per second limit of the game. */
 	private static final int FPS_LIMIT = 60;
 
+    /** The Window Title. */
     private static final String WINDOW_TITLE = "Bejeweled";
 
+    /** The SpriteStore. */
     private static final SpriteStore spriteStore = new SpriteStore();
 
-	
-    /**
-     *  The current game.
-     */
+    /**  The current game. */
     private Game game;
 
-    /**
-     * The GUI for the Bejeweled game.
-     */
+    /** The GUI for the Bejeweled game. */
     private BejeweledGui bejeweledGui;
 
     /**
@@ -90,14 +88,23 @@ public class Launcher extends Application {
     }
 
     /**
+     * Get a freshly created boardfactory.
      * @return A new board factory using the sprite store from
      */
     protected BoardFactory getBoardFactory() {
         return new BoardFactory(getSpriteStore());
     }
 
+    /**
+     * Getter method for the game that's being launched.
+     * @return The current game.
+     */
     public Game getGame() { return game; }
 
+    /**
+     * Getter method for the spritestore.
+     * @return The spritestore.
+     */
     protected SpriteStore getSpriteStore() {
         return spriteStore;
     }
