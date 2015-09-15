@@ -14,7 +14,7 @@ import org.testfx.framework.junit.ApplicationTest;
  */
 public class LauncherTest extends ApplicationTest {
 
-    private Launcher launcher = new Launcher();
+    private CustomBoardLauncher launcher = new CustomBoardLauncher();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
