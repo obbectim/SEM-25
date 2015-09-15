@@ -23,6 +23,7 @@ public final class Logger {
 	
 	private static BufferedWriter logFile;
 	private static Format formatter;
+	private static Path filePath;
 	
 	/**
 	 * Creates a new file with a time stamp in it's name.
@@ -33,9 +34,9 @@ public final class Logger {
 		
 		formatter = new SimpleDateFormat("MM/dd/yyyy_HH:mm:ss");
 		String fileName = "LogFile_" + formatter.format(Calendar.getInstance().getTime());
-		Path filePath = Paths.get(fileName);
+		filePath = Paths.get(fileName);
 		logFile = null;
-		
+		System.out.println("Hello world");
 		try {
 			logFile = Files.newBufferedWriter(filePath);
 		} catch	(IOException ex) {
@@ -98,5 +99,14 @@ public final class Logger {
 			System.err.println("IOException caught: " + ex.getMessage());
 		}
 		
+	}
+	
+	/**
+	 * Get the path to the opened logFile.
+	 * 
+	 * @return Path to the current log file
+	 */
+	public static Path getLogFilePath() {
+		return filePath;
 	}
 }
