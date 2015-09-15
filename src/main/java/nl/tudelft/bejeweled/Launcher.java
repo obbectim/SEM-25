@@ -18,9 +18,10 @@ public class Launcher extends Application {
 
 	private static final int FPS_LIMIT = 60;
 
-    private SpriteStore spriteStore;
+    private static final String WINDOW_TITLE = "Bejeweled";
 
-    private BoardFactory boardFactory;
+    private static final SpriteStore spriteStore = new SpriteStore();
+
 	
     /**
      *  The current game.
@@ -50,12 +51,10 @@ public class Launcher extends Application {
      * @param theStage The primary stage to draw the GUI on
      */
     public void launchGame(Stage theStage) {
-        spriteStore = new SpriteStore();
-        game = makeGame(FPS_LIMIT, "Bejeweled", spriteStore);
+        game = makeGame(FPS_LIMIT, WINDOW_TITLE, spriteStore);
 
-        boardFactory = getBoardFactory();
         Group sceneNodes = new Group();
-        Board board = makeBoard(sceneNodes);
+        Board board = makeBoard(getBoardFactory(), sceneNodes);
         game.setSceneNodes(sceneNodes);
 
         // initialise the gui and map start/stop buttons
@@ -82,10 +81,11 @@ public class Launcher extends Application {
 
     /**
      * Makes a board.
+     * @param boardFactory The BoardFactory object that creates the board.
      * @param sceneNodes The group of nodes that are presented in the scene.
      * @return An instantiated board.
      */
-    public Board makeBoard(Group sceneNodes) {
+    public Board makeBoard(BoardFactory boardFactory, Group sceneNodes) {
         return boardFactory.generateBoard(sceneNodes);
     }
 

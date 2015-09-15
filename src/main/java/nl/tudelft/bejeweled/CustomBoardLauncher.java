@@ -2,6 +2,7 @@ package nl.tudelft.bejeweled;
 
 import javafx.scene.Group;
 import nl.tudelft.bejeweled.board.Board;
+import nl.tudelft.bejeweled.board.BoardFactory;
 
 /**
  * Created by Jeroen on 12-9-2015.
@@ -37,8 +38,7 @@ public class CustomBoardLauncher extends Launcher {
      * @return The board.
      */
     @Override
-    public Board makeBoard(Group sceneNodes) {
-        return getBoardFactory().fromTextGenerateBoard(boardLocation,
-                sceneNodes);
+    public Board makeBoard(BoardFactory boardFactory, Group sceneNodes) {
+        return boardFactory.fromTextGenerateBoard(boardLocation, sceneNodes);
     }
 }
