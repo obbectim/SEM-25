@@ -1,4 +1,4 @@
-![build status](https://travis-ci.org/asgill/SEM-25.svg?branch=master)
+[![build status](https://travis-ci.org/asgill/SEM-25.svg?branch=master)](https://travis-ci.org/asgill/SEM-25)
 
 # SEM-25
 
