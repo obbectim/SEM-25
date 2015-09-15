@@ -33,30 +33,10 @@ public class LauncherTest extends ApplicationTest {
      * First test.
      */
     @Test
-    public void testStartGame() {
-        Platform.runLater(new Runnable() {
-             public void run() {
-                BejeweledGame game = launcher.getGame();
-                assertFalse(game.isInProgress());
-             }
-        });
+    public void testExitGame() {
+        BejeweledGame game = launcher.getGame();
+        assertFalse(game.isInProgress());
 
-        // start and stop the game concurrently with JavaFX thread
-        Platform.runLater(new Runnable() {
-            public void run() {
-                BejeweledGame game = launcher.getGame();
-                game.start();
-                assertTrue(game.isInProgress());
-            }
-        });
-
-        // start and stop the game concurrently with JavaFX thread
-        Platform.runLater(new Runnable() {
-            public void run() {
-                BejeweledGame game = launcher.getGame();
-                game.stop();
-                assertFalse(game.isInProgress());
-            }
-        });
+        clickOn("#buttonExit");
     }
 }
