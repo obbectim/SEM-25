@@ -132,7 +132,7 @@ public class Jewel extends Sprite {
         ft.setAutoReverse(false);
         ft.setOnFinished(event -> {
             setDead(true);
-            if(sceneGroup.getChildren() != null)
+            if(sceneGroup != null)
                 sceneGroup.getChildren().remove(getNode());
         });
         ft.play();
