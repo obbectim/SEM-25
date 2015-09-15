@@ -70,6 +70,7 @@ public class BejeweledGame extends Game implements BoardObserver {
         System.out.println("Game started");
 
         score = 0;
+        scoreLabel.setText(Integer.toString(score));
 
         // fill board if game was stopped and started again
         board.fillNullSpots();
@@ -179,6 +180,15 @@ public class BejeweledGame extends Game implements BoardObserver {
     	final int point = 10;
     	score += point; // add 10 points per jewel removed
         scoreLabel.setText(Integer.toString(score));
+    }
+    
+    @Override
+    public void showHint() {
+    	
+    	if (board != null) {
+    		board.showHint();
+    	}
+    	
     }
     
     /**

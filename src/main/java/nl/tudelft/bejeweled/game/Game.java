@@ -204,4 +204,9 @@ public abstract class Game {
      *  Stops the game.
      */
     public abstract void stop();
+
+    /** 
+     * Shows a hint to a possible move
+     */
+	public abstract void showHint();
 }

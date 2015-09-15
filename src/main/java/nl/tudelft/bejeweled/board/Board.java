@@ -479,50 +479,55 @@ public class Board {
      * @param jewels The grid containing the Jewels
      * @param x x-position of the first jewel of the pair to be extended
      * @param y y-position of the first jewel of the pair to be extended
-     * @return if valid move is possible list of jewels to swap, otherwise empty list
+     * @return a list of the coordinates of the Jewels (x1,y1,x2,y2)
      */
-    public List<Jewel> validMove(Jewel[][] jewels, int x, int y) {
+    public List<Integer> validMove(Jewel[][] jewels, int x, int y) {
     	final int three = 3;
 		if (checkLeft(jewels, x, y)) {
-			return Arrays.asList(grid[x][y - 1], grid[x][y - 2]);
+			return Arrays.asList(x, y - 1, x, y - 2);
 		}
 		if (checkLeftTop(jewels, x, y)) {
-			return Arrays.asList(grid[x][y - 1], grid[x - 1][y - 1]);
+			return Arrays.asList(x, y - 1, x - 1, y - 1);
 		}
 		if (checkLeftBottom(jewels, x, y)) {
-			return Arrays.asList(grid[x][y - 1], grid[x + 1][y - 1]);
+			return Arrays.asList(x, y - 1, x + 1, y - 1);
 		}
 		if (checkRight(jewels, x, y)) {
-			return Arrays.asList(grid[x][y + 2], grid[x][y + three]);
+			return Arrays.asList(x, y + 2, x, y + three);
 		}
 		if (checkRightTop(jewels, x, y)) {
-			return Arrays.asList(grid[x][y + 2], grid[x - 1][y + 2]);
+			return Arrays.asList(x, y + 2, x - 1, y + 2);
 		}
 		if (checkRightBottom(jewels, x, y)) {
-			return Arrays.asList(grid[x][y + 2], grid[x + 1][y + 2]);
+			return Arrays.asList(x, y + 2, x + 1, y + 2);
 		}
-    	return new ArrayList<Jewel>();
+    	return new ArrayList<Integer>();
     }
     
     /**
      * Checks a vertical pair for a valid move.
      * @param x x-position of the first jewel of the vertical pair
      * @param y y-position of first jewel of the vertical pair
+     * @return a list of the two Jewels to be swapped for a valid move
      */
-    private boolean verticalRow(int x, int y) {
-    	List<Jewel> swap = validMove(grid, x, y);
-    	if (swap.isEmpty()) {
-    		return false;
+    private List<Jewel> verticalRow(int x, int y) {
+    	final int three = 3;
+    	List<Integer> indices = validMove(grid, x, y);
+    	
+    	if (!indices.isEmpty()) {
+    		return Arrays.asList(grid[indices.get(0)][indices.get(1)], 
+    	                                          grid[indices.get(2)][indices.get(three)]);
     	}
-    	return true;
+    	return new ArrayList<Jewel>();
     }
     
     /**
      * Checks a horizontal pair for a valid Move.
      * @param x x-position of the first jewel of the horizontal pair
      * @param y y-position of first jewel of the horizontal pair
+     * @return a list of the two Jewels to be swapped for a valid move
      */
-    private boolean horizontalRow(int x, int y) {
+    private List<Jewel> horizontalRow(int x, int y) {
     	/**
     	 * Create transpose of matrix
     	 */
@@ -533,11 +538,13 @@ public class Board {
 			}
 		}
     	
-    	List<Jewel> swap = validMove(transposed, y, x);
-    	if (swap.isEmpty()) {
-    		return false;
+    	final int three = 3;
+    	List<Integer> indices = validMove(transposed, y, x);
+    	if (!indices.isEmpty()) {
+    		return Arrays.asList(grid[indices.get(1)][indices.get(0)], 
+    	                                          grid[indices.get(three)][indices.get(2)]);
     	}
-    	return true;
+    	return new ArrayList<Jewel>();
     }
     
     /**
@@ -545,19 +552,16 @@ public class Board {
      * @param x x-position of first jewel of possible row
      * @param y y-position of first jewel of possible row
      */
-    private boolean horizontalRowPossible(int x, int y) {
+    private List<Jewel> horizontalRowPossible(int x, int y) {
     	if (y > 0 && grid[x + 1][y - 1].getType() == grid[x][y].getType()) {
-    		System.out.print("Switch (" + (x + 1) + "," + y + ") with (");
-        	System.out.println((x + 1) + "," + (y - 1) + ")");
-        	return true;
+    		
+        	return Arrays.asList(grid[x + 1][y], grid[x + 1][y - 1]);
     	}
     	if (y < grid[0].length - 1 && grid[x + 1][y + 1].getType() == grid[x][y].getType()) {
-    		System.out.print("Switch (" + (x + 1) + "," + y + ") with (");
-        	System.out.println((x + 1) + "," + (y + 1) + ")");
-        	return true;
+    		return Arrays.asList(grid[x + 1][y], grid[x + 1][y + 1]);
     	}
     	
-    	return false;
+    	return new ArrayList<Jewel>();
     }
     
     /**
@@ -565,16 +569,14 @@ public class Board {
      * @param x x-position of first jewel of possible row
      * @param y y-position of first jewel of possible row
      */
-    private boolean verticalRowPossible(int x, int y) {
+    private List<Jewel> verticalRowPossible(int x, int y) {
     	if (x > 0 && grid[x - 1][y + 1].getType() == grid[x][y].getType()) {
-        	return true;
+    		return Arrays.asList(grid[x][y + 1], grid[x - 1][y + 1]);
     	}
     	if (x < grid.length - 1 && grid[x + 1][y + 1].getType() == grid[x][y].getType()) {
-    		System.out.print("Switch (" + x + "," + (y + 1) + ") with (");
-        	System.out.println((x + 1) + "," + (y + 1) + ")");
-        	return true;
+    		return Arrays.asList(grid[x][y + 1], grid[x + 1][y + 1]);
     	}
-    	return false;
+    	return new ArrayList<Jewel>();
     }
     
     /**
@@ -584,30 +586,39 @@ public class Board {
      * constructions like "xox" where another x could fill in.
      * For each case a different function is called which checks for
      * a valid move.</p>
+     * 
+     * @param x x-position in the grid to be checked for a pair
+     * @param y y-position in the grid to be checked for a pair
+     * @return returns two jewels in a list to swap if move is possible
      */
-    private boolean checkForPair(int x, int y) {
+    private List<Jewel> checkForPair(int x, int y) {
     	int type = grid[x][y].getType();
+    	List<Jewel> swap;
 		if (y < grid[0].length - 1 && type == grid[x][y + 1].getType()) {
-			if (verticalRow(x, y)) { 
-				return true;
+			swap = verticalRow(x, y);
+			if (!swap.isEmpty()) { 
+				return swap;
 			}
 		}
 		if (x < grid.length - 1 && type == grid[x + 1][y].getType()) {
-			if (horizontalRow(x, y)) {
-				return true;
+			swap = horizontalRow(x, y);
+			if (!swap.isEmpty()) {
+				return swap;
 			}
 		}
 		if (y < grid[0].length - 2 && type == grid[x][y + 2].getType()) {
-			if (verticalRowPossible(x, y)) {
-				return true;
+			swap = verticalRowPossible(x, y);
+			if (!swap.isEmpty()) {
+				return swap;
 			}
 		}
 		if (x < grid.length - 2 && type == grid[x + 2][y].getType()) {
-			if (horizontalRowPossible(x, y)) {
-				return true;
+			swap = horizontalRowPossible(x, y);
+			if (!swap.isEmpty()) {
+				return swap;
 			}
 		}
-		return false;
+		return new ArrayList<Jewel>();
     }
     
     /**
@@ -617,7 +628,7 @@ public class Board {
     public boolean outOfMoves() {
     	for (int x = 0; x < grid.length; x++) {
 			for (int y = 0; y < grid[0].length; y++) {
-				if (checkForPair(x, y)) {
+				if (!checkForPair(x, y).isEmpty()) {
 					return false;
 				}
 			}
@@ -769,6 +780,7 @@ public class Board {
 		return selectionCursor;
 	}
 
+
     /**
      * Function to reset the entire grid[][] to null.
      */
@@ -780,4 +792,23 @@ public class Board {
             }
         }
     }
+
+	/**
+	 * Calculates and visualizes a hint for a next move.
+	 */
+	public void showHint() {
+		
+		List<Jewel> swap;
+		
+		for (int x = 0; x < grid.length; x++) {
+			for (int y = 0; y < grid[0].length; y++) {
+				swap = checkForPair(x, y);
+				if (!swap.isEmpty()) {
+					addSelection(swap.get(1));
+					return;
+				}
+			}
+		}
+		
+	}
 }
