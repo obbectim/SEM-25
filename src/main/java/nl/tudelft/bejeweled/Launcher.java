@@ -5,7 +5,8 @@ import javafx.scene.Group;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.board.BoardFactory;
-import nl.tudelft.bejeweled.game.BejeweledGame;
+import nl.tudelft.bejeweled.game.Game;
+import nl.tudelft.bejeweled.game.GameFactory;
 import nl.tudelft.bejeweled.gui.BejeweledGui;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
@@ -24,7 +25,7 @@ public class Launcher extends Application {
     /**
      *  The current game.
      */
-    private BejeweledGame game;
+    private Game game;
 
     /**
      * The GUI for the Bejeweled game.
@@ -50,7 +51,7 @@ public class Launcher extends Application {
      */
     public void launchGame(Stage theStage) {
         spriteStore = new SpriteStore();
-        game = new BejeweledGame(FPS_LIMIT, "Bejeweled", spriteStore);
+        game = makeGame(FPS_LIMIT, "Bejeweled", spriteStore);
 
         boardFactory = getBoardFactory();
         Group sceneNodes = new Group();
@@ -67,6 +68,23 @@ public class Launcher extends Application {
         game.beginGameLoop();
     }
 
+    /**
+     * Makes a Game object.
+     * @param framesPerSecond The refresh rate for the animations.
+     * @param windowTitle The window Title.
+     * @param spriteStore The sprite store.
+     * @return An instantiated game object.
+     */
+    public Game makeGame(int framesPerSecond, String windowTitle, SpriteStore spriteStore) {
+        GameFactory gf = new GameFactory(spriteStore);
+        return gf.createBejeweledGame(framesPerSecond, windowTitle);
+    }
+
+    /**
+     * Makes a board.
+     * @param sceneNodes The group of nodes that are presented in the scene.
+     * @return An instantiated board.
+     */
     public Board makeBoard(Group sceneNodes) {
         return boardFactory.generateBoard(sceneNodes);
     }
@@ -78,7 +96,7 @@ public class Launcher extends Application {
         return new BoardFactory(getSpriteStore());
     }
 
-    public BejeweledGame getGame() { return game; }
+    public Game getGame() { return game; }
 
     protected SpriteStore getSpriteStore() {
         return spriteStore;

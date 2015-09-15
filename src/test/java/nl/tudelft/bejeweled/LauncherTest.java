@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.game.BejeweledGame;
+import nl.tudelft.bejeweled.game.Game;
 import org.junit.After;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
@@ -34,7 +35,7 @@ public class LauncherTest extends ApplicationTest {
      */
     @Test
     public void testStartGame() {
-        BejeweledGame game = launcher.getGame();
+        BejeweledGame game = (BejeweledGame)launcher.getGame();
         assertFalse(game.isInProgress());
 
         // start and stop the game concurrently with JavaFX thread

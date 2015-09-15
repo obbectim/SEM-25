@@ -36,7 +36,7 @@ public class BejeweledGameTest extends ApplicationTest {
      */
     @Test
     public void testMoveJewelNoWin() {
-        BejeweledGame game = launcher.getGame();
+        BejeweledGame game = (BejeweledGame)launcher.getGame();
         assertFalse(game.isInProgress());
 
         clickOn("#buttonStart");
