@@ -59,7 +59,7 @@ public class BoardFactory {
                 String[] parts = line.split("|");  
                 for (int j = 0; j < gridHeight; j++) {
                     int amr = Integer.parseInt(parts[j]);
-                    System.out.println(amr);
+                //    System.out.println(amr);
                     Jewel jewel = new Jewel(amr, k, j);
                     jewel.setxPos(k * spriteWidth);
                     jewel.setyPos(j * spriteHeight);

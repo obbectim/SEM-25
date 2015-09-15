@@ -1,9 +1,14 @@
 package nl.tudelft.bejeweled;
 
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.stage.Stage;
+import nl.tudelft.bejeweled.board.Board;
+import nl.tudelft.bejeweled.board.BoardFactory;
 import nl.tudelft.bejeweled.game.BejeweledGame;
+import nl.tudelft.bejeweled.game.Game;
 import nl.tudelft.bejeweled.gui.BejeweledGui;
+import nl.tudelft.bejeweled.sprite.SpriteStore;
 
 /**
  * Created by Jeroen on 1-9-2015.
@@ -12,6 +17,10 @@ import nl.tudelft.bejeweled.gui.BejeweledGui;
 public class Launcher extends Application {
 
 	private static final int FPS_LIMIT = 60;
+
+    private SpriteStore spriteStore;
+
+    private BoardFactory boardFactory;
 	
     /**
      *  The current game.
@@ -41,23 +50,38 @@ public class Launcher extends Application {
      * @param theStage The primary stage to draw the GUI on
      */
     public void launchGame(Stage theStage) {
-        game = new BejeweledGame(FPS_LIMIT, "Bejeweled");
+        spriteStore = new SpriteStore();
+        game = new BejeweledGame(FPS_LIMIT, "Bejeweled", spriteStore);
+
+        boardFactory = getBoardFactory();
+        Group sceneNodes = new Group();
+        Board board = makeBoard(sceneNodes);
+        game.setSceneNodes(sceneNodes);
 
         // initialise the gui and map start/stop buttons
         bejeweledGui = new BejeweledGui(game, theStage);
 
         // initialise the game
-        game.initialise(bejeweledGui.getBoardPane(), bejeweledGui.getScoreLabel());
+        game.initialise(board, bejeweledGui.getBoardPane(), bejeweledGui.getScoreLabel());
 
         // begin game loop
         game.beginGameLoop();
     }
 
+    public Board makeBoard(Group sceneNodes) {
+        return boardFactory.generateBoard(sceneNodes);
+    }
+
     /**
-     * Getter method for the game.
-     * @return The game.
+     * @return A new board factory using the sprite store from
      */
-    public BejeweledGame getGame() {
-        return game;
+    protected BoardFactory getBoardFactory() {
+        return new BoardFactory(getSpriteStore());
+    }
+
+    public BejeweledGame getGame() { return game; }
+
+    protected SpriteStore getSpriteStore() {
+        return spriteStore;
     }
 }

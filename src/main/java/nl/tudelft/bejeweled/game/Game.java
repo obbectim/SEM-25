@@ -9,6 +9,7 @@ import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.sprite.Sprite;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
@@ -87,10 +88,11 @@ public abstract class Game {
 
     /**
      * Initialise the game world by update the JavaFX Stage.
+     * @param board The board of the game.
      * @param gamePane The primary scene.
      * @param scoreLabel The label for the score.
      */
-    public abstract void initialise(Pane gamePane, Label scoreLabel);
+    public abstract void initialise(Board board, Pane gamePane, Label scoreLabel);
 
     /**Kicks off (plays) the Timeline objects containing one key frame
      * that simply runs indefinitely with each frame invoking a method
@@ -189,7 +191,7 @@ public abstract class Game {
      * @param sceneNodes The root container having many children nodes
      * to be displayed into the Scene area.
      */
-    protected void setSceneNodes(Group sceneNodes) {
+    public void setSceneNodes(Group sceneNodes) {
         this.sceneNodes = sceneNodes;
     }
 
