@@ -1,12 +1,9 @@
 package nl.tudelft.bejeweled;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
-import javafx.application.Platform;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.game.BejeweledGame;
-import nl.tudelft.bejeweled.game.Game;
 import org.junit.After;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
@@ -34,24 +31,11 @@ public class LauncherTest extends ApplicationTest {
      * First test.
      */
     @Test
+
     public void testStartGame() {
         BejeweledGame game = (BejeweledGame)launcher.getGame();
         assertFalse(game.isInProgress());
 
-        // start and stop the game concurrently with JavaFX thread
-        Platform.runLater(new Runnable() {
-            public void run() {
-                game.start();
-                assertTrue(game.isInProgress());
-            }
-        });
-
-        // start and stop the game concurrently with JavaFX thread
-        Platform.runLater(new Runnable() {
-            public void run() {
-                game.stop();
-                assertFalse(game.isInProgress());
-            }
-        });
+        clickOn("#buttonExit");
     }
 }
