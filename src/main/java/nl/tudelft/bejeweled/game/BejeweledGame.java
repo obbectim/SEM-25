@@ -177,6 +177,15 @@ public class BejeweledGame extends Game implements BoardObserver {
         scoreLabel.setText(Integer.toString(score));
     }
     
+    @Override
+    public void showHint() {
+    	
+    	if (board != null) {
+    		board.showHint();
+    	}
+    	
+    }
+    
     /**
      *Check if the game is still in progress.
      * @return true if the game is in progress.
