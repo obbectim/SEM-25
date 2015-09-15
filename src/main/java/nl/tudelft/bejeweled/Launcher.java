@@ -6,7 +6,6 @@ import javafx.stage.Stage;
 import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.board.BoardFactory;
 import nl.tudelft.bejeweled.game.BejeweledGame;
-import nl.tudelft.bejeweled.game.Game;
 import nl.tudelft.bejeweled.gui.BejeweledGui;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 

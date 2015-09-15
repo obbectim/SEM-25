@@ -3,7 +3,6 @@ package nl.tudelft.bejeweled.game;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -13,10 +12,7 @@ import javafx.util.Duration;
 import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.board.BoardFactory;
 import nl.tudelft.bejeweled.board.BoardObserver;
-import nl.tudelft.bejeweled.sprite.Jewel;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
-
-import java.util.Iterator;
 
 
 /**
@@ -47,9 +43,11 @@ public class BejeweledGame extends Game implements BoardObserver {
 
     private Label scoreLabel;
 
-    /** The constructor for the bejeweled game. 
-    * @param framesPerSecond - The number of frames per second the game will attempt to render.
-    * @param windowTitle - The title displayed in the window.
+    /**
+     * The constructor for the bejeweled game.
+     * @param framesPerSecond - The number of frames per second the game will attempt to render.
+     * @param windowTitle - The title displayed in the window.
+     * @param spriteStore - The spriteStore.
     */
     public BejeweledGame(int framesPerSecond, String windowTitle, SpriteStore spriteStore) {
         super(framesPerSecond, windowTitle);

@@ -1,8 +1,5 @@
 package nl.tudelft.bejeweled.sprite;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.scene.Node;
 
 /**
@@ -11,7 +8,7 @@ import javafx.scene.Node;
  */
 public abstract class Sprite {
     /** Animation for the node. */
-    private List animations = new ArrayList<>();
+//    private List animations = new ArrayList<>();
 
     /** Current display node. */
     private Node node;
@@ -27,8 +24,6 @@ public abstract class Sprite {
 
     /** velocity vector y direction. */
     private double vY = 0;
-
-    private Boolean isMoving;
 
     /** Status variable, true if the sprite should be removed. */
     private boolean isDead = false;

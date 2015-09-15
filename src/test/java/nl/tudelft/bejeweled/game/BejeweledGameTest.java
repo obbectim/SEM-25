@@ -1,6 +1,7 @@
 package nl.tudelft.bejeweled.game;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import javafx.application.Platform;
@@ -17,7 +18,6 @@ import org.testfx.framework.junit.ApplicationTest;
 public class BejeweledGameTest extends ApplicationTest {
 
     private CustomBoardLauncher launcher = new CustomBoardLauncher();
-    private Stage stage;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -55,7 +55,7 @@ public class BejeweledGameTest extends ApplicationTest {
         // verify the score is still the same.
         Platform.runLater(new Runnable() {
             public void run() {
-                assertTrue(game.getScore() == 0);
+                assertSame(game.getScore(), 0);
             }
         });
 

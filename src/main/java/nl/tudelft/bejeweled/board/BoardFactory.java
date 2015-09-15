@@ -72,6 +72,7 @@ public class BoardFactory {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return addEventHandler(grid, sceneNodes, gridWidth, gridHeight,
        		 spriteWidth,  spriteHeight);
     }
