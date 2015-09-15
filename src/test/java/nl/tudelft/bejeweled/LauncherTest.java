@@ -34,12 +34,17 @@ public class LauncherTest extends ApplicationTest {
      */
     @Test
     public void testStartGame() {
-        BejeweledGame game = launcher.getGame();
-        assertFalse(game.isInProgress());
+        Platform.runLater(new Runnable() {
+             public void run() {
+                BejeweledGame game = launcher.getGame();
+                assertFalse(game.isInProgress());
+             }
+        });
 
         // start and stop the game concurrently with JavaFX thread
         Platform.runLater(new Runnable() {
             public void run() {
+                BejeweledGame game = launcher.getGame();
                 game.start();
                 assertTrue(game.isInProgress());
             }
@@ -48,6 +53,7 @@ public class LauncherTest extends ApplicationTest {
         // start and stop the game concurrently with JavaFX thread
         Platform.runLater(new Runnable() {
             public void run() {
+                BejeweledGame game = launcher.getGame();
                 game.stop();
                 assertFalse(game.isInProgress());
             }
