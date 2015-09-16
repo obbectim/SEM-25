@@ -1,7 +1,8 @@
 package nl.tudelft.bejeweled.logger;
 
-import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,24 +22,24 @@ public final class Logger {
 	private static final String ERROR = "ERROR ";
 	private static final String WARNING = "WARNING ";
 	
-	private static BufferedWriter logFile;
+	private static PrintWriter logFile;
 	private static Format formatter;
-	private static Path filePath;
+	private static String filePath;
 	
 	/**
 	 * Creates a new file with a time stamp in it's name.
-	 * 
-	 * @throws IOException Throws an exception if the file cannot be opened for some reason
 	 */
-	private Logger() {
+	public static void enable() {
 		
-		formatter = new SimpleDateFormat("MM/dd/yyyy_HH:mm:ss");
-		String fileName = "LogFile_" + formatter.format(Calendar.getInstance().getTime());
-		filePath = Paths.get(fileName);
-		logFile = null;
-		System.out.println("Hello world");
+		formatter = new SimpleDateFormat("MM-dd-yyyy_HH-mm-ss");
+		filePath = "log/LogFile_" + formatter.format(Calendar.getInstance().getTime()) + ".txt";
+		File file = new File(filePath);
+		
 		try {
-			logFile = Files.newBufferedWriter(filePath);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			logFile = new PrintWriter(file);
 		} catch	(IOException ex) {
 			System.err.println("IOException caught: " + ex.getMessage());
 		}
@@ -53,11 +54,7 @@ public final class Logger {
 	 */
 	public static void log(String type, String message) {
 		
-		try {
-			logFile.write(type + formatter.format(Calendar.getInstance().getTime()) + message);
-		} catch (IOException ex) {
-			System.err.println("IOException caught: " + ex.getMessage());
-		}
+		logFile.println(type + formatter.format(Calendar.getInstance().getTime()) + message);
 		
 	}
 	
@@ -92,13 +89,7 @@ public final class Logger {
 	 * Closes the logFile at the end of the program.
 	 */
 	public static void close() {
-		
-		try {
 			logFile.close();
-		} catch (IOException ex) {
-			System.err.println("IOException caught: " + ex.getMessage());
-		}
-		
 	}
 	
 	/**
@@ -107,6 +98,6 @@ public final class Logger {
 	 * @return Path to the current log file
 	 */
 	public static Path getLogFilePath() {
-		return filePath;
+		return Paths.get(filePath);
 	}
 }
