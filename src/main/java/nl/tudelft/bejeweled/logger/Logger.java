@@ -3,7 +3,6 @@ package nl.tudelft.bejeweled.logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.Format;
@@ -26,6 +25,11 @@ public final class Logger {
 	private static Format formatter;
 	private static String filePath;
 	private static boolean enabled;
+	
+	/**
+	 * Empty private constructor.
+	 */
+	private Logger() { };
 	
 	/**
 	 * Creates a new file with a time stamp in it's name.
