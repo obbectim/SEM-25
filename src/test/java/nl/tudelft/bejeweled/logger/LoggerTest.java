@@ -27,9 +27,9 @@ public class LoggerTest {
 	    List<String> lines = Files.lines(logFilePath).collect(
 	            Collectors.toList());
 		
-	    String firstLine = lines.get(0);
+	    String firstLine = lines.get(1);
 	    
-		assertTrue(lines.size() > 0 && lines.size() < 3);
+		assertTrue(lines.size() > 0 && lines.size() < 4);
 		assertEquals("INFO", firstLine.substring(0, 4));
 		assertEquals("Hello World!", firstLine.substring(firstLine.length()-12, firstLine.length()));
 		
@@ -51,9 +51,9 @@ public class LoggerTest {
 	    List<String> lines = Files.lines(logFilePath).collect(
 	            Collectors.toList());
 		
-	    String firstLine = lines.get(0);
+	    String firstLine = lines.get(1);
 	    
-		assertTrue(lines.size() > 0 && lines.size() < 3);
+		assertTrue(lines.size() > 0 && lines.size() < 4);
 		assertEquals("ERROR", firstLine.substring(0, 5));
 		assertEquals("Hakuna Matata", firstLine.substring(firstLine.length()-13, firstLine.length()));
 		
@@ -67,7 +67,6 @@ public class LoggerTest {
 	@Test
 	public void testWarningLogging() throws IOException {
 		Logger.enable();
-		// Create a logFile
 		Logger.logWarning("Hello JavaFX");
 		Path logFilePath = Logger.getLogFilePath();
 		Logger.close();
@@ -75,13 +74,35 @@ public class LoggerTest {
 	    List<String> lines = Files.lines(logFilePath).collect(
 	            Collectors.toList());
 		
-	    String firstLine = lines.get(0);
+	    String firstLine = lines.get(1);
 	    
-		assertTrue(lines.size() > 0 && lines.size() < 3);
+		assertTrue(lines.size() > 0 && lines.size() < 4);
 		assertEquals("WARNING", firstLine.substring(0, 7));
 		assertEquals("Hello JavaFX", firstLine.substring(firstLine.length()-12, firstLine.length()));
 		
 		Files.delete(logFilePath);
 	}
-
+	
+	
+	/**
+	 * Test enabling and disabling of logging.
+	 */
+	@Test
+	public void testEnableDisable() throws IOException {
+		Logger.enable();
+		Path logFilePath = Logger.getLogFilePath();
+		Logger.disable();
+		
+		List<String> lines = Files.lines(logFilePath).collect(
+	            Collectors.toList());
+		
+	    String firstLine = lines.get(0);
+	    String secondLine = lines.get(1);
+	    
+		assertTrue(lines.size() > 0 && lines.size() < 4);
+		assertEquals("enabled logging", firstLine.substring(firstLine.length()-15, firstLine.length()));
+		assertEquals("disabled logging", secondLine.substring(secondLine.length()-16, secondLine.length()));
+		
+		Files.delete(logFilePath);
+	}
 }

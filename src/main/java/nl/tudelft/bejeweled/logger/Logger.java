@@ -25,6 +25,7 @@ public final class Logger {
 	private static PrintWriter logFile;
 	private static Format formatter;
 	private static String filePath;
+	private static boolean enabled;
 	
 	/**
 	 * Creates a new file with a time stamp in it's name.
@@ -40,8 +41,24 @@ public final class Logger {
 				file.createNewFile();
 			}
 			logFile = new PrintWriter(file);
+			logInfo("enabled logging");
 		} catch	(IOException ex) {
 			System.err.println("IOException caught: " + ex.getMessage());
+		}
+		
+		enabled = true;
+		
+	}
+	
+	/**
+	 * Disables logging of the game.
+	 */
+	public static void disable() {
+		
+		if (enabled) {
+			logInfo("disabled logging");
+			close();
+			enabled = false;
 		}
 		
 	}
