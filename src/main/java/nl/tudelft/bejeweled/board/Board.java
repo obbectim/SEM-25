@@ -56,7 +56,7 @@ public class Board {
         this.gridWidth = BejeweledGame.GRID_WIDTH;
         this.gridHeight = BejeweledGame.GRID_HEIGHT;
         this.spriteWidth = BejeweledGame.SPRITE_WIDTH;
-        this.spriteHeight = BejeweledGame.SPRITE_WIDTH;
+        this.spriteHeight = BejeweledGame.SPRITE_HEIGHT;
         
         this.grid = grid;
         this.sceneNodes = sceneNodes;
