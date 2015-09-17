@@ -10,7 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
- * Class to log all events throughout runtime of the game.
+ * Class to log all events throughout runtime of the game. This logger can be enabled
+ * by appending a "-logging enabled" in the commandline.  
  * 
  * @author janharms
  *
@@ -35,6 +36,10 @@ public final class Logger {
 	 * Creates a new file with a time stamp in it's name.
 	 */
 	public static void enable() {
+		
+		if (enabled) {
+			return;
+		}
 		
 		formatter = new SimpleDateFormat("MM-dd-yyyy_HH-mm-ss");
 		filePath = "log/LogFile_" + formatter.format(Calendar.getInstance().getTime()) + ".txt";
@@ -75,7 +80,10 @@ public final class Logger {
 	 */
 	public static void log(String type, String message) {
 		
-		logFile.println(type + formatter.format(Calendar.getInstance().getTime()) + message);
+		if (enabled) {
+			logFile.println(type + formatter.format(Calendar.getInstance().getTime()) 
+			+ ": " + message);
+		}
 		
 	}
 	

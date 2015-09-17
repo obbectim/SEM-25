@@ -149,4 +149,13 @@ public class Jewel extends Sprite {
     public void simpleImplode() {
         setDead(true);
     }
+    
+    /**
+     * Converts the position information to a string for logging.
+     * 
+     * @return String describing the position of the Jewel on the board
+     */
+    public String toString() {
+    	return "Jewel @(" + boardX + ", " + boardY + ")";
+    }
 }

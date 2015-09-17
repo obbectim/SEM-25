@@ -7,6 +7,7 @@ import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.board.BoardFactory;
 import nl.tudelft.bejeweled.game.BejeweledGame;
 import nl.tudelft.bejeweled.gui.BejeweledGui;
+import nl.tudelft.bejeweled.logger.Logger;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
 /**
@@ -36,7 +37,22 @@ public class Launcher extends Application {
      * @param args Command line arguments which do not currently effect anything.
      */
     public static void main(String[] args) {
+    	
+    	// Check if logging should be enabled
+    	if (args.length > 1) {
+    		if (args[0].equals("-logging")) {
+    			
+    			if (args[1].equals("enabled") || args[1].equals("yes") || args[1].equals("1")
+    					|| args[1].equals("true")) {
+    				
+    				Logger.enable();
+    			}
+    		}
+    	}
+    	
         Application.launch(Launcher.class, (java.lang.String[]) null);
+        
+        Logger.disable();
     }
 
     @Override
@@ -67,6 +83,11 @@ public class Launcher extends Application {
         game.beginGameLoop();
     }
 
+    /**
+     * Creates the board from a set of sceneNodes.
+     * @param sceneNodes Groupd of javafx sceneNodes
+     * @return returns a board with the given nodes
+     */
     public Board makeBoard(Group sceneNodes) {
         return boardFactory.generateBoard(sceneNodes);
     }
@@ -78,8 +99,18 @@ public class Launcher extends Application {
         return new BoardFactory(getSpriteStore());
     }
 
-    public BejeweledGame getGame() { return game; }
+    /**
+     * Get function for the game.
+     * @return returns a handle to the game
+     */
+    public BejeweledGame getGame() { 
+    	return game; 
+    }
 
+    /**
+     * Get function for the SpriteStore.
+     * @return returns a handle to the SpriteStore
+     */
     protected SpriteStore getSpriteStore() {
         return spriteStore;
     }

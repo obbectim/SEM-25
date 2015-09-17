@@ -13,6 +13,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import nl.tudelft.bejeweled.game.BejeweledGame;
+import nl.tudelft.bejeweled.logger.Logger;
 import nl.tudelft.bejeweled.sprite.Jewel;
 import nl.tudelft.bejeweled.sprite.SelectionCursor;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
@@ -127,11 +128,12 @@ public class Board {
         if (getSelection().size() == 2) {
 
             if (moveWithinDomain(getSelection().get(0), getSelection().get(1))) {
-                System.out.println("Swapping jewels");
+                Logger.logInfo("Swapping jewels " + getSelection().get(0).toString()
+                		+ " and " + getSelection().get(1).toString());
                 swapJewel(getSelection().get(0), getSelection().get(1));
 
                 int comboCount = checkBoardCombos();
-                System.out.println("Combo Jewels on board: " + comboCount);
+                Logger.logInfo("Combo Jewels on board: " + comboCount);
                 if (comboCount == 0) {
                 	setToReverse(getSelection().get(0), getSelection().get(1));
                 }
@@ -649,7 +651,6 @@ public class Board {
 			falling = false;
 			for (int i = 0; i < gridWidth; i++) {		
 					if (grid[i][j].isDead()) {
-						System.out.println("Swap " + j + " and " + (j - 1));
 						swapJewel(grid[i][j], grid[i][j - 1]);
 						falling = true;
 					}
