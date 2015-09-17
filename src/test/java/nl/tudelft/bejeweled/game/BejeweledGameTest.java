@@ -28,7 +28,9 @@ public class BejeweledGameTest extends ApplicationTest {
      * Quit the user interface when we're done.
      */
     @After
-    public void tearDown() { }
+    public void tearDown() {
+        closeCurrentWindow();
+    }
 
     /**
      * Test of a user story where the user starts the game,
@@ -36,7 +38,7 @@ public class BejeweledGameTest extends ApplicationTest {
      */
     @Test
     public void testMoveJewelNoWin() {
-        BejeweledGame game = launcher.getGame();
+        BejeweledGame game = (BejeweledGame)launcher.getGame();
         assertFalse(game.isInProgress());
 
         clickOn("#buttonStart");

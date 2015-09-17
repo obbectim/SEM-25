@@ -5,7 +5,8 @@ import javafx.scene.Group;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.board.BoardFactory;
-import nl.tudelft.bejeweled.game.BejeweledGame;
+import nl.tudelft.bejeweled.game.Game;
+import nl.tudelft.bejeweled.game.GameFactory;
 import nl.tudelft.bejeweled.gui.BejeweledGui;
 import nl.tudelft.bejeweled.logger.Logger;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
@@ -16,20 +17,19 @@ import nl.tudelft.bejeweled.sprite.SpriteStore;
  */
 public class Launcher extends Application {
 
+    /** The frames per second limit of the game. */
 	private static final int FPS_LIMIT = 60;
 
-    private SpriteStore spriteStore;
+    /** The Window Title. */
+    private static final String WINDOW_TITLE = "Bejeweled";
 
-    private BoardFactory boardFactory;
-	
-    /**
-     *  The current game.
-     */
-    private BejeweledGame game;
+    /** The SpriteStore. */
+    private static final SpriteStore spriteStore = new SpriteStore();
 
-    /**
-     * The GUI for the Bejeweled game.
-     */
+    /**  The current game. */
+    private Game game;
+
+    /** The GUI for the Bejeweled game. */
     private BejeweledGui bejeweledGui;
 
     /**
@@ -65,12 +65,10 @@ public class Launcher extends Application {
      * @param theStage The primary stage to draw the GUI on
      */
     public void launchGame(Stage theStage) {
-        spriteStore = new SpriteStore();
-        game = new BejeweledGame(FPS_LIMIT, "Bejeweled", spriteStore);
+        game = makeGame(FPS_LIMIT, WINDOW_TITLE, spriteStore);
 
-        boardFactory = getBoardFactory();
         Group sceneNodes = new Group();
-        Board board = makeBoard(sceneNodes);
+        Board board = makeBoard(getBoardFactory(), sceneNodes);
         game.setSceneNodes(sceneNodes);
 
         // initialise the gui and map start/stop buttons
@@ -84,15 +82,29 @@ public class Launcher extends Application {
     }
 
     /**
-     * Creates the board from a set of sceneNodes.
-     * @param sceneNodes Groupd of javafx sceneNodes
-     * @return returns a board with the given nodes
+     * Makes a Game object.
+     * @param framesPerSecond The refresh rate for the animations.
+     * @param windowTitle The window Title.
+     * @param spriteStore The sprite store.
+     * @return An instantiated game object.
      */
-    public Board makeBoard(Group sceneNodes) {
+    public Game makeGame(int framesPerSecond, String windowTitle, SpriteStore spriteStore) {
+        GameFactory gf = new GameFactory(spriteStore);
+        return gf.createBejeweledGame(framesPerSecond, windowTitle);
+    }
+
+    /**
+     * Makes a board.
+     * @param boardFactory The BoardFactory object that creates the board.
+     * @param sceneNodes The group of nodes that are presented in the scene.
+     * @return An instantiated board.
+     */
+    public Board makeBoard(BoardFactory boardFactory, Group sceneNodes) {
         return boardFactory.generateBoard(sceneNodes);
     }
 
     /**
+     * Get a freshly created boardfactory.
      * @return A new board factory using the sprite store from
      */
     protected BoardFactory getBoardFactory() {
@@ -103,7 +115,7 @@ public class Launcher extends Application {
      * Get function for the game.
      * @return returns a handle to the game
      */
-    public BejeweledGame getGame() { 
+    public Game getGame() { 
     	return game; 
     }
 
