@@ -33,7 +33,7 @@ public class LoggerTest {
 		// Create a logFile
 		Logger.logInfo(message);
 		Path logFilePath = Logger.getLogFilePath();
-		Logger.close();
+		Logger.disable();
 
 	    List<String> lines = Files.lines(logFilePath).collect(
 	            Collectors.toList());
@@ -59,7 +59,7 @@ public class LoggerTest {
 		// Create a logFile
 		Logger.logError(message);
 		Path logFilePath = Logger.getLogFilePath();
-		Logger.close();
+		Logger.disable();
 
 	    List<String> lines = Files.lines(logFilePath).collect(
 	            Collectors.toList());
@@ -84,7 +84,7 @@ public class LoggerTest {
 		Logger.enable();
 		Logger.logWarning(message);
 		Path logFilePath = Logger.getLogFilePath();
-		Logger.close();
+		Logger.disable();
 
 	    List<String> lines = Files.lines(logFilePath).collect(
 	            Collectors.toList());
