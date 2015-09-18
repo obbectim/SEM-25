@@ -134,8 +134,6 @@ public class BoardFactory {
                 grid[i][j].getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
                         new EventHandler<MouseEvent>() {
                           public void handle(MouseEvent event) {
-                            System.out.println("Jewel[" + jewel.getBoardX() + "]"
-                         	+ "[" + jewel.getBoardY() + "] " + event.getEventType());
                             board.addSelection(jewel);
                             event.consume();
                         }

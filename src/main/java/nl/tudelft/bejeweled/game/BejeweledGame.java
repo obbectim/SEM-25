@@ -12,6 +12,7 @@ import javafx.util.Duration;
 import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.board.BoardFactory;
 import nl.tudelft.bejeweled.board.BoardObserver;
+import nl.tudelft.bejeweled.logger.Logger;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
 
@@ -65,7 +66,7 @@ public class BejeweledGame extends Game implements BoardObserver {
         }
         inProgress = true;
         
-        System.out.println("Game started");
+        Logger.logInfo("Game started");
 
         score = 0;
         scoreLabel.setText(Integer.toString(score));
@@ -80,7 +81,7 @@ public class BejeweledGame extends Game implements BoardObserver {
 
         // check for any combo's on the freshly created board
         int comboCount = board.checkBoardCombos();
-        System.out.println("Combo Jewels on board: " + comboCount);
+        Logger.logInfo("Combo Jewels on board: " + comboCount);
     }
 
     /**
@@ -92,7 +93,8 @@ public class BejeweledGame extends Game implements BoardObserver {
             return;
         }
 
-        System.out.println("Game stopped");
+        Logger.logInfo("Final score: " + score);
+        Logger.logInfo("Game stopped");
 
         // remove the JavaFX group with jewel nodes
     //    getSceneNodes().getChildren().removeAll();
@@ -169,6 +171,8 @@ public class BejeweledGame extends Game implements BoardObserver {
             }
         });
         ft.play();
+        
+        Logger.logInfo("Out of moves!");
 
     	stop();
     }

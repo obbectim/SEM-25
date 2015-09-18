@@ -8,6 +8,7 @@ import nl.tudelft.bejeweled.board.BoardFactory;
 import nl.tudelft.bejeweled.game.Game;
 import nl.tudelft.bejeweled.game.GameFactory;
 import nl.tudelft.bejeweled.gui.BejeweledGui;
+import nl.tudelft.bejeweled.logger.Logger;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
 /**
@@ -36,7 +37,22 @@ public class Launcher extends Application {
      * @param args Command line arguments which do not currently effect anything.
      */
     public static void main(String[] args) {
+    	
+    	// Check if logging should be enabled
+    	if (args.length > 1) {
+    		if (args[0].equals("-logging")) {
+    			
+    			if (args[1].equals("enabled") || args[1].equals("yes") || args[1].equals("1")
+    					|| args[1].equals("true")) {
+    				
+    				Logger.enable();
+    			}
+    		}
+    	}
+    	
         Application.launch(Launcher.class, (java.lang.String[]) null);
+        
+        Logger.disable();
     }
 
     @Override
@@ -96,14 +112,16 @@ public class Launcher extends Application {
     }
 
     /**
-     * Getter method for the game that's being launched.
-     * @return The current game.
+     * Get function for the game.
+     * @return returns a handle to the game
      */
-    public Game getGame() { return game; }
+    public Game getGame() { 
+    	return game; 
+    }
 
     /**
-     * Getter method for the spritestore.
-     * @return The spritestore.
+     * Get function for the SpriteStore.
+     * @return returns a handle to the SpriteStore
      */
     protected SpriteStore getSpriteStore() {
         return spriteStore;

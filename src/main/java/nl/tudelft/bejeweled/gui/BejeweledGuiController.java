@@ -81,7 +81,6 @@ public class BejeweledGuiController implements Initializable {
 
              @Override
              public void handle(ActionEvent event) {
-                 System.out.println("Exit");
 
                  // get a handle to the stage
                  Stage stage = (Stage) buttonExit.getScene().getWindow();
@@ -99,8 +98,6 @@ public class BejeweledGuiController implements Initializable {
     		
     		@Override
     		public void handle(ActionEvent event) {
-    			System.out.println("Hint");
-    			
     			game.showHint();
     		}
     	});
