@@ -43,7 +43,7 @@ public final class Logger {
 		
 		enabled = true;
 		
-		formatter = new SimpleDateFormat("MM-dd-yyyy_HH-mm-ss");
+		formatter = new SimpleDateFormat("MM-dd-yyyy_HH-mm-ss.SSS");
 		filePath = "log/LogFile_" + formatter.format(Calendar.getInstance().getTime()) + ".txt";
 		File file = new File(filePath);
 		
