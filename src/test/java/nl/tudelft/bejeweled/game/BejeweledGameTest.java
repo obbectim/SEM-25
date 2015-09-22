@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.CustomBoardLauncher;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
@@ -36,6 +37,7 @@ public class BejeweledGameTest extends ApplicationTest {
      * Test of a user story where the user starts the game,
      * swaps 2 jewels and then ends the game.
      */
+    @Ignore
     @Test
     public void testMoveJewelNoWin() {
         BejeweledGame game = (BejeweledGame)launcher.getGame();
