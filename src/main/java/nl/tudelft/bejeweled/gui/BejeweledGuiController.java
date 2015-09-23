@@ -92,7 +92,7 @@ public class BejeweledGuiController implements Initializable {
 
                  // get a handle to the stage
                  Stage stage = (Stage) buttonExit.getScene().getWindow();
-                 game.stop();
+                 game.save();
                  stage.close();
              }
          });
