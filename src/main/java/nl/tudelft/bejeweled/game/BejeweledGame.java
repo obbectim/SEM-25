@@ -46,6 +46,8 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
     private BoardFactory boardFactory;
 
     private int score = 0;
+    
+    private int isStop = 0;
 
     private SpriteStore spriteStore;
 
@@ -117,6 +119,7 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
         board.resetGrid();
 
         inProgress = false;
+        isStop=1;
     }
 
     /**
@@ -249,6 +252,7 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
         board.resetGrid();
         Logger.logInfo("Game saved");
         inProgress = false;
+        isStop=1;
         
     }
     
@@ -258,7 +262,7 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
         if (inProgress) {
             return;
         }
-        inProgress = true;
+        
         Board boardState= null;
         InputStream file;
        try {
@@ -275,7 +279,9 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
            e.printStackTrace();
        }
        board.state=boardState.state;
-       board.resetGrid();
+       if (isStop==0){
+    	   board.resetGrid();
+       }
        board.makeGrid();
        
        BejeweledGame scoreState= null;
@@ -294,6 +300,7 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
       } catch (ClassNotFoundException e) {
           e.printStackTrace();
       } 
+      inProgress = true;
       
         Logger.logInfo("Game resumed");       
        scoreLabel.setText(Integer.toString(score));
