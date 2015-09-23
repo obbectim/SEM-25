@@ -34,6 +34,12 @@ public abstract class Game {
      * Title in the application window.
      */
     private final String windowTitle;
+    
+    
+    /**
+     * Keeps track  of the highest scores ever achieved.
+     */
+    protected HighScore highScore;
 
     /**
      * The sprite manager.

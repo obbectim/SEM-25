@@ -54,6 +54,9 @@ public class BejeweledGame extends Game implements BoardObserver {
         super(framesPerSecond, windowTitle);
         this.spriteStore = spriteStore;
         boardFactory = new BoardFactory(spriteStore);
+        highScore = new HighScore();
+        
+        highScore.loadHighScores();
     }
 
     /**
@@ -94,6 +97,11 @@ public class BejeweledGame extends Game implements BoardObserver {
         }
 
         Logger.logInfo("Final score: " + score);
+        int place = highScore.isHighScore(score);
+        if (place >  0) {
+        	Logger.logInfo("Your score is a new highScore! Congratulations, you are at place "
+        			+ place + " in the highScore List");
+        }
         Logger.logInfo("Game stopped");
 
         // remove the JavaFX group with jewel nodes
