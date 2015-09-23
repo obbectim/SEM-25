@@ -1,5 +1,7 @@
 package nl.tudelft.bejeweled.game;
 
+import javax.xml.bind.JAXBException;
+
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -54,9 +56,15 @@ public class BejeweledGame extends Game implements BoardObserver {
         super(framesPerSecond, windowTitle);
         this.spriteStore = spriteStore;
         boardFactory = new BoardFactory(spriteStore);
-        highScore = new HighScore();
+        try {
+        	highScore = new HighScore();
         
-        highScore.loadHighScores();
+        	highScore.loadHighScores();
+        }
+        catch (JAXBException ex) {
+        	ex.printStackTrace();
+        	Logger.logError("HighScore system encountered an error");
+        }
     }
 
     /**

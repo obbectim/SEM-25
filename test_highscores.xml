@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<highScore>
+    <highscores>
+        <entry>
+            <key>1000</key>
+            <value>Jan</value>
+        </entry>
+        <entry>
+        	<key>2000</key>
+        	<value>Jeroen</value></entry>
+        <entry>
+        	<key>3000</key>
+        	<value>Amrit</value></entry>
+        <entry>
+        	<key>4000</key><value>Pim</value>
+        	</entry>
+        <entry>
+        	<key>5000</key>
+        	<value>Bastiaan</value></entry>
+    </highscores>
+</highScore>
