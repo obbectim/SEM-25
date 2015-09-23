@@ -30,6 +30,7 @@ public class HighScoreTest {
 	private Path highScores = Paths.get("highscores.xml");
 	private Path testHighScores = Paths.get("test_highscores.xml");
 	private Path backupHighScores = Paths.get("highscores.xml.backup");
+	private final int entries = 5;
 	
 	/**
 	 * Initializes the highScore object.
@@ -50,7 +51,7 @@ public class HighScoreTest {
 	
 	/**
 	 * Move back the files.
-	 * @throws IOException
+	 * @throws IOException If moveing or deleting of fails encounters unexpected behaviour
 	 */
 	@After
 	public void close() throws IOException {
@@ -97,7 +98,7 @@ public class HighScoreTest {
 		newHighScore.loadHighScores();
 		assertTrue(newHighScore.getHighScores().containsValue("Jan"));
 		assertTrue(newHighScore.getHighScores().containsKey(newScore));
-		assertTrue(newHighScore.getHighScores().size() <= 5);
+		assertTrue(newHighScore.getHighScores().size() <= entries);
 		
 		// copy testHighscores.xml to highscores.xml
 		Files.copy(testHighScores, highScores, StandardCopyOption.REPLACE_EXISTING);
@@ -112,8 +113,8 @@ public class HighScoreTest {
 		highScore.loadHighScores();
 		final int lowScore = 999;
 		
-		assertEquals(highScore.isHighScore(newScore), 5);
-		assertEquals(highScore.isHighScore(currentScore), 5);
+		assertEquals(highScore.isHighScore(newScore), entries);
+		assertEquals(highScore.isHighScore(currentScore), entries);
 		assertEquals(highScore.isHighScore(lowScore), 0);
 	}
 }

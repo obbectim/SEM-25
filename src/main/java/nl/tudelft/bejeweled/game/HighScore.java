@@ -1,10 +1,11 @@
 package nl.tudelft.bejeweled.game;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.TreeMap;
 
 import javax.xml.bind.JAXBContext;
@@ -31,7 +32,8 @@ public class HighScore {
 
 	@XmlElement
 	private TreeMap<Integer, String> highscores;
-	private static final String highscoreFile = "highscores.xml";
+	private static final String HIGHSCOREFILE = "highscores.xml";
+	private static final int ENTRIES = 5;
 	private boolean loaded = false;
 	private final JAXBContext jc;
 	
@@ -63,10 +65,12 @@ public class HighScore {
 		
 		Unmarshaller um = jc.createUnmarshaller();
 		try {
-			HighScore hs = (HighScore)um.unmarshal(new FileReader(highscoreFile));
+			InputStream is = new FileInputStream(HIGHSCOREFILE);
+			HighScore hs = (HighScore) um.unmarshal(is);
 			highscores = hs.getHighScores();
+			is.close();
 		}
-		catch (FileNotFoundException|JAXBException ex ) {
+		catch (JAXBException | IOException ex) {
 			Logger.logInfo("No highscore file existing, creating one");
 		}
 		
@@ -84,7 +88,7 @@ public class HighScore {
 		
 		Marshaller m = jc.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		m.marshal(this, new File(highscoreFile));
+		m.marshal(this, new File(HIGHSCOREFILE));
 		
 		Logger.logInfo("Saving to file");
 	}
@@ -102,7 +106,7 @@ public class HighScore {
 		
 		highscores.put(score, name);
 		
-		if (highscores.size() > 5) {
+		if (highscores.size() > ENTRIES) {
 			highscores.remove(highscores.firstKey());
 		}
 		
@@ -113,7 +117,6 @@ public class HighScore {
 	/**
 	 * Checks if the given score is as good or better than the top 5 scores.
 	 * @param score Score to be checked for a highscore
-	 * @param name Name of the player that achieved the high score
 	 * @return Returns the place of the score, returns 0 if the score is no high score
 	 */
 	public int isHighScore(int score) {
@@ -128,20 +131,20 @@ public class HighScore {
 		int place = Arrays.binarySearch(tempScores.keySet().toArray(), score);
 		int size = tempScores.size();
 
-		if (size<=5) {
-			return 5-place;
+		if (size <= ENTRIES) {
+			return ENTRIES - place;
 		}
-		else if (place == 0){
+		else if (place == 0) {
 			return place;
 		}
 		else {
-			return 5-place+1;
+			return ENTRIES - place + 1;
 		}
 	}
 	
 	/**
 	 * Returns the current list of highscores.
-	 * @return
+	 * @return returns the TreeMap of highscores and names
 	 */
 	public TreeMap<Integer, String> getHighScores() {
 		return highscores;
