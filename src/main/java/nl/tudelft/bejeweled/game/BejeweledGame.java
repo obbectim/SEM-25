@@ -48,6 +48,8 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
     private int score = 0;
     
     private int isStop = 0;
+    
+    private int isResume = 1;
 
     private SpriteStore spriteStore;
 
@@ -98,6 +100,7 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
         // check for any combo's on the freshly created board
         int comboCount = board.checkBoardCombos();
         Logger.logInfo("Combo Jewels on board: " + comboCount);
+        isResume=0;
     }
 
     /**
@@ -120,6 +123,7 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
 
         inProgress = false;
         isStop=1;
+        isResume=0;
     }
 
     /**
@@ -253,13 +257,14 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
         Logger.logInfo("Game saved");
         inProgress = false;
         isStop=1;
+        isResume=1;
         
     }
     
     @Override
     public void resume() {
         
-        if (inProgress) {
+        if (inProgress || isResume==0) {
             return;
         }
         
@@ -308,7 +313,7 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
        gamePane.getChildren().add(new Scene(getSceneNodes(),
                                            gamePane.getWidth(),
                                            gamePane.getHeight()).getRoot());
-          
+       isResume=0;
     }
     
     /**
