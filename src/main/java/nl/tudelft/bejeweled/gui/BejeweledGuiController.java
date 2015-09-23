@@ -6,12 +6,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.game.Game;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 
 /**
  * Created by Jeroen on 3-9-2015.
@@ -34,6 +39,8 @@ public class BejeweledGuiController implements Initializable {
     private Pane boardPane;
     @FXML
     private Label scoreLabel;
+    @FXML
+    private ListView<String> highscoreList;
 
     @Override // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -45,9 +52,26 @@ public class BejeweledGuiController implements Initializable {
         initializeExitButton();    
         assert buttonHint != null;
         initializeHintButton();
+        assert highscoreList != null;
     }
     
     /**
+     * Populates the highscore list with highscores.
+     */
+    private void initializeListView() {
+    	TreeMap<Integer, String> highscores = game.getHighScores();
+    	List<String> entries = new ArrayList<String>();
+    	
+    	int counter = highscores.size();
+    	for (Map.Entry<Integer, String> entry : highscores.entrySet()) {
+    		entries.add(0, counter + ". " + entry.getValue() + ": " + entry.getKey());
+    		counter--;
+    	}
+    	
+    	highscoreList.getItems().setAll(entries);
+	}
+
+	/**
      * Sets start button to start the game.
      * */
     public void initializeStartButton() {
@@ -69,6 +93,7 @@ public class BejeweledGuiController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 game.stop();
+                initializeListView();
             }
         });
     }
@@ -109,6 +134,7 @@ public class BejeweledGuiController implements Initializable {
      */
     public void setGame(Game game) {
         this.game = game;
+        initializeListView();
     }
 
     /**

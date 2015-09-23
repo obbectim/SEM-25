@@ -2,10 +2,6 @@
 <highScore>
     <highscores>
         <entry>
-            <key>1780</key>
-            <value>Jan Harms</value>
-        </entry>
-        <entry>
             <key>2520</key>
             <value>Jan Harms</value>
         </entry>
@@ -20,6 +16,10 @@
         <entry>
             <key>3900</key>
             <value>Jan Harms</value>
+        </entry>
+        <entry>
+            <key>13500</key>
+            <value>Jan</value>
         </entry>
     </highscores>
 </highScore>

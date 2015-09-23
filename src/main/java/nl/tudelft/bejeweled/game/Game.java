@@ -14,6 +14,7 @@ import nl.tudelft.bejeweled.sprite.Sprite;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
 import java.util.Iterator;
+import java.util.TreeMap;
 
 /**
  * Created by Jeroen on 3-9-2015.
@@ -170,6 +171,14 @@ public abstract class Game {
      */
     protected static void setGameLoop(Timeline gameLoop) {
         Game.gameLoop = gameLoop;
+    }
+    
+    /**
+     * The map of names and highscores.
+     * @return a TreeMap<Integer, String> of the scores and corresponding player names
+     */
+    public TreeMap<Integer, String> getHighScores() {
+    	return highScore.getHighScores();
     }
 
     /**
