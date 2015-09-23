@@ -3,6 +3,7 @@ package nl.tudelft.bejeweled.game;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -65,8 +66,8 @@ public class HighScore {
 			HighScore hs = (HighScore)um.unmarshal(new FileReader(highscoreFile));
 			highscores = hs.getHighScores();
 		}
-		catch (FileNotFoundException ex) {
-			System.err.println("FileNotFoundException: " + ex.getMessage());
+		catch (FileNotFoundException|JAXBException ex ) {
+			Logger.logInfo("No highscore file existing, creating one");
 		}
 		
 		loaded = true;
@@ -101,6 +102,10 @@ public class HighScore {
 		
 		highscores.put(score, name);
 		
+		if (highscores.size() > 5) {
+			highscores.remove(highscores.firstKey());
+		}
+		
 		saveHighScores();
 		Logger.logInfo("Adding score to the highscores");
 	}
@@ -117,21 +122,21 @@ public class HighScore {
 		}
 		Logger.logInfo("Checking whether the score is a highscore");
 		
-		if (score < highscores.firstKey()) {
-			return 0;
+		TreeMap<Integer, String> tempScores = new TreeMap<Integer, String>();
+		tempScores.putAll(highscores);
+		tempScores.put(score, "none");
+		int place = Arrays.binarySearch(tempScores.keySet().toArray(), score);
+		int size = tempScores.size();
+
+		if (size<=5) {
+			return 5-place;
 		}
-		
-		int place = 6;
-		for(Map.Entry<Integer,String> entry : highscores.entrySet()) {
-			Integer key = entry.getKey();
-			String value = entry.getValue();
-			if (score < key) {
-				break;
-			}
-			place--;
+		else if (place == 0){
+			return place;
 		}
-		
-		return place;
+		else {
+			return 5-place+1;
+		}
 	}
 	
 	/**

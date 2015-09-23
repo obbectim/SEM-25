@@ -1,6 +1,7 @@
 package nl.tudelft.bejeweled.game;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -96,6 +97,7 @@ public class HighScoreTest {
 		newHighScore.loadHighScores();
 		assertTrue(newHighScore.getHighScores().containsValue("Jan"));
 		assertTrue(newHighScore.getHighScores().containsKey(newScore));
+		assertTrue(newHighScore.getHighScores().size() <= 5);
 		
 		// copy testHighscores.xml to highscores.xml
 		Files.copy(testHighScores, highScores, StandardCopyOption.REPLACE_EXISTING);
@@ -110,8 +112,8 @@ public class HighScoreTest {
 		highScore.loadHighScores();
 		final int lowScore = 999;
 		
-		assertTrue(highScore.isHighScore(newScore) == 5);
-		assertTrue(highScore.isHighScore(currentScore) == 5);
-		assertTrue(highScore.isHighScore(lowScore) == 0);
+		assertEquals(highScore.isHighScore(newScore), 5);
+		assertEquals(highScore.isHighScore(currentScore), 5);
+		assertEquals(highScore.isHighScore(lowScore), 0);
 	}
 }

@@ -1,5 +1,7 @@
 package nl.tudelft.bejeweled.game;
 
+import java.util.Optional;
+
 import javax.xml.bind.JAXBException;
 
 import javafx.animation.FadeTransition;
@@ -7,6 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
@@ -107,13 +111,22 @@ public class BejeweledGame extends Game implements BoardObserver {
         Logger.logInfo("Final score: " + score);
         int place = highScore.isHighScore(score);
         if (place >  0) {
-        	Logger.logInfo("Your score is a new highScore! Congratulations, you are at place "
-        			+ place + " in the highScore List");
+        	Dialog<String> dialog = new TextInputDialog();
+        	dialog.setTitle("Enter your name");
+        	dialog.setHeaderText("Congratulations, you achieved a highscore."
+        			+ " Please enter your name:");
+
+        	Optional<String> result = dialog.showAndWait();
+			result.ifPresent(name -> {
+				try {
+					highScore.addHighScore(score, name);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
         }
         Logger.logInfo("Game stopped");
 
-        // remove the JavaFX group with jewel nodes
-    //    getSceneNodes().getChildren().removeAll();
         gamePane.getChildren().remove(getSceneNodes());
         spriteStore.removeAllSprites();
         board.resetGrid();
