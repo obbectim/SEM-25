@@ -15,12 +15,26 @@ import nl.tudelft.bejeweled.board.BoardObserver;
 import nl.tudelft.bejeweled.logger.Logger;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+
 
 /**
  * Created by Jeroen on 6-9-2015.
  * Bejeweled Game class.
  */
-public class BejeweledGame extends Game implements BoardObserver {
+public class BejeweledGame extends Game implements BoardObserver, Serializable {
 	public static final int GRID_WIDTH = 8;
 	public static final int GRID_HEIGHT = 8;
 	public static final int SPRITE_WIDTH = 64;
@@ -191,6 +205,103 @@ public class BejeweledGame extends Game implements BoardObserver {
     		board.showHint();
     	}
     	
+    }
+    
+    
+    @SuppressWarnings("restriction")
+	@Override
+    public void save() {
+        
+        if (!inProgress) {
+            return;
+        }      
+        try {
+        	
+        	
+        	Board boardState= new Board(null, null);
+        	boardState.state=board.convertGrid();
+            OutputStream file = new FileOutputStream("board.mine");
+            OutputStream buffer = new BufferedOutputStream(file);
+            ObjectOutput output = new ObjectOutputStream(buffer);
+            output.writeObject(boardState);
+            output.flush();
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        try {
+        	int frame=60;
+        	BejeweledGame scoreState= new BejeweledGame( frame, null, null);
+        	scoreState.score=score;
+            OutputStream file = new FileOutputStream("score.mine");
+            OutputStream buffer = new BufferedOutputStream(file);
+            ObjectOutput output = new ObjectOutputStream(buffer);
+            output.writeObject(scoreState);
+            output.flush();
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        gamePane.getChildren().remove(getSceneNodes());
+        spriteStore.removeAllSprites();
+        board.resetGrid();
+        Logger.logInfo("Game saved");
+        inProgress = false;
+        
+    }
+    
+    @Override
+    public void resume() {
+        
+        if (inProgress) {
+            return;
+        }
+        inProgress = true;
+        Board boardState= null;
+        InputStream file;
+       try {
+           file = new FileInputStream("board.mine");
+           InputStream buffer = new BufferedInputStream(file);
+           ObjectInput input = new ObjectInputStream (buffer);
+           boardState = (Board)input.readObject();
+           input.close();
+       } catch (FileNotFoundException e) {
+           e.printStackTrace();
+       } catch (IOException e) {
+           e.printStackTrace();
+       } catch (ClassNotFoundException e) {
+           e.printStackTrace();
+       }
+       board.state=boardState.state;
+       board.resetGrid();
+       board.makeGrid();
+       
+       BejeweledGame scoreState= null;
+       
+      try {
+          file = new FileInputStream("score.mine");
+          InputStream buffer = new BufferedInputStream(file);
+          ObjectInput input = new ObjectInputStream (buffer);
+          scoreState = (BejeweledGame)input.readObject();
+          score = scoreState.score;
+          input.close();
+      } catch (FileNotFoundException e) {
+          e.printStackTrace();
+      } catch (IOException e) {
+          e.printStackTrace();
+      } catch (ClassNotFoundException e) {
+          e.printStackTrace();
+      } 
+      
+        Logger.logInfo("Game resumed");       
+       scoreLabel.setText(Integer.toString(score));
+
+       gamePane.getChildren().add(new Scene(getSceneNodes(),
+                                           gamePane.getWidth(),
+                                           gamePane.getHeight()).getRoot());
+          
     }
     
     /**

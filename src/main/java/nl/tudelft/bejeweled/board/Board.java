@@ -1,4 +1,5 @@
 package nl.tudelft.bejeweled.board;
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +23,7 @@ import nl.tudelft.bejeweled.sprite.SpriteStore;
  * Created by Jeroen on 4-9-2015.
  * Class that encapsulates the board.
  */
-public class Board {
+public class Board implements Serializable {
 	private int gridWidth;
 	private int gridHeight;
 	private int spriteWidth;
@@ -47,6 +48,7 @@ public class Board {
 	private boolean toReverseMove = false;
 	private Jewel reverse1;
 	private Jewel reverse2;
+	public int[][] state;
 
     /**
      * Constructor for the board class.
@@ -812,4 +814,47 @@ public class Board {
 		}
 		
 	}
+	
+	/**
+	 * Process grid to save its state
+	 * @return processed grid
+	 */
+	public int[][] convertGrid() {
+		int mGrid[][] = new int[8][8];
+		for (int i=0;i<8;i++){
+			for (int j=0; j<8; j++){
+				mGrid[i][j]= grid[i][j].getType();
+			}	
+		}
+		return mGrid;
+		
+	}
+	
+    /**
+     * Make grid from saved state.
+     *
+     */
+	public void makeGrid() {
+		for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+               Jewel jewel = new Jewel(state[i][j],i,j);
+                jewel.setxPos(i * spriteWidth);
+                jewel.setyPos(j * spriteHeight);
+                grid[i][j] = null;
+                grid[i][j]= jewel;
+                spriteStore.addSprites(jewel);
+                sceneNodes.getChildren().add(0, jewel.getNode());
+                setSpriteStore(spriteStore);
+                grid[i][j].getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
+                        new EventHandler<MouseEvent>() {
+                            public void handle(MouseEvent event) {
+                                addSelection(jewel);
+                                event.consume();
+                            }
+                			}
+                		);
+            }
+        }
+	}
+	
 }

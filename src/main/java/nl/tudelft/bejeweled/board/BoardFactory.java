@@ -1,4 +1,5 @@
 package nl.tudelft.bejeweled.board;
+import java.io.Serializable;
 
 import nl.tudelft.bejeweled.game.BejeweledGame;
 import nl.tudelft.bejeweled.sprite.Jewel;
@@ -19,7 +20,7 @@ import java.util.Random;
  * Created by Jeroen on 4-9-2015.
  * Factory class for creating the board class
  */
-public class BoardFactory {
+public class BoardFactory implements Serializable {
 	private int gridWidth;
 	private int gridHeight;
 	private int spriteWidth;

@@ -31,6 +31,10 @@ public class BejeweledGuiController implements Initializable {
     @FXML
     private Button buttonHint;
     @FXML
+    private Button buttonSave;
+    @FXML
+    private Button buttonResume;
+    @FXML
     private Pane boardPane;
     @FXML
     private Label scoreLabel;
@@ -45,6 +49,10 @@ public class BejeweledGuiController implements Initializable {
         initializeExitButton();    
         assert buttonHint != null;
         initializeHintButton();
+        assert buttonSave != null;
+        initializeSaveButton();
+        assert buttonResume != null;
+        initializeResumeButton();
     }
     
     /**
@@ -101,6 +109,32 @@ public class BejeweledGuiController implements Initializable {
     			game.showHint();
     		}
     	});
+    }
+    
+    /**
+     * Set save button to save the current game.
+     */
+    public void initializeSaveButton() {
+        buttonSave.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent event) {
+                game.save();
+            }
+        });
+    }
+    
+    /**
+     * Set resume button to resume the previously saved game.
+     */
+    public void initializeResumeButton() {
+        buttonResume.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent event) {
+                game.resume();
+            }
+        });
     }
     
     /**

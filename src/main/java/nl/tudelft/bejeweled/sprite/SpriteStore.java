@@ -1,16 +1,19 @@
 package nl.tudelft.bejeweled.sprite;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import nl.tudelft.bejeweled.board.BoardObserver;
+
 /**
  * Created by Jeroen on 4-9-2015.
  * Class that manages all the sprites/actors in the game.
  */
-public class SpriteStore {
+public class SpriteStore implements Serializable {
 
     /** All the sprite objects currently in play. */
     private static final List LIST_ACTORS = new ArrayList<>();
