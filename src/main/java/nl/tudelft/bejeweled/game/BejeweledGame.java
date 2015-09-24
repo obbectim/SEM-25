@@ -28,6 +28,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.io.File;
 
 
 /**
@@ -47,9 +48,9 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
 
     private int score = 0;
     
-    private int isStop = 0;
+    public boolean isStop = false;
     
-    private int isResume = 1;
+    public boolean isResume = true;
 
     private SpriteStore spriteStore;
 
@@ -100,7 +101,14 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
         // check for any combo's on the freshly created board
         int comboCount = board.checkBoardCombos();
         Logger.logInfo("Combo Jewels on board: " + comboCount);
-        isResume=0;
+        isResume=false;
+        File boardFile = new File("board.mine");
+        File scoreFile = new File("score.mine");
+        
+        if( boardFile.exists() || scoreFile.exists()) {		
+        boardFile.delete();
+        scoreFile.delete();
+        }
     }
 
     /**
@@ -122,8 +130,15 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
         board.resetGrid();
 
         inProgress = false;
-        isStop=1;
-        isResume=0;
+        isStop=true;
+        isResume=false;
+        
+        File boardFile = new File("board.mine");
+        File scoreFile = new File("score.mine");
+        if( boardFile.exists() || scoreFile.exists()) {
+        boardFile.delete();
+        scoreFile.delete();
+        }
     }
 
     /**
@@ -219,7 +234,7 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
 	@Override
     public void save() {
         
-        if (!inProgress) {
+        if (!inProgress || isStop) {
             return;
         }      
         try {
@@ -256,15 +271,16 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
         board.resetGrid();
         Logger.logInfo("Game saved");
         inProgress = false;
-        isStop=1;
-        isResume=1;
+        isStop=true;
+        isResume=true;
         
     }
     
     @Override
     public void resume() {
-        
-        if (inProgress || isResume==0) {
+    	File boardFile = new File("board.mine");
+    	File scoreFile = new File("score.mine");
+        if (inProgress || isResume==false || !boardFile.exists() || !scoreFile.exists() ) {
             return;
         }
         
@@ -284,7 +300,7 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
            e.printStackTrace();
        }
        board.state=boardState.state;
-       if (isStop==0){
+       if (isStop==false){
     	   board.resetGrid();
        }
        board.makeGrid();
@@ -313,7 +329,11 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
        gamePane.getChildren().add(new Scene(getSceneNodes(),
                                            gamePane.getWidth(),
                                            gamePane.getHeight()).getRoot());
-       isResume=0;
+       isResume=false;
+      if( boardFile.exists() || scoreFile.exists()){
+       boardFile.delete();
+       scoreFile.delete();
+      }
     }
     
     /**
