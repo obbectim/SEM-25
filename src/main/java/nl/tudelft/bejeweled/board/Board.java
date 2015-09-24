@@ -822,8 +822,8 @@ public class Board implements Serializable {
 	 */
 	public int[][] convertGrid() {
 		int[][] mGrid = new int[GRID_WIDTH][GRID_WIDTH]; 
-		for (int i = 0 ; i < GRID_WIDTH; i++) {
-			for (int j = 0 ; j < GRID_WIDTH; j++) {
+		for (int i = 0; i < GRID_WIDTH; i++) {
+			for (int j = 0; j < GRID_WIDTH; j++) {
 				mGrid[i][j] = grid[i][j].getType();  
 			}	
 		}
