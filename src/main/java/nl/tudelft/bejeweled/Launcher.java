@@ -1,8 +1,10 @@
 package nl.tudelft.bejeweled;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.board.BoardFactory;
 import nl.tudelft.bejeweled.game.Game;
@@ -79,6 +81,13 @@ public class Launcher extends Application {
 
         // begin game loop
         game.beginGameLoop();
+        
+        theStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+            	game.save();
+            	theStage.close();
+            }
+        });
     }
 
     /**
