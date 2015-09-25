@@ -16,6 +16,7 @@ import nl.tudelft.bejeweled.game.BejeweledGame;
 import nl.tudelft.bejeweled.logger.Logger;
 import nl.tudelft.bejeweled.sprite.Jewel;
 import nl.tudelft.bejeweled.sprite.SelectionCursor;
+import nl.tudelft.bejeweled.sprite.SpriteState;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
 /**
@@ -650,7 +651,7 @@ public class Board {
 		for (int j = 1; j < gridHeight; j++) {
 			falling = false;
 			for (int i = 0; i < gridWidth; i++) {		
-					if (grid[i][j].isDead()) {
+					if (grid[i][j].getState() == SpriteState.TO_BE_REMOVED) {
 						swapJewel(grid[i][j], grid[i][j - 1]);
 						falling = true;
 					}
@@ -706,7 +707,7 @@ public class Board {
      */
     public void fillEmptySpots() {
     	for (int i = 0; i < gridWidth; i++) {	
-    		if (grid[i][0].isDead()) {
+    		if (grid[i][0].getState() == SpriteState.TO_BE_REMOVED) {
     			addRandomJewel(i, 0);
             }
     	}

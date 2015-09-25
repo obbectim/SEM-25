@@ -131,7 +131,7 @@ public class Jewel extends Sprite {
         ft.setCycleCount(1);
         ft.setAutoReverse(false);
         ft.setOnFinished(event -> {
-            setDead(true);
+            setState(SpriteState.TO_BE_REMOVED);
             if(sceneGroup != null)
                 sceneGroup.getChildren().remove(getNode());
         });
@@ -144,7 +144,7 @@ public class Jewel extends Sprite {
      * not showing the sprite anymore.
      */
     public void simpleImplode() {
-        setDead(true);
+        setState(SpriteState.TO_BE_REMOVED);
     }
     
     /**
