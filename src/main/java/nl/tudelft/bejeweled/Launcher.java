@@ -1,8 +1,13 @@
 package nl.tudelft.bejeweled;
 
+import java.io.File;
+import java.util.Optional;
+
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.board.BoardFactory;
 import nl.tudelft.bejeweled.game.Game;
@@ -10,7 +15,9 @@ import nl.tudelft.bejeweled.game.GameFactory;
 import nl.tudelft.bejeweled.gui.BejeweledGui;
 import nl.tudelft.bejeweled.logger.Logger;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
-
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 /**
  * Created by Jeroen on 1-9-2015.
  * Class that launches the game
@@ -76,9 +83,32 @@ public class Launcher extends Application {
 
         // initialise the game
         game.initialise(board, bejeweledGui.getBoardPane(), bejeweledGui.getScoreLabel());
+        File boardFile = new File("board.mine");
+    	File scoreFile = new File("score.mine");
+        if (boardFile.exists() && scoreFile.exists()) {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Saved State Available");
+            String s = "Would you like to resume the previous game?";
+            alert.setContentText(s);
 
+            Optional<ButtonType> result = alert.showAndWait();
+            if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+                game.resume();
+            }
+            else {
+                boardFile.delete();
+                scoreFile.delete();
+            }
+        }
         // begin game loop
         game.beginGameLoop();
+        
+        theStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+            	game.save();
+            	theStage.close();
+            }
+        });
     }
 
     /**

@@ -13,13 +13,15 @@ import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.sprite.Sprite;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
+import java.io.Serializable;
 import java.util.Iterator;
+import java.util.TreeMap;
 
 /**
  * Created by Jeroen on 3-9-2015.
  * Class to handle game input and events
  */
-public abstract class Game {
+public abstract class Game implements Serializable {
 
     /** All nodes to be displayed in the game window. */
     private Group sceneNodes;
@@ -34,6 +36,12 @@ public abstract class Game {
      * Title in the application window.
      */
     private final String windowTitle;
+    
+    
+    /**
+     * Keeps track  of the highest scores ever achieved.
+     */
+    protected HighScore highScore;
 
     /**
      * The sprite manager.
@@ -165,6 +173,14 @@ public abstract class Game {
     protected static void setGameLoop(Timeline gameLoop) {
         Game.gameLoop = gameLoop;
     }
+    
+    /**
+     * The map of names and highscores.
+     * @return a TreeMap<Integer, String> of the scores and corresponding player names
+     */
+    public TreeMap<Integer, String> getHighScores() {
+    	return highScore.getHighScores();
+    }
 
     /**
      * Returns the sprite manager containing the sprite objects to
@@ -209,4 +225,14 @@ public abstract class Game {
      * Shows a hint to a possible move
      */
 	public abstract void showHint();
+    
+    /**
+     * Saves the current game
+     */
+    public abstract void save();
+    
+    /**
+     * Resume the previously saved game
+     */
+    public abstract void resume();
 }
