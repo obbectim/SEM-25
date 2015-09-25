@@ -353,9 +353,6 @@ public class Board {
             // TODO Make sure the Jewels are also removed from the spriteStore.
             // grid[jewel.getBoardX()][jewel.getBoardY()] = null;
         }
-        //  doGravity();
-        //  outOfMoves();
-        doGravity();
         outOfMoves();
         return count;
     }
@@ -643,41 +640,6 @@ public class Board {
     }
     
     /**
-     * Function that runs one step of jewels falling down.
-     * @return True if jewels are moving.
-     */
-    public Boolean doGravityStep() {
-    	boolean falling;
-		for (int j = 1; j < gridHeight; j++) {
-			falling = false;
-			for (int i = 0; i < gridWidth; i++) {		
-					if (grid[i][j].getState() == SpriteState.TO_BE_REMOVED) {
-						swapJewel(grid[i][j], grid[i][j - 1]);
-						falling = true;
-					}
-				}
-				if (falling) {
-					return true;
-				}
-			}
-		return false;
-    }
-    
-    /**
-     * Function that makes the jewels fall down.
-     * @return True if jewels are moving.
-     */
-    public boolean doGravity() {
-    	boolean changes = false;
-    	while (doGravityStep()) {
-    		changes = true;
-    		fillEmptySpots();
-    	}
-    	return changes;
-    }
-    
-
-    /**
      * This function adds a jewel of a random type to the grid at the specified position.
      * @param i Grid column
      * @param j Grid row
@@ -699,20 +661,84 @@ public class Board {
                   }
           );
     }
+    
+    /**
+     * This function adds a animating jewel of a random type to the grid at the specified position.
+     * The jewel is initially shown at a different position, and moves to its target spot.
+     * @param i Grid column
+     * @param j Grid row
+     * @param translateX X offset in pixels
+     * @param translateX Y offset in pixels
+     */
+    protected void addRandomJewel(int i, int j, int translateX, int translateY) {
+    	  Jewel jewel = new Jewel(rand.nextInt(NUMBER_OF_JEWEL_TYPES) + 1, i, j);
+          jewel.setxPos(i * spriteWidth);
+          jewel.setyPos(j * spriteHeight);
+          if(translateX != 0 || translateY != 0){
+        	  jewel.setState(SpriteState.ANIMATION_ACTIVE);
+	          jewel.getNode().setTranslateX(translateX);
+	          jewel.getNode().setTranslateY(translateY);
+          }
+          grid[i][j] = jewel;
+          spriteStore.addSprites(jewel);
+          sceneNodes.getChildren().add(0, jewel.getNode());
+          setSpriteStore(spriteStore);
+          grid[i][j].getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
+                  new EventHandler<MouseEvent>() {
+                      public void handle(MouseEvent event) {
+                          addSelection(jewel);
+                          event.consume();
+                      }
+                  }
+          );
+    }
+
 
     /**
      * This function fills empty spots in the top row with new jewels.
      * (Combos being removed cause empty spots on the grid, 
      * the empty spots propagate to the to of the grid through gravity.)
      */
-    public void fillEmptySpots() {
+
+
+    /**
+     * This function updates the positions of the jewels of the grid.
+     * Jewels with empty spots under them are moved down, 
+     * and the empty positions are filled with new jewels
+     */
+    public void updateJewelPositions() {
     	for (int i = 0; i < gridWidth; i++) {	
-    		if (grid[i][0].getState() == SpriteState.TO_BE_REMOVED) {
-    			addRandomJewel(i, 0);
-            }
+    		int emptySpots = 0;
+    		for (int j = gridHeight-1; j >= 0; j--) {
+    			if (grid[i][j].getState() == SpriteState.TO_BE_REMOVED) {
+    				emptySpots++;
+    			} else {
+    				if (emptySpots > 0) {
+        				grid[i][j+emptySpots] = grid[i][j];
+    					moveJewelDown(grid[i][j], emptySpots);
+    					grid[i][j] = new Jewel(0, i, j);
+    				}
+    			}
+    		}
+    		for (int k = 0; k < emptySpots; k++) {
+    			addRandomJewel(i, k, 0, -(emptySpots)*spriteHeight);
+    		}
     	}
+
     }
 
+    /**
+     * A function to move a jewel down on the board with correct animation
+     * @param jewel The jewel to move
+     * @param spots The number of spots to move down
+     */
+    private void moveJewelDown(Jewel jewel, int spots) {
+        	jewel.setyPos(jewel.getyPos()+spots*this.spriteHeight);
+        	jewel.setBoardY(jewel.getBoardY()+spots);
+        	jewel.getNode().setTranslateY(-spots*this.spriteHeight);
+    }
+
+    	
     /**
      * This function fille the null spots in the grid[][] with Jewels
      * at the start of the game.
@@ -743,24 +769,16 @@ public class Board {
 	}
 	
     /**
-	 * Update the board; check for combos, run gravity and fill empty spots .
+	 * Update the board; check for combos, and fill empty spots .
 	 * 	 */
 	public void update() {
-		if(anyJewelsAnimating()) {
-			System.out.println("ANIMATING");
-		} else {
-			System.out.println("IDLE");
-
-		}
-		if (toReverseMove) {
-			tryToReverse();
-		} else {
-    		checkBoardCombos();
-			while (doGravity()) {
-	    		checkBoardCombos();
-	    	}
-			fillEmptySpots();
-			outOfMoves();
+		if(!anyJewelsAnimating()) {
+			if (toReverseMove) {
+				tryToReverse();
+			} else {
+				checkBoardCombos();
+				updateJewelPositions();
+			}
 		}
 	}
 	
