@@ -17,7 +17,9 @@ import nl.tudelft.bejeweled.logger.Logger;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 /**
  * Created by Jeroen on 1-9-2015.
  * Class that launches the game
@@ -86,13 +88,16 @@ public class Launcher extends Application {
         File boardFile = new File("board.mine");
     	File scoreFile = new File("score.mine");
         if (boardFile.exists() && scoreFile.exists()) {
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Saved State Available");
+            Alert dialog = new Alert(AlertType.CONFIRMATION);
+            dialog.getDialogPane().getButtonTypes().clear();
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
+            dialog.setTitle("Saved State Available");
             String s = "Would you like to resume the previous game?";
-            alert.setContentText(s);
+            dialog.setContentText(s);
 
-            Optional<ButtonType> result = alert.showAndWait();
-            if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+            Optional<ButtonType> result = dialog.showAndWait();
+            if ((result.isPresent()) && (result.get() == ButtonType.YES)) {
                 game.resume();
             }
             else {
