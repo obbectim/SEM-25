@@ -14,9 +14,7 @@
       <left>
         <Pane prefHeight="564.0" prefWidth="171.0">
           <children>
-            <Button fx:id="buttonHint" layoutX="42.0" layoutY="310.0" mnemonicParsing="false" text="Hint" />
-            <Button fx:id="buttonSave" layoutX="42.0" layoutY="360.0" mnemonicParsing="false" text="Save" />
-            <Button fx:id="buttonResume" layoutX="92.0" layoutY="360.0" mnemonicParsing="false" text="Resume" />
+            <Button fx:id="buttonHint" layoutX="42.0" layoutY="360.0" mnemonicParsing="false" text="Hint" />
             <Button fx:id="buttonStart" layoutX="42.0" layoutY="409.0" mnemonicParsing="false" text="Start Game" />
             <Button fx:id="buttonStop" layoutX="42.0" layoutY="438.0" mnemonicParsing="false" text="Stop Game" />
             <Button fx:id="buttonExit" layoutX="42.0" layoutY="477.0" mnemonicParsing="false" prefWidth="75.0" text="Exit" />
