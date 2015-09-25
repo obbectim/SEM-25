@@ -86,16 +86,19 @@ public class Launcher extends Application {
         File boardFile = new File("board.mine");
     	File scoreFile = new File("score.mine");
         if (boardFile.exists() && scoreFile.exists()) {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Saved State Available");
-        String s = "Would you like to resume the previous game?";
-        alert.setContentText(s);
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Saved State Available");
+            String s = "Would you like to resume the previous game?";
+            alert.setContentText(s);
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
-        	game.resume();
-           
-        }
+            Optional<ButtonType> result = alert.showAndWait();
+            if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+                game.resume();
+            }
+            else {
+                boardFile.delete();
+                scoreFile.delete();
+            }
         }
         // begin game loop
         game.beginGameLoop();
