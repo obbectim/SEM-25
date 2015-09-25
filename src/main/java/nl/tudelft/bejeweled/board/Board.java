@@ -671,26 +671,12 @@ public class Board {
      * @param translateX Y offset in pixels
      */
     protected void addRandomJewel(int i, int j, int translateX, int translateY) {
-    	  Jewel jewel = new Jewel(rand.nextInt(NUMBER_OF_JEWEL_TYPES) + 1, i, j);
-          jewel.setxPos(i * spriteWidth);
-          jewel.setyPos(j * spriteHeight);
+    	  addRandomJewel(i,j);
           if(translateX != 0 || translateY != 0){
-        	  jewel.setState(SpriteState.ANIMATION_ACTIVE);
-	          jewel.getNode().setTranslateX(translateX);
-	          jewel.getNode().setTranslateY(translateY);
+        	  grid[i][j].setState(SpriteState.ANIMATION_ACTIVE);
+        	  grid[i][j].getNode().setTranslateX(translateX);
+        	  grid[i][j].getNode().setTranslateY(translateY);
           }
-          grid[i][j] = jewel;
-          spriteStore.addSprites(jewel);
-          sceneNodes.getChildren().add(0, jewel.getNode());
-          setSpriteStore(spriteStore);
-          grid[i][j].getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
-                  new EventHandler<MouseEvent>() {
-                      public void handle(MouseEvent event) {
-                          addSelection(jewel);
-                          event.consume();
-                      }
-                  }
-          );
     }
 
 
