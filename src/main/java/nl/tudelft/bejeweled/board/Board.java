@@ -705,7 +705,6 @@ public class Board implements Serializable {
     				if (emptySpots > 0) {
         				grid[i][j+emptySpots] = grid[i][j];
     					moveJewelDown(grid[i][j], emptySpots);
-    					grid[i][j] = new Jewel(0, i, j);
     				}
     			}
     		}
