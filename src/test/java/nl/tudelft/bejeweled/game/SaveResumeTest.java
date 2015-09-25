@@ -35,31 +35,6 @@ public class SaveResumeTest extends ApplicationTest {
         closeCurrentWindow();
     }
     
-    
-    /**
-     * Test of a user story where the user starts the game,
-     * press save button and file is saved.
-     */
-    @Test
-    public void testStartSave() {
-        File boardFile = new File("board.mine");
-        File scoreFile = new File("score.mine");
-        if (boardFile.exists() || scoreFile.exists()) {
-            boardFile.delete();
-            scoreFile.delete();
-        }
-        BejeweledGame game = (BejeweledGame)launcher.getGame();
-        assertFalse(game.isInProgress());
-        
-        clickOn("#buttonStart");
-        clickOn("#buttonSave");
-        
-        assertTrue(boardFile.exists());
-        assertTrue(scoreFile.exists());
-        
-        clickOn("#buttonExit");
-    }   
-    
     /**
      * Test of a user story where the user starts the game,
      * exit and game is saved.
@@ -80,52 +55,5 @@ public class SaveResumeTest extends ApplicationTest {
         
         assertTrue(boardFile.exists());
         assertTrue(scoreFile.exists());
-    }
-    
-
-    
-    /**
-     * Test of a user story where the user 
-     * could resume the game when when saved
-     * game state exists
-     */
-    @Test
-    public void testResume() {
-    	File boardFile = new File("board.mine");
-        File scoreFile = new File("score.mine");
-    	assertSame(boardFile.exists(),true);
-        assertSame(scoreFile.exists(),true);
-        
-        BejeweledGame game = (BejeweledGame)launcher.getGame();
-        assertFalse(game.isInProgress());
-        
-        clickOn("#buttonResume");
-        
-        assertTrue(game.isInProgress());
-        clickOn("#buttonExit");
-    }
-    
-    /**
-     * Test of a user story where the user
-     * cannot resume the old game after new game
-     * has started, though saved game state exists.
-     */
-    @Test
-    public void testNotResume() {
-    	
-    	File boardFile = new File("board.mine");
-        File scoreFile = new File("score.mine");
-    	assertTrue(boardFile.exists());
-        assertTrue(scoreFile.exists());
-    	
-        BejeweledGame game = (BejeweledGame)launcher.getGame();
-        assertFalse(game.isInProgress());
-        
-        clickOn("#buttonStart");
-        clickOn("#buttonStop");
-        clickOn("#buttonResume");
-        
-        assertFalse(boardFile.exists());
-        assertFalse(scoreFile.exists());
     }
 }
