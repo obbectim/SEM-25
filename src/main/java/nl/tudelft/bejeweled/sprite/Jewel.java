@@ -46,9 +46,16 @@ public class Jewel extends Sprite {
      */
     @Override
     public void update() {
-    	updateVelocity();
-        getNode().setTranslateX(getNode().getTranslateX() - getvX());
-        getNode().setTranslateY(getNode().getTranslateY() - getvY());
+    	if(getNode().getTranslateX() != 0 || getNode().getTranslateY() != 0){
+    		setState(SpriteState.ANIMATION_ACTIVE);
+	    	updateVelocity();
+	        getNode().setTranslateX(getNode().getTranslateX() - getvX());
+	        getNode().setTranslateY(getNode().getTranslateY() - getvY());
+	        if(getNode().getTranslateX() == 0 && getNode().getTranslateY() == 0){
+	    		setState(SpriteState.IDLE);
+	        }
+    	}
+     	
         getNode().setLayoutX(getxPos());
         getNode().setLayoutY(getyPos());
     }
@@ -122,6 +129,7 @@ public class Jewel extends Sprite {
      * @param sceneGroup Game scene group to remove the Jewel from.
      */
     public void implode(Group sceneGroup) {
+        setState(SpriteState.ANIMATION_ACTIVE);
         setvX(0);
         setvY(0);
 
@@ -131,7 +139,7 @@ public class Jewel extends Sprite {
         ft.setCycleCount(1);
         ft.setAutoReverse(false);
         ft.setOnFinished(event -> {
-            setDead(true);
+            setState(SpriteState.TO_BE_REMOVED);
             if(sceneGroup != null)
                 sceneGroup.getChildren().remove(getNode());
         });
@@ -144,7 +152,7 @@ public class Jewel extends Sprite {
      * not showing the sprite anymore.
      */
     public void simpleImplode() {
-        setDead(true);
+        setState(SpriteState.TO_BE_REMOVED);
     }
     
     /**

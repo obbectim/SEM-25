@@ -17,6 +17,7 @@ import nl.tudelft.bejeweled.game.BejeweledGame;
 import nl.tudelft.bejeweled.logger.Logger;
 import nl.tudelft.bejeweled.sprite.Jewel;
 import nl.tudelft.bejeweled.sprite.SelectionCursor;
+import nl.tudelft.bejeweled.sprite.SpriteState;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
 /**
@@ -276,7 +277,7 @@ public class Board implements Serializable {
             matches = 0;
             type = 0;
             for (int i = 0; i < grid[0].length; i++) {
-                if (grid[col][i].getType() == type && type != 0) {
+                if (grid[col][i].getType() == type && type != 0 && grid[col][i].getState() != SpriteState.TO_BE_REMOVED) {
                     matches++;
                     current.push(grid[col][i]);
                 } //subtract 1 because arrays start at 0
@@ -308,7 +309,7 @@ public class Board implements Serializable {
             matches = 0;
             type = 0;
             for (int i = 0; i < grid.length; i++) {
-                if (grid[i][row].getType() == type && type != 0) {
+                if (grid[i][row].getType() == type && type != 0 && grid[i][row].getState() != SpriteState.TO_BE_REMOVED) {
                     matches++;
                     current.push(grid[i][row]);
                 }
@@ -355,9 +356,6 @@ public class Board implements Serializable {
             // TODO Make sure the Jewels are also removed from the spriteStore.
             // grid[jewel.getBoardX()][jewel.getBoardY()] = null;
         }
-        //  doGravity();
-        //  outOfMoves();
-        doGravity();
         outOfMoves();
         return count;
     }
@@ -645,41 +643,6 @@ public class Board implements Serializable {
     }
     
     /**
-     * Function that runs one step of jewels falling down.
-     * @return True if jewels are moving.
-     */
-    public Boolean doGravityStep() {
-    	boolean falling;
-		for (int j = 1; j < gridHeight; j++) {
-			falling = false;
-			for (int i = 0; i < gridWidth; i++) {		
-					if (grid[i][j].isDead()) {
-						swapJewel(grid[i][j], grid[i][j - 1]);
-						falling = true;
-					}
-				}
-				if (falling) {
-					return true;
-				}
-			}
-		return false;
-    }
-    
-    /**
-     * Function that makes the jewels fall down.
-     * @return True if jewels are moving.
-     */
-    public boolean doGravity() {
-    	boolean changes = false;
-    	while (doGravityStep()) {
-    		changes = true;
-    		fillEmptySpots();
-    	}
-    	return changes;
-    }
-    
-
-    /**
      * This function adds a jewel of a random type to the grid at the specified position.
      * @param i Grid column
      * @param j Grid row
@@ -701,20 +664,69 @@ public class Board implements Serializable {
                   }
           );
     }
+    
+    /**
+     * This function adds a animating jewel of a random type to the grid at the specified position.
+     * The jewel is initially shown at a different position, and moves to its target spot.
+     * @param i Grid column
+     * @param j Grid row
+     * @param translateX X offset in pixels
+     * @param translateX Y offset in pixels
+     */
+    protected void addRandomJewel(int i, int j, int translateX, int translateY) {
+    	  addRandomJewel(i,j);
+          if(translateX != 0 || translateY != 0){
+        	  grid[i][j].setState(SpriteState.ANIMATION_ACTIVE);
+        	  grid[i][j].getNode().setTranslateX(translateX);
+        	  grid[i][j].getNode().setTranslateY(translateY);
+          }
+    }
+
 
     /**
      * This function fills empty spots in the top row with new jewels.
      * (Combos being removed cause empty spots on the grid, 
      * the empty spots propagate to the to of the grid through gravity.)
      */
-    public void fillEmptySpots() {
+
+
+    /**
+     * This function updates the positions of the jewels of the grid.
+     * Jewels with empty spots under them are moved down, 
+     * and the empty positions are filled with new jewels
+     */
+    public void updateJewelPositions() {
     	for (int i = 0; i < gridWidth; i++) {	
-    		if (grid[i][0].isDead()) {
-    			addRandomJewel(i, 0);
-            }
+    		int emptySpots = 0;
+    		for (int j = gridHeight-1; j >= 0; j--) {
+    			if (grid[i][j].getState() == SpriteState.TO_BE_REMOVED) {
+    				emptySpots++;
+    			} else {
+    				if (emptySpots > 0) {
+        				grid[i][j+emptySpots] = grid[i][j];
+    					moveJewelDown(grid[i][j], emptySpots);
+    				}
+    			}
+    		}
+    		for (int k = 0; k < emptySpots; k++) {
+    			addRandomJewel(i, k, 0, -(emptySpots)*spriteHeight);
+    		}
     	}
+
     }
 
+    /**
+     * A function to move a jewel down on the board with correct animation
+     * @param jewel The jewel to move
+     * @param spots The number of spots to move down
+     */
+    private void moveJewelDown(Jewel jewel, int spots) {
+        	jewel.setyPos(jewel.getyPos()+spots*this.spriteHeight);
+        	jewel.setBoardY(jewel.getBoardY()+spots);
+        	jewel.getNode().setTranslateY(-spots*this.spriteHeight);
+    }
+
+    	
     /**
      * This function fille the null spots in the grid[][] with Jewels
      * at the start of the game.
@@ -745,18 +757,16 @@ public class Board implements Serializable {
 	}
 	
     /**
-	 * Update the board; check for combos, run gravity and fill empty spots .
+	 * Update the board; check for combos, and fill empty spots .
 	 * 	 */
 	public void update() {
-		if (toReverseMove) {
-			tryToReverse();
-		} else {
-    		checkBoardCombos();
-			while (doGravity()) {
-	    		checkBoardCombos();
-	    	}
-			fillEmptySpots();
-			outOfMoves();
+		if(!anyJewelsAnimating()) {
+			if (toReverseMove) {
+				tryToReverse();
+			} else {
+				checkBoardCombos();
+				updateJewelPositions();
+			}
 		}
 	}
 	
@@ -814,6 +824,17 @@ public class Board implements Serializable {
 			}
 		}
 		
+	}
+	
+	public boolean anyJewelsAnimating() {
+		for (int x = 0; x < gridWidth ; x++){
+			for (int y = 0; y < gridHeight ; y++){
+				if (grid[x][y].animationActive()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**

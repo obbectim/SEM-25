@@ -25,8 +25,8 @@ public abstract class Sprite {
     /** velocity vector y direction. */
     private double vY = 0;
 
-    /** Status variable, true if the sprite should be removed. */
-    private boolean isDead = false;
+    /** Status variable, describes the current state of the sprite. */
+    private SpriteState state = SpriteState.IDLE;
 
     /**
      * Updates this sprite object's velocity, or animations.
@@ -81,19 +81,19 @@ public abstract class Sprite {
 	}
 
     /**
-     * Checks if sprite should be removed.
-     * @return true if sprite should be removed
+     * Gets the current state of the sprite.
+     * @return The current state of the sprite
      */
-	public boolean isDead() {
-		return isDead;
+	public SpriteState getState() {
+		return state;
 	}
 	
     /**
-     * Set sprite to be removed.
-     * @param isDead true if sprite should be removed
+     * Set sprite state.
+     * @param newState The new state for this sprite.
      */
-	public void setDead(boolean isDead) {
-		this.isDead = isDead;
+	public void setState(SpriteState newState) {
+		this.state = newState;
 	}
 	
 	 /**
@@ -133,6 +133,6 @@ public abstract class Sprite {
     * @return true if the animation is still active
     */
 	public boolean animationActive() {
-		return (getNode().getTranslateX() != 0 || getNode().getTranslateY() != 0);
+		return (state == SpriteState.ANIMATION_ACTIVE || (getNode().getTranslateX() != 0 || getNode().getTranslateY() != 0));
 	}
 }
