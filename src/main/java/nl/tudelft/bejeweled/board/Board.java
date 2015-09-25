@@ -274,7 +274,7 @@ public class Board {
             matches = 0;
             type = 0;
             for (int i = 0; i < grid[0].length; i++) {
-                if (grid[col][i].getType() == type && type != 0) {
+                if (grid[col][i].getType() == type && type != 0 && grid[col][i].getState() != SpriteState.TO_BE_REMOVED) {
                     matches++;
                     current.push(grid[col][i]);
                 } //subtract 1 because arrays start at 0
@@ -306,7 +306,7 @@ public class Board {
             matches = 0;
             type = 0;
             for (int i = 0; i < grid.length; i++) {
-                if (grid[i][row].getType() == type && type != 0) {
+                if (grid[i][row].getType() == type && type != 0 && grid[i][row].getState() != SpriteState.TO_BE_REMOVED) {
                     matches++;
                     current.push(grid[i][row]);
                 }
@@ -746,6 +746,12 @@ public class Board {
 	 * Update the board; check for combos, run gravity and fill empty spots .
 	 * 	 */
 	public void update() {
+		if(anyJewelsAnimating()) {
+			System.out.println("ANIMATING");
+		} else {
+			System.out.println("IDLE");
+
+		}
 		if (toReverseMove) {
 			tryToReverse();
 		} else {
@@ -812,5 +818,16 @@ public class Board {
 			}
 		}
 		
+	}
+	
+	public boolean anyJewelsAnimating() {
+		for (int x = 0; x < gridWidth ; x++){
+			for (int y = 0; y < gridHeight ; y++){
+				if (grid[x][y].animationActive()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
