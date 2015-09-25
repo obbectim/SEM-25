@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.TreeMap;
 
@@ -28,14 +29,13 @@ import nl.tudelft.bejeweled.logger.Logger;
  *
  */
 @XmlRootElement
-public class HighScore {
+public class HighScore implements Serializable {
 
 	@XmlElement
 	private TreeMap<Integer, String> highscores;
 	private static final String HIGHSCOREFILE = "highscores.xml";
 	private static final int ENTRIES = 5;
 	private boolean loaded = false;
-	private final JAXBContext jc;
 	
 	/**
 	 * Returns the state of the HighScore handler.
@@ -49,9 +49,8 @@ public class HighScore {
 	 * Constructor which creates a new empty TreeMap.
 	 * @throws JAXBException If anything unexpected happens during JAXBContext creation
 	 */
-	public HighScore() throws JAXBException {
+	public HighScore() {
 		highscores = new TreeMap<Integer, String>();
-		jc = JAXBContext.newInstance(HighScore.class);
 	}
 	
 	/**
@@ -63,6 +62,7 @@ public class HighScore {
 			Logger.logInfo("Loading HighScores");
 		}
 		
+		JAXBContext jc = JAXBContext.newInstance(HighScore.class);
 		Unmarshaller um = jc.createUnmarshaller();
 		try {
 			InputStream is = new FileInputStream(HIGHSCOREFILE);
@@ -86,6 +86,7 @@ public class HighScore {
 			return;
 		}
 		
+		JAXBContext jc = JAXBContext.newInstance(HighScore.class);
 		Marshaller m = jc.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		m.marshal(this, new File(HIGHSCOREFILE));
