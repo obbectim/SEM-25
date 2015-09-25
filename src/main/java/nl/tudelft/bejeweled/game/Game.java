@@ -13,6 +13,7 @@ import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.sprite.Sprite;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.TreeMap;
 
@@ -20,7 +21,7 @@ import java.util.TreeMap;
  * Created by Jeroen on 3-9-2015.
  * Class to handle game input and events
  */
-public abstract class Game {
+public abstract class Game implements Serializable {
 
     /** All nodes to be displayed in the game window. */
     private Group sceneNodes;
@@ -224,4 +225,14 @@ public abstract class Game {
      * Shows a hint to a possible move
      */
 	public abstract void showHint();
+    
+    /**
+     * Saves the current game
+     */
+    public abstract void save();
+    
+    /**
+     * Resume the previously saved game
+     */
+    public abstract void resume();
 }

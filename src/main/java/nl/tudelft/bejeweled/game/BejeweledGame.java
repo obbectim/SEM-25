@@ -21,12 +21,27 @@ import nl.tudelft.bejeweled.board.BoardObserver;
 import nl.tudelft.bejeweled.logger.Logger;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.io.File;
+
 
 /**
  * Created by Jeroen on 6-9-2015.
  * Bejeweled Game class.
  */
-public class BejeweledGame extends Game implements BoardObserver {
+public class BejeweledGame extends Game implements BoardObserver, Serializable {
 	public static final int GRID_WIDTH = 8;
 	public static final int GRID_HEIGHT = 8;
 	public static final int SPRITE_WIDTH = 64;
@@ -38,6 +53,10 @@ public class BejeweledGame extends Game implements BoardObserver {
     private BoardFactory boardFactory;
 
     private int score = 0;
+    
+    private boolean isStop = false;
+    
+    private boolean isResume = true;
 
     private SpriteStore spriteStore;
 
@@ -80,7 +99,6 @@ public class BejeweledGame extends Game implements BoardObserver {
             return;
         }
         inProgress = true;
-        
         Logger.logInfo("Game started");
 
         score = 0;
@@ -97,6 +115,14 @@ public class BejeweledGame extends Game implements BoardObserver {
         // check for any combo's on the freshly created board
         int comboCount = board.checkBoardCombos();
         Logger.logInfo("Combo Jewels on board: " + comboCount);
+        isResume = false;
+        File boardFile = new File("board.mine");
+        File scoreFile = new File("score.mine");
+        
+        if (boardFile.exists() || scoreFile.exists()) {		
+        boardFile.delete();
+        scoreFile.delete();
+        }
     }
 
     /**
@@ -132,6 +158,15 @@ public class BejeweledGame extends Game implements BoardObserver {
         board.resetGrid();
 
         inProgress = false;
+        isStop = true;
+        isResume = false;
+        
+        File boardFile = new File("board.mine");
+        File scoreFile = new File("score.mine");
+        if (boardFile.exists() || scoreFile.exists()) {
+        boardFile.delete();
+        scoreFile.delete();
+        }
     }
 
     /**
@@ -218,8 +253,81 @@ public class BejeweledGame extends Game implements BoardObserver {
     	
     	if (board != null) {
     		board.showHint();
-    	}
-    	
+    	}   	
+    }
+    
+    
+    @SuppressWarnings("restriction")
+	@Override
+    public void save() {      
+        if (!inProgress || isStop) {
+            return;     
+        }
+        try {
+        	int frame = 60;
+        	Board boardState = new Board(null, null);
+        	boardState.state = board.convertGrid();
+            OutputStream file = new FileOutputStream("board.mine");
+            OutputStream buffer = new BufferedOutputStream(file);
+            ObjectOutput output = new ObjectOutputStream(buffer);
+            output.writeObject(boardState);
+            output.flush();
+            output.close();
+            BejeweledGame scoreState = new BejeweledGame(frame, null, null);
+        	scoreState.score = score;
+            OutputStream file2 = new FileOutputStream("score.mine");
+            OutputStream buffer2 = new BufferedOutputStream(file2);
+            ObjectOutput output2 = new ObjectOutputStream(buffer2);
+            output2.writeObject(scoreState);
+            output2.flush(); output2.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }      
+        gamePane.getChildren().remove(getSceneNodes());
+        spriteStore.removeAllSprites();
+        board.resetGrid();
+        Logger.logInfo("Game saved");
+        inProgress = false; isStop = true; isResume = true;           
+    }
+    
+    @Override
+    public void resume() {
+    	File boardFile = new File("board.mine");
+    	File scoreFile = new File("score.mine");
+        if (inProgress || !isResume || !boardFile.exists() || !scoreFile.exists()) {
+            return;
+        }
+        Board boardState = null; BejeweledGame scoreState = null;
+        InputStream file, file2;       
+       try {
+           file = new FileInputStream("board.mine");
+           InputStream buffer = new BufferedInputStream(file);
+           ObjectInput input = new ObjectInputStream(buffer);
+           boardState = (Board) input.readObject();
+           input.close();
+           file2 = new FileInputStream("score.mine");
+           InputStream buffer2 = new BufferedInputStream(file2);
+           ObjectInput input2 = new ObjectInputStream(buffer2);
+           scoreState = (BejeweledGame) input2.readObject();
+           score = scoreState.score;
+           input2.close();
+       } catch (FileNotFoundException e) {
+           e.printStackTrace();
+       } catch (IOException e) {
+           e.printStackTrace();
+       } catch (ClassNotFoundException e) {
+           e.printStackTrace();
+       }
+       board.state = boardState.state;
+       if (!isStop) {
+    	   board.resetGrid();
+       }
+       board.makeGrid(); 
+      inProgress = true; isResume = false; isStop = false; boardFile.delete(); scoreFile.delete();
+        Logger.logInfo("Game resumed");       
+       scoreLabel.setText(Integer.toString(score));
+       gamePane.getChildren().add(new Scene(getSceneNodes(), gamePane.getWidth(), 
+                                           gamePane.getHeight()).getRoot());
     }
     
     /**

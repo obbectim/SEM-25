@@ -8,8 +8,11 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.CustomBoardLauncher;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
+
+import java.io.File;
 
 /**
  * Created by Jeroen on 12-9-2015.
@@ -21,6 +24,12 @@ public class BejeweledGameTest extends ApplicationTest {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        File boardFile = new File("board.mine");
+        File scoreFile = new File("score.mine");
+        if (boardFile.exists() || scoreFile.exists()) {
+            boardFile.delete();
+            scoreFile.delete();
+        }
         launcher.launchGame(primaryStage);
     }
 

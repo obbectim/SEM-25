@@ -6,9 +6,11 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.game.BejeweledGame;
 import org.junit.After;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
+
+import java.io.File;
 
 /**
  * Created by Jeroen on 9-9-2015.
@@ -20,6 +22,12 @@ public class LauncherTest extends ApplicationTest {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        File boardFile = new File("board.mine");
+        File scoreFile = new File("score.mine");
+        if (boardFile.exists() || scoreFile.exists()) {
+            boardFile.delete();
+            scoreFile.delete();
+        }
         launcher.launchGame(primaryStage);
     }
 
@@ -35,7 +43,6 @@ public class LauncherTest extends ApplicationTest {
      * First test.
      */
     @Test
-    @Ignore
     public void testStartGame() {
         BejeweledGame game = (BejeweledGame)launcher.getGame();
         assertFalse(game.isInProgress());
