@@ -43,7 +43,6 @@ public class LauncherTest extends ApplicationTest {
      * First test.
      */
     @Test
-
     public void testStartGame() {
         BejeweledGame game = (BejeweledGame)launcher.getGame();
         assertFalse(game.isInProgress());

@@ -15,6 +15,7 @@ import nl.tudelft.bejeweled.sprite.SpriteStore;
 
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.TreeMap;
 
 /**
  * Created by Jeroen on 3-9-2015.
@@ -35,6 +36,12 @@ public abstract class Game implements Serializable {
      * Title in the application window.
      */
     private final String windowTitle;
+    
+    
+    /**
+     * Keeps track  of the highest scores ever achieved.
+     */
+    protected HighScore highScore;
 
     /**
      * The sprite manager.
@@ -165,6 +172,14 @@ public abstract class Game implements Serializable {
      */
     protected static void setGameLoop(Timeline gameLoop) {
         Game.gameLoop = gameLoop;
+    }
+    
+    /**
+     * The map of names and highscores.
+     * @return a TreeMap<Integer, String> of the scores and corresponding player names
+     */
+    public TreeMap<Integer, String> getHighScores() {
+    	return highScore.getHighScores();
     }
 
     /**
