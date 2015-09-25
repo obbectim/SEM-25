@@ -15,8 +15,8 @@ import org.testfx.framework.junit.ApplicationTest;
 import java.io.File;
 
 /**
- * Created by Jeroen on 12-9-2015.
- * Test class for end to end testing the game.
+ * Created by Amrit on 24-9-2015.
+ * Test class for save resume testing.
  */
 public class SaveResumeTest extends ApplicationTest {
     
