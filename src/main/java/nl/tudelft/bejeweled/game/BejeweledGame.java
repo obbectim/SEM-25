@@ -136,12 +136,8 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
         Logger.logInfo("Final score: " + score);
         int place = getHighScore().isHighScore(score);
         if (place >  0) {
-        	Dialog<String> dialog = new TextInputDialog();
-        	dialog.setTitle("Enter your name");
-        	dialog.setHeaderText("Congratulations, you achieved a highscore."
-        			+ " Please enter your name:");
-
-        	Optional<String> result = dialog.showAndWait();
+        	Optional<String> result = showTextInputDialog("Enter your name",
+                    "Congratulations, you achieved a highscore." + " Please enter your name:");
 			result.ifPresent(name -> {
 				try {
                     getHighScore().addHighScore(score, name);
@@ -245,10 +241,9 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
     
     @Override
     public void showHint() {
-    	
     	if (board != null) {
     		board.showHint();
-    	}   	
+    	}
     }
     
     
@@ -323,6 +318,20 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
        scoreLabel.setText(Integer.toString(score));
        gamePane.getChildren().add(new Scene(getSceneNodes(), gamePane.getWidth(), 
                                            gamePane.getHeight()).getRoot());
+    }
+
+    /**
+     * Shows a text input dialog.
+     * @param title Title of the dialog.
+     * @param text Context text of the dialog.
+     * @return The input by the user.
+     */
+    private Optional<String> showTextInputDialog(String title, String text) {
+        Dialog<String> dialog = new TextInputDialog();
+        dialog.setTitle(title);
+        dialog.setHeaderText(text);
+
+        return dialog.showAndWait();
     }
 
     /**
