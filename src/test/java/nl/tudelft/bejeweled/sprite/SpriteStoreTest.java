@@ -78,11 +78,7 @@ public class SpriteStoreTest {
         spriteStore.addSprites(sprite1);
         spriteStore.addSprites(sprite2);
         spriteStore.addSprites(sprite3);
-        assertTrue(spriteStore.getAllSprites().contains(sprite1));
-        assertTrue(spriteStore.getAllSprites().contains(sprite2));
-        assertTrue(spriteStore.getAllSprites().contains(sprite3));
-
-
+        
         spriteStore.removeAllSprites();
         assertFalse(spriteStore.getAllSprites().contains(sprite1));
         assertFalse(spriteStore.getAllSprites().contains(sprite2));
