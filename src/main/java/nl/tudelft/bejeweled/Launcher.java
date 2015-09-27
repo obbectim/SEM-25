@@ -89,7 +89,7 @@ public class Launcher extends Application {
                 game.resume();
             }
             else {
-                deleteSaveGame();
+                game.removeSaveGame();
             }
         }
         game.beginGameLoop();
@@ -152,18 +152,6 @@ public class Launcher extends Application {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Deletes a saved game state.
-     */
-    public void deleteSaveGame() {
-        File boardFile = new File("board.mine");
-        File scoreFile = new File("score.mine");
-        if (boardFile.exists() && scoreFile.exists()) {
-            scoreFile.delete();
-            boardFile.delete();
-        }
     }
 
     /**

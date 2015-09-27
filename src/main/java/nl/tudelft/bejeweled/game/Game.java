@@ -236,6 +236,11 @@ public abstract class Game implements Serializable {
     public abstract void resume();
 
     /**
+     * Removes the save game if it exists.
+     */
+    public abstract void removeSaveGame();
+
+    /**
      * Getter method for highScore.
      * @return The highscore object.
      */

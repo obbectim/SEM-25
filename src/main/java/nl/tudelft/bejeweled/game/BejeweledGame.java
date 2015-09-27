@@ -337,6 +337,7 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
     /**
      * Removes the save game if it exists.
      */
+    @Override
     public void removeSaveGame() {
         File boardFile = new File("board.mine");
         File scoreFile = new File("score.mine");
