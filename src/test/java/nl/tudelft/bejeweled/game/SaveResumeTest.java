@@ -24,6 +24,13 @@ public class SaveResumeTest extends ApplicationTest {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
+        File boardFile = new File("board.mine");
+        File scoreFile = new File("score.mine");
+        if (boardFile.exists() || scoreFile.exists()) {
+            boardFile.delete();
+            scoreFile.delete();
+        }
+
         launcher.launchGame(primaryStage);
     }
     
@@ -41,17 +48,14 @@ public class SaveResumeTest extends ApplicationTest {
      */
     @Test
     public void testStartExit() {
-        File boardFile = new File("board.mine");
-        File scoreFile = new File("score.mine");
-        if (boardFile.exists() || scoreFile.exists()) {
-            boardFile.delete();
-            scoreFile.delete();
-        }
         BejeweledGame game = (BejeweledGame)launcher.getGame();
         assertFalse(game.isInProgress());
         
         clickOn("#buttonStart");
         clickOn("#buttonExit");
+
+        File boardFile = new File("board.mine");
+        File scoreFile = new File("score.mine");
         
         assertTrue(boardFile.exists());
         assertTrue(scoreFile.exists());
