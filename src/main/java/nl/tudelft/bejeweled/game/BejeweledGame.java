@@ -52,6 +52,10 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
     private static final int GAME_OVER_XPOS = 100;
     private static final int GAME_OVER_YPOS = 200;
 
+    private static final String BOARD_SAVE_FILE = "board.mine";
+    private static final String SCORE_SAVE_FILE = "score.mine";
+
+
     /** The board class that maintains the jewels. */
     private Board board;
 
@@ -257,7 +261,7 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
         	int frame = super.getFramesPerSecond();
         	Board boardState = new Board(null, null);
         	boardState.setState(board.convertGrid());
-            OutputStream file = new FileOutputStream("board.mine");
+            OutputStream file = new FileOutputStream(BOARD_SAVE_FILE);
             OutputStream buffer = new BufferedOutputStream(file);
             ObjectOutput output = new ObjectOutputStream(buffer);
             output.writeObject(boardState);
@@ -265,7 +269,7 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
             output.close();
             BejeweledGame scoreState = new BejeweledGame(frame, null, null);
         	scoreState.score = score;
-            OutputStream file2 = new FileOutputStream("score.mine");
+            OutputStream file2 = new FileOutputStream(SCORE_SAVE_FILE);
             OutputStream buffer2 = new BufferedOutputStream(file2);
             ObjectOutput output2 = new ObjectOutputStream(buffer2);
             output2.writeObject(scoreState);
@@ -282,20 +286,20 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
     
     @Override
     public void resume() {
-    	File boardFile = new File("board.mine");
-    	File scoreFile = new File("score.mine");
+    	File boardFile = new File(BOARD_SAVE_FILE);
+    	File scoreFile = new File(SCORE_SAVE_FILE);
         if (inProgress || !isResume || !boardFile.exists() || !scoreFile.exists()) {
             return;
         }
         Board boardState = null; BejeweledGame scoreState = null;
         InputStream file, file2;       
        try {
-           file = new FileInputStream("board.mine");
+           file = new FileInputStream(BOARD_SAVE_FILE);
            InputStream buffer = new BufferedInputStream(file);
            ObjectInput input = new ObjectInputStream(buffer);
            boardState = (Board) input.readObject();
            input.close();
-           file2 = new FileInputStream("score.mine");
+           file2 = new FileInputStream(SCORE_SAVE_FILE);
            InputStream buffer2 = new BufferedInputStream(file2);
            ObjectInput input2 = new ObjectInputStream(buffer2);
            scoreState = (BejeweledGame) input2.readObject();
@@ -339,13 +343,11 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
      */
     @Override
     public void removeSaveGame() {
-        File boardFile = new File("board.mine");
-        File scoreFile = new File("score.mine");
-        if (boardFile.exists() || scoreFile.exists()) {
-
-            if (boardFile.delete() && scoreFile.delete()) {
-                Logger.logInfo("Save files deleted.");
-            }
+        File boardFile = new File(BOARD_SAVE_FILE);
+        File scoreFile = new File(SCORE_SAVE_FILE);
+        if (boardFile.exists() || scoreFile.exists()
+                && (boardFile.delete() && scoreFile.delete())) {
+            Logger.logInfo("Save files deleted.");
         }
     }
 
