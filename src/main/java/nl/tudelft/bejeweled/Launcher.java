@@ -72,10 +72,9 @@ public class Launcher extends Application {
      * @param theStage The primary stage to draw the GUI on
      */
     public void launchGame(Stage theStage) {
-        game = makeGame(FPS_LIMIT, WINDOW_TITLE, SPRITE_STORE);
-
         Group sceneNodes = new Group();
         Board board = makeBoard(getBoardFactory(), sceneNodes);
+        game = makeGame(FPS_LIMIT, WINDOW_TITLE, SPRITE_STORE);
         game.setSceneNodes(sceneNodes);
 
         // initialise the gui and map start/stop buttons
@@ -83,27 +82,16 @@ public class Launcher extends Application {
 
         // initialise the game
         game.initialise(board, bejeweledGui.getBoardPane(), bejeweledGui.getScoreLabel());
-        File boardFile = new File("board.mine");
-    	File scoreFile = new File("score.mine");
-        if (boardFile.exists() && scoreFile.exists()) {
-            Alert dialog = new Alert(AlertType.CONFIRMATION);
-            dialog.getDialogPane().getButtonTypes().clear();
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
-            dialog.setTitle("Saved State Available");
-            String s = "Would you like to resume the previous game?";
-            dialog.setContentText(s);
-
-            Optional<ButtonType> result = dialog.showAndWait();
+        if (saveGameExists()) {
+            Optional<ButtonType> result = showYesNoDialog("Saved State Available",
+                    "Would you like to resume the previous game?");
             if ((result.isPresent()) && (result.get() == ButtonType.YES)) {
                 game.resume();
             }
             else {
-                boardFile.delete();
-                scoreFile.delete();
+                deleteSaveGame();
             }
         }
-        // begin game loop
         game.beginGameLoop();
         
         theStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -134,6 +122,48 @@ public class Launcher extends Application {
      */
     public Board makeBoard(BoardFactory boardFactory, Group sceneNodes) {
         return boardFactory.generateBoard(sceneNodes);
+    }
+
+    /**
+     * Show Dialog with yes/no buttons.
+     * @param title Title of the dialog.
+     * @param text Context text of the dialog.
+     * @return The button type clicked by the user.
+     */
+    public Optional<ButtonType> showYesNoDialog(String title, String text) {
+        Alert dialog = new Alert(AlertType.CONFIRMATION);
+        dialog.getDialogPane().getButtonTypes().clear();
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
+        dialog.setTitle(title);
+        dialog.setContentText(text);
+
+        return dialog.showAndWait();
+    }
+
+    /**
+     * Checks if save game is available.
+     * @return True if and only if save game files are both present.
+     */
+    public boolean saveGameExists() {
+        File boardFile = new File("board.mine");
+        File scoreFile = new File("score.mine");
+        if (boardFile.exists() && scoreFile.exists()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Deletes a saved game state.
+     */
+    public void deleteSaveGame() {
+        File boardFile = new File("board.mine");
+        File scoreFile = new File("score.mine");
+        if (boardFile.exists() && scoreFile.exists()) {
+            scoreFile.delete();
+            boardFile.delete();
+        }
     }
 
     /**
