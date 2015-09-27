@@ -1,14 +1,10 @@
 package nl.tudelft.bejeweled.game;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import javafx.application.Platform;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.CustomBoardLauncher;
-import nl.tudelft.bejeweled.board.Board;
-import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
@@ -47,7 +43,7 @@ public class SaveResumeTest extends ApplicationTest {
             boardFile.delete();
             scoreFile.delete();
         }
-        BejeweledGame game = (BejeweledGame)launcher.getGame();
+        BejeweledGame game = (BejeweledGame) launcher.getGame();
         assertFalse(game.isInProgress());
         
         clickOn("#buttonStart");

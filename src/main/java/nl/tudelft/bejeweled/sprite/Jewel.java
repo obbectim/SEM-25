@@ -4,8 +4,6 @@ import javafx.animation.FadeTransition;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.util.Duration;
 
 /**
@@ -46,12 +44,12 @@ public class Jewel extends Sprite {
      */
     @Override
     public void update() {
-    	if(getNode().getTranslateX() != 0 || getNode().getTranslateY() != 0){
+    	if (getNode().getTranslateX() != 0 || getNode().getTranslateY() != 0) {
     		setState(SpriteState.ANIMATION_ACTIVE);
 	    	updateVelocity();
 	        getNode().setTranslateX(getNode().getTranslateX() - getvX());
 	        getNode().setTranslateY(getNode().getTranslateY() - getvY());
-	        if(getNode().getTranslateX() == 0 && getNode().getTranslateY() == 0){
+	        if (getNode().getTranslateX() == 0 && getNode().getTranslateY() == 0) {
 	    		setState(SpriteState.IDLE);
 	        }
     	}
@@ -140,8 +138,9 @@ public class Jewel extends Sprite {
         ft.setAutoReverse(false);
         ft.setOnFinished(event -> {
             setState(SpriteState.TO_BE_REMOVED);
-            if(sceneGroup != null)
+            if (sceneGroup != null) {
                 sceneGroup.getChildren().remove(getNode());
+            }
         });
         ft.play();
     }

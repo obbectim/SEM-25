@@ -17,9 +17,7 @@ import nl.tudelft.bejeweled.logger.Logger;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 /**
  * Created by Jeroen on 1-9-2015.
  * Class that launches the game
@@ -33,7 +31,7 @@ public class Launcher extends Application {
     private static final String WINDOW_TITLE = "Bejeweled";
 
     /** The SpriteStore. */
-    private static final SpriteStore spriteStore = new SpriteStore();
+    private static final SpriteStore SPRITE_STORE = new SpriteStore();
 
     /**  The current game. */
     private Game game;
@@ -74,7 +72,7 @@ public class Launcher extends Application {
      * @param theStage The primary stage to draw the GUI on
      */
     public void launchGame(Stage theStage) {
-        game = makeGame(FPS_LIMIT, WINDOW_TITLE, spriteStore);
+        game = makeGame(FPS_LIMIT, WINDOW_TITLE, SPRITE_STORE);
 
         Group sceneNodes = new Group();
         Board board = makeBoard(getBoardFactory(), sceneNodes);
@@ -159,6 +157,6 @@ public class Launcher extends Application {
      * @return returns a handle to the SpriteStore
      */
     protected SpriteStore getSpriteStore() {
-        return spriteStore;
+        return SPRITE_STORE;
     }
 }

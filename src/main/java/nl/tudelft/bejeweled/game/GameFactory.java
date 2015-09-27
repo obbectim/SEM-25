@@ -11,7 +11,7 @@ public class GameFactory {
     private SpriteStore spriteStore;
 
     /**
-     * Constructor for GameFactory
+     * Constructor for GameFactory.
      * @param spriteStore The spritestore for the game.
      */
     public GameFactory(SpriteStore spriteStore) {
