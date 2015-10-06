@@ -18,7 +18,7 @@
             <Button fx:id="buttonHint" layoutX="42.0" layoutY="360.0" mnemonicParsing="false" text="Hint" />
             <Button fx:id="buttonStart" layoutX="42.0" layoutY="409.0" mnemonicParsing="false" text="Start Game" />
             <Button fx:id="buttonStop" layoutX="42.0" layoutY="438.0" mnemonicParsing="false" text="Stop Game" />
-            <Button fx:id="buttonExit" layoutX="36.0" layoutY="477.0" mnemonicParsing="false" prefWidth="87.0" text="Save &amp; Exit" />
+            <Button fx:id="buttonExit" layoutX="42.0" layoutY="477.0" mnemonicParsing="false" prefWidth="-1.0" text="Save &amp; Exit" />
             <Label fx:id="scoreLabel" alignment="CENTER" contentDisplay="LEFT" layoutX="13.0" layoutY="67.0" prefWidth="143.0" text="" textAlignment="CENTER">
               <font>
                 <Font size="30.0" />
