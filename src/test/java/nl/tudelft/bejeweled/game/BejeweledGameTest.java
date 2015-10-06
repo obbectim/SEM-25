@@ -8,7 +8,6 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import nl.tudelft.bejeweled.CustomBoardLauncher;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
@@ -47,7 +46,7 @@ public class BejeweledGameTest extends ApplicationTest {
      */
     @Test
     public void testMoveJewelNoWin() {
-        BejeweledGame game = (BejeweledGame)launcher.getGame();
+        BejeweledGame game = (BejeweledGame) launcher.getGame();
         assertFalse(game.isInProgress());
 
         clickOn("#buttonStart");
@@ -72,13 +71,5 @@ public class BejeweledGameTest extends ApplicationTest {
 
         // stop the game
         clickOn("#buttonStop");
-
-        // assert game is stopped
-        // start and stop the game concurrently with JavaFX thread
-        Platform.runLater(new Runnable() {
-            public void run() {
-                assertFalse(game.isInProgress());
-            }
-        });
     }
 }

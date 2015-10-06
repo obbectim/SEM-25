@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import nl.tudelft.bejeweled.board.BoardObserver;
-
 /**
  * Created by Jeroen on 4-9-2015.
  * Class that manages all the sprites/actors in the game.

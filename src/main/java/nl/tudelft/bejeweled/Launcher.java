@@ -17,9 +17,7 @@ import nl.tudelft.bejeweled.logger.Logger;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 /**
  * Created by Jeroen on 1-9-2015.
  * Class that launches the game
@@ -33,7 +31,7 @@ public class Launcher extends Application {
     private static final String WINDOW_TITLE = "Bejeweled";
 
     /** The SpriteStore. */
-    private static final SpriteStore spriteStore = new SpriteStore();
+    private static final SpriteStore SPRITE_STORE = new SpriteStore();
 
     /**  The current game. */
     private Game game;
@@ -74,10 +72,9 @@ public class Launcher extends Application {
      * @param theStage The primary stage to draw the GUI on
      */
     public void launchGame(Stage theStage) {
-        game = makeGame(FPS_LIMIT, WINDOW_TITLE, spriteStore);
-
         Group sceneNodes = new Group();
         Board board = makeBoard(getBoardFactory(), sceneNodes);
+        game = makeGame(FPS_LIMIT, WINDOW_TITLE, SPRITE_STORE);
         game.setSceneNodes(sceneNodes);
 
         // initialise the gui and map start/stop buttons
@@ -85,27 +82,16 @@ public class Launcher extends Application {
 
         // initialise the game
         game.initialise(board, bejeweledGui.getBoardPane(), bejeweledGui.getScoreLabel());
-        File boardFile = new File("board.mine");
-    	File scoreFile = new File("score.mine");
-        if (boardFile.exists() && scoreFile.exists()) {
-            Alert dialog = new Alert(AlertType.CONFIRMATION);
-            dialog.getDialogPane().getButtonTypes().clear();
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
-            dialog.setTitle("Saved State Available");
-            String s = "Would you like to resume the previous game?";
-            dialog.setContentText(s);
-
-            Optional<ButtonType> result = dialog.showAndWait();
+        if (saveGameExists()) {
+            Optional<ButtonType> result = showYesNoDialog("Saved State Available",
+                    "Would you like to resume the previous game?");
             if ((result.isPresent()) && (result.get() == ButtonType.YES)) {
                 game.resume();
             }
             else {
-                boardFile.delete();
-                scoreFile.delete();
+                game.removeSaveGame();
             }
         }
-        // begin game loop
         game.beginGameLoop();
         
         theStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -139,6 +125,36 @@ public class Launcher extends Application {
     }
 
     /**
+     * Show Dialog with yes/no buttons.
+     * @param title Title of the dialog.
+     * @param text Context text of the dialog.
+     * @return The button type clicked by the user.
+     */
+    public Optional<ButtonType> showYesNoDialog(String title, String text) {
+        Alert dialog = new Alert(AlertType.CONFIRMATION);
+        dialog.getDialogPane().getButtonTypes().clear();
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
+        dialog.setTitle(title);
+        dialog.setContentText(text);
+
+        return dialog.showAndWait();
+    }
+
+    /**
+     * Checks if save game is available.
+     * @return True if and only if save game files are both present.
+     */
+    public boolean saveGameExists() {
+        File boardFile = new File("board.mine");
+        File scoreFile = new File("score.mine");
+        if (boardFile.exists() && scoreFile.exists()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Get a freshly created boardfactory.
      * @return A new board factory using the sprite store from
      */
@@ -159,6 +175,6 @@ public class Launcher extends Application {
      * @return returns a handle to the SpriteStore
      */
     protected SpriteStore getSpriteStore() {
-        return spriteStore;
+        return SPRITE_STORE;
     }
 }

@@ -133,6 +133,8 @@ public abstract class Sprite {
     * @return true if the animation is still active
     */
 	public boolean animationActive() {
-		return (state == SpriteState.ANIMATION_ACTIVE || (getNode().getTranslateX() != 0 || getNode().getTranslateY() != 0));
+		return (state == SpriteState.ANIMATION_ACTIVE
+				|| (getNode().getTranslateX() != 0
+				|| getNode().getTranslateY() != 0));
 	}
 }

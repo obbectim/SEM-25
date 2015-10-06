@@ -36,12 +36,11 @@ public abstract class Game implements Serializable {
      * Title in the application window.
      */
     private final String windowTitle;
-    
-    
+
     /**
      * Keeps track  of the highest scores ever achieved.
      */
-    protected HighScore highScore;
+    private HighScore highScore;
 
     /**
      * The sprite manager.
@@ -222,17 +221,38 @@ public abstract class Game implements Serializable {
     public abstract void stop();
 
     /** 
-     * Shows a hint to a possible move
+     * Shows a hint to a possible move.
      */
 	public abstract void showHint();
     
     /**
-     * Saves the current game
+     * Saves the current game.
      */
     public abstract void save();
     
     /**
-     * Resume the previously saved game
+     * Resume the previously saved game.
      */
     public abstract void resume();
+
+    /**
+     * Removes the save game if it exists.
+     */
+    public abstract void removeSaveGame();
+
+    /**
+     * Getter method for highScore.
+     * @return The highscore object.
+     */
+    public HighScore getHighScore() {
+        return highScore;
+    }
+
+    /**
+     * Setter method for highScore.
+     * @param highScore The Highscore object.
+     */
+    public void setHighScore(HighScore highScore) {
+        this.highScore = highScore;
+    }
 }

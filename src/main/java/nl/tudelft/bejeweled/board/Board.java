@@ -50,7 +50,7 @@ public class Board implements Serializable {
 	private boolean toReverseMove = false;
 	private Jewel reverse1;
 	private Jewel reverse2;
-	public int[][] state;
+	private int[][] state;
 
     /**
      * Constructor for the board class.
@@ -277,7 +277,8 @@ public class Board implements Serializable {
             matches = 0;
             type = 0;
             for (int i = 0; i < grid[0].length; i++) {
-                if (grid[col][i].getType() == type && type != 0 && grid[col][i].getState() != SpriteState.TO_BE_REMOVED) {
+                if (grid[col][i].getType() == type && type != 0
+                        && grid[col][i].getState() != SpriteState.TO_BE_REMOVED) {
                     matches++;
                     current.push(grid[col][i]);
                 } //subtract 1 because arrays start at 0
@@ -309,7 +310,8 @@ public class Board implements Serializable {
             matches = 0;
             type = 0;
             for (int i = 0; i < grid.length; i++) {
-                if (grid[i][row].getType() == type && type != 0 && grid[i][row].getState() != SpriteState.TO_BE_REMOVED) {
+                if (grid[i][row].getType() == type && type != 0
+                        && grid[i][row].getState() != SpriteState.TO_BE_REMOVED) {
                     matches++;
                     current.push(grid[i][row]);
                 }
@@ -671,24 +673,16 @@ public class Board implements Serializable {
      * @param i Grid column
      * @param j Grid row
      * @param translateX X offset in pixels
-     * @param translateX Y offset in pixels
+     * @param translateY Y offset in pixels
      */
     protected void addRandomJewel(int i, int j, int translateX, int translateY) {
-    	  addRandomJewel(i,j);
-          if(translateX != 0 || translateY != 0){
+    	  addRandomJewel(i, j);
+          if (translateX != 0 || translateY != 0) {
         	  grid[i][j].setState(SpriteState.ANIMATION_ACTIVE);
         	  grid[i][j].getNode().setTranslateX(translateX);
         	  grid[i][j].getNode().setTranslateY(translateY);
           }
     }
-
-
-    /**
-     * This function fills empty spots in the top row with new jewels.
-     * (Combos being removed cause empty spots on the grid, 
-     * the empty spots propagate to the to of the grid through gravity.)
-     */
-
 
     /**
      * This function updates the positions of the jewels of the grid.
@@ -698,32 +692,31 @@ public class Board implements Serializable {
     public void updateJewelPositions() {
     	for (int i = 0; i < gridWidth; i++) {	
     		int emptySpots = 0;
-    		for (int j = gridHeight-1; j >= 0; j--) {
+    		for (int j = gridHeight - 1; j >= 0; j--) {
     			if (grid[i][j].getState() == SpriteState.TO_BE_REMOVED) {
     				emptySpots++;
     			} else {
     				if (emptySpots > 0) {
-        				grid[i][j+emptySpots] = grid[i][j];
+        				grid[i][j + emptySpots] = grid[i][j];
     					moveJewelDown(grid[i][j], emptySpots);
     				}
     			}
     		}
     		for (int k = 0; k < emptySpots; k++) {
-    			addRandomJewel(i, k, 0, -(emptySpots)*spriteHeight);
+    			addRandomJewel(i, k, 0, -(emptySpots) * spriteHeight);
     		}
     	}
-
     }
 
     /**
-     * A function to move a jewel down on the board with correct animation
+     * A function to move a jewel down on the board with correct animation.
      * @param jewel The jewel to move
      * @param spots The number of spots to move down
      */
     private void moveJewelDown(Jewel jewel, int spots) {
-        	jewel.setyPos(jewel.getyPos()+spots*this.spriteHeight);
-        	jewel.setBoardY(jewel.getBoardY()+spots);
-        	jewel.getNode().setTranslateY(-spots*this.spriteHeight);
+        	jewel.setyPos(jewel.getyPos() + spots * this.spriteHeight);
+        	jewel.setBoardY(jewel.getBoardY() + spots);
+        	jewel.getNode().setTranslateY(-spots * this.spriteHeight);
     }
 
     	
@@ -745,6 +738,7 @@ public class Board implements Serializable {
 	 * Getter function for the current spriteStore.
 	 * @return current spriteStore
 	 */
+
 	public Object getSpriteStore() {
 		return spriteStore;
 	}
@@ -760,7 +754,7 @@ public class Board implements Serializable {
 	 * Update the board; check for combos, and fill empty spots .
 	 * 	 */
 	public void update() {
-		if(!anyJewelsAnimating()) {
+		if (!anyJewelsAnimating()) {
 			if (toReverseMove) {
 				tryToReverse();
 			} else {
@@ -794,6 +788,21 @@ public class Board implements Serializable {
 		return selectionCursor;
 	}
 
+    /**
+     * Getter function for the state grid.
+     * @return The state grid.
+     */
+    public int[][] getState() {
+        return state;
+    }
+
+    /**
+     * Setter method for the state grid.
+     * @param state The state grid.
+     */
+    public void setState(int[][] state) {
+        this.state = state;
+    }
 
     /**
      * Function to reset the entire grid[][] to null.
@@ -823,12 +832,15 @@ public class Board implements Serializable {
 				}
 			}
 		}
-		
 	}
-	
+
+    /**
+     * Determines if any Jewel on the board is still animating.
+     * @return True if any Jewels are falling, otherwise false.
+     */
 	public boolean anyJewelsAnimating() {
-		for (int x = 0; x < gridWidth ; x++){
-			for (int y = 0; y < gridHeight ; y++){
+		for (int x = 0; x < gridWidth; x++) {
+			for (int y = 0; y < gridHeight; y++) {
 				if (grid[x][y].animationActive()) {
 					return true;
 				}
@@ -873,8 +885,8 @@ public class Board implements Serializable {
                                 addSelection(jewel);
                                 event.consume();
                             }
-                			}
-                		);
+                        }
+                );
             }
         }
 	}
