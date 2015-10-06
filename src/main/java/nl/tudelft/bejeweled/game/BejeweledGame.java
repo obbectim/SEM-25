@@ -134,6 +134,10 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
             return;
         }
 
+        inProgress = false;
+        isStop = true;
+        isResume = false;
+        
         Logger.logInfo("Final score: " + score);
         int place = highScore.isHighScore(score);
         if (place >  0) {
@@ -157,10 +161,6 @@ public class BejeweledGame extends Game implements BoardObserver, Serializable {
         spriteStore.removeAllSprites();
         board.resetGrid();
 
-        inProgress = false;
-        isStop = true;
-        isResume = false;
-        
         File boardFile = new File("board.mine");
         File scoreFile = new File("score.mine");
         if (boardFile.exists() || scoreFile.exists()) {
