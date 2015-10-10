@@ -19,6 +19,7 @@ public class BejeweledGui {
     private Pane boardPane;
 
     private Label scoreLabel;
+    private Label levelLabel;
 
     /**
      * The constructor initialises the GUI.
@@ -56,6 +57,8 @@ public class BejeweledGui {
             boardPane = bejeweledController.getBoardPane();
 
             scoreLabel = bejeweledController.getScoreLabel();
+            
+            levelLabel = bejeweledController.getLevelLabel();
 
             // redirect button callbacks to game class
             bejeweledController.setGame(game);
@@ -81,5 +84,13 @@ public class BejeweledGui {
      */
     public Label getScoreLabel() {
     	return scoreLabel;
+    }
+    
+    /**
+     * Getter method for the level label in the dialog.
+     * @return The Label used to display the level.
+     */
+    public Label getLevelLabel() {
+    	return levelLabel;
     }
 }

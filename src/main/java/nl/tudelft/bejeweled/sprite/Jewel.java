@@ -13,7 +13,9 @@ import javafx.util.Duration;
 public class Jewel extends Sprite {
 	public static final double MAX_SPEED_X = 4;
 	public static final double MAX_SPEED_Y = 4;
-	public static final int ANIMATION_DURATION = 300;
+	public static final int FADE_OUT_DURATION = 300;
+	public static final int FADE_IN_DURATION = 2000;
+
 	
     private final int type;
     private int boardX, boardY;
@@ -131,7 +133,7 @@ public class Jewel extends Sprite {
         setvX(0);
         setvY(0);
 
-        FadeTransition ft = new FadeTransition(Duration.millis(ANIMATION_DURATION), getNode());
+        FadeTransition ft = new FadeTransition(Duration.millis(FADE_OUT_DURATION), getNode());
         ft.setFromValue(1.0);
         ft.setToValue(0.0);
         ft.setCycleCount(1);
@@ -146,12 +148,34 @@ public class Jewel extends Sprite {
     }
 
     /**
-     * Simple version of implode.
-     * Just sets the isdead to true so the update() method handles
-     * not showing the sprite anymore.
+     * Simple version of implode, to remove the jewel from the game.
+     * @param sceneGroup Game scene group to remove the Jewel from.
      */
-    public void simpleImplode() {
+    public void remove(Group sceneGroup) {
         setState(SpriteState.TO_BE_REMOVED);
+        if (sceneGroup != null) {
+            sceneGroup.getChildren().remove(getNode());
+        }
+    }
+    
+  /**
+   * Animate a fade in for the Jewel.
+   * @param sceneGroup the sceneGroup which displays the jewel fading in.
+   */
+    public void fadeIn(Group sceneGroup) {
+        setState(SpriteState.ANIMATION_ACTIVE);
+        setvX(0);
+        setvY(0);
+
+        FadeTransition ft = new FadeTransition(Duration.millis(FADE_IN_DURATION), getNode());
+        ft.setFromValue(0.0);
+        ft.setToValue(1.0);
+        ft.setCycleCount(1);
+        ft.setAutoReverse(false);
+        ft.setOnFinished(event -> {
+            setState(SpriteState.IDLE);
+        });
+        ft.play();
     }
     
     /**

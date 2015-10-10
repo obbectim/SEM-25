@@ -31,26 +31,26 @@ public class Board implements Serializable {
 	private int spriteHeight;
 	private static final int MINIMAL_COMBO_LENGTH = 3;
 	public static final int NUMBER_OF_JEWEL_TYPES = 7;
-	private static final int GRID_WIDTH = 8;
-
 
     private List<Jewel> selection = new ArrayList<Jewel>();
     
     private Random rand = new Random();
     
-    private Jewel[][] grid;
+    private transient Jewel[][] grid;
 
-    private final List<BoardObserver> observers;
+    private transient List<BoardObserver> observers;
 
     /** The JavaFX group containing all the jewels. */
-    private Group sceneNodes;
+    private transient Group sceneNodes;
 
 	private SpriteStore spriteStore;
 	private SelectionCursor selectionCursor;
 	private boolean toReverseMove = false;
-	private Jewel reverse1;
-	private Jewel reverse2;
+	private boolean empty = false;
+	private transient Jewel reverse1;
+	private transient Jewel reverse2;
 	private int[][] state;
+	private boolean locked = false;
 
     /**
      * Constructor for the board class.
@@ -119,36 +119,36 @@ public class Board implements Serializable {
      * @param jewel The Jewel to be added to the current selection.
      */
     public void addSelection(Jewel jewel) {
-        getSelection().add(jewel);
-        //TODO Cleanup this method with better logic.
-        if (getSelection().size() == 1) {
-           selectionCursor = new SelectionCursor(getSelection().get(0).getxPos(), 
-        		   getSelection().get(0).getyPos());
-           spriteStore.addSprites(getSelectionCursor());
-           sceneNodes.getChildren().add(0, getSelectionCursor().getNode());
-        }
-        
-        // 2 gems are selected, see if any combo's are made
-        if (getSelection().size() == 2) {
+    	if (!isLocked()) {
+    		getSelection().add(jewel);
+    		//TODO Cleanup this method with better logic.
+    		if (getSelection().size() == 1) {
+    			selectionCursor = new SelectionCursor(getSelection().get(0).getxPos(), 
+    					getSelection().get(0).getyPos());
+    			spriteStore.addSprites(getSelectionCursor());
+    			sceneNodes.getChildren().add(0, getSelectionCursor().getNode());
+    		}
+    		// 2 gems are selected, see if any combo's are made
+    		if (getSelection().size() == 2) {
 
-            if (moveWithinDomain(getSelection().get(0), getSelection().get(1))) {
-                Logger.logInfo("Swapping jewels " + getSelection().get(0).toString()
-                		+ " and " + getSelection().get(1).toString());
-                swapJewel(getSelection().get(0), getSelection().get(1));
+    			if (moveWithinDomain(getSelection().get(0), getSelection().get(1))) {
+    				Logger.logInfo("Swapping jewels " + getSelection().get(0).toString()
+    						+ " and " + getSelection().get(1).toString());
+    				swapJewel(getSelection().get(0), getSelection().get(1));
 
-                int comboCount = checkBoardCombos();
-                Logger.logInfo("Combo Jewels on board: " + comboCount);
-                if (comboCount == 0) {
-                	setToReverse(getSelection().get(0), getSelection().get(1));
-                }
-
-            }
-            sceneNodes.getChildren().remove(getSelectionCursor().getNode());
-            selectionCursor = null;
-            getSelection().clear();
-        }
+    				int comboCount = checkBoardCombos();
+    				Logger.logInfo("Combo Jewels on board: " + comboCount);
+    				if (comboCount == 0) {
+    					setToReverse(getSelection().get(0), getSelection().get(1));
+    				}
+    			}
+    			sceneNodes.getChildren().remove(getSelectionCursor().getNode());
+    			selectionCursor = null;
+    			getSelection().clear();
+    		}
+    	}
     }
-    
+
 	/**
      * Set up two jewels to be swapped, intended to undo an invalid move.
      * @param jewel1 The first Jewel.
@@ -358,7 +358,7 @@ public class Board implements Serializable {
             // TODO Make sure the Jewels are also removed from the spriteStore.
             // grid[jewel.getBoardX()][jewel.getBoardY()] = null;
         }
-        outOfMoves();
+
         return count;
     }
     
@@ -693,7 +693,7 @@ public class Board implements Serializable {
     	for (int i = 0; i < gridWidth; i++) {	
     		int emptySpots = 0;
     		for (int j = gridHeight - 1; j >= 0; j--) {
-    			if (grid[i][j].getState() == SpriteState.TO_BE_REMOVED) {
+    			if (grid[i][j] == null || grid[i][j].getState() == SpriteState.TO_BE_REMOVED) {
     				emptySpots++;
     			} else {
     				if (emptySpots > 0) {
@@ -721,18 +721,33 @@ public class Board implements Serializable {
 
     	
     /**
-     * This function fille the null spots in the grid[][] with Jewels
+     * This function fills the null spots in the grid[][] with Jewels
      * at the start of the game.
      */
     public void fillNullSpots() {
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid[x].length; y++) {
                 if (grid[x][y] == null) {
-                    addRandomJewel(x, y);
+                    addRandomJewel(x, y);                
                 }
             }
         }
     }
+    
+    /**
+     * Clears the grid and removes the jewels from the scenegroup.
+     */
+    public void clearGrid() {
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid[x].length; y++) {
+            	if (grid[x][y] != null) {
+	            	grid[x][y].remove(sceneNodes);
+	            	grid[x][y] = null;
+            	}
+        	}
+        }
+    }
+    
     
     /**
 	 * Getter function for the current spriteStore.
@@ -755,15 +770,31 @@ public class Board implements Serializable {
 	 * 	 */
 	public void update() {
 		if (!anyJewelsAnimating()) {
-			if (toReverseMove) {
+			if (empty) {
+				spawnJewels();
+				empty = false;
+			} else if (toReverseMove) {
 				tryToReverse();
 			} else {
 				checkBoardCombos();
 				updateJewelPositions();
+				outOfMoves();
 			}
 		}
 	}
 	
+	/**
+	 * Spawn new jewels at the start of a new level.
+	 */
+	private void spawnJewels() {
+	    for (int i = 0; i < gridWidth; i++) {
+            for (int j = 0; j < gridHeight; j++) {
+            	 addRandomJewel(i, j);
+            	 grid[i][j].fadeIn(sceneNodes); 
+            }
+        }
+	}
+
 	/**
 	 * Getter function for the current jewel Grid (used for testing).
 	 * @return current grid of jewels
@@ -810,10 +841,23 @@ public class Board implements Serializable {
     public void resetGrid() {
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid[x].length; y++) {
-                grid[x][y].implode(sceneNodes);
-                grid[x][y] = null;
+            	grid[x][y] = null;
             }
         }
+    }
+    
+    /**
+     * Fade out the entire grid.
+     */
+    public void implodeGrid() {
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid[x].length; y++) {
+            	if (grid[x][y] != null) {
+	                grid[x][y].implode(sceneNodes);
+            	}
+            }
+        }
+        empty = true;
     }
 
 	/**
@@ -841,7 +885,7 @@ public class Board implements Serializable {
 	public boolean anyJewelsAnimating() {
 		for (int x = 0; x < gridWidth; x++) {
 			for (int y = 0; y < gridHeight; y++) {
-				if (grid[x][y].animationActive()) {
+				if (grid[x][y] != null && grid[x][y].animationActive()) {
 					return true;
 				}
 			}
@@ -854,9 +898,9 @@ public class Board implements Serializable {
 	 * @return processed grid
 	 */
 	public int[][] convertGrid() {
-		int[][] mGrid = new int[GRID_WIDTH][GRID_WIDTH]; 
-		for (int i = 0; i < GRID_WIDTH; i++) {
-			for (int j = 0; j < GRID_WIDTH; j++) {
+		int[][] mGrid = new int[gridWidth][gridHeight]; 
+		for (int i = 0; i < gridWidth; i++) {
+			for (int j = 0; j < gridHeight; j++) {
 				mGrid[i][j] = grid[i][j].getType();  
 			}	
 		}
@@ -866,11 +910,14 @@ public class Board implements Serializable {
 	
     /**
      * Make grid from saved state.
-     *
+     * @param sceneNodes the sceneNodes used for the display of the jewels.
      */
-	public void makeGrid() {
-		for (int i = 0; i < GRID_WIDTH; i++) {
-            for (int j = 0; j < GRID_WIDTH; j++) {
+	public void makeGrid(Group sceneNodes) {
+        this.observers = new ArrayList<>();
+		grid = new Jewel[gridWidth][gridHeight];
+		this.sceneNodes = sceneNodes;
+		for (int i = 0; i < gridWidth; i++) {
+            for (int j = 0; j < gridHeight; j++) {
                Jewel jewel = new Jewel(state[i][j], i, j); 
                 jewel.setxPos(i * spriteWidth); 
                 jewel.setyPos(j * spriteHeight); 
@@ -889,6 +936,22 @@ public class Board implements Serializable {
                 );
             }
         }
+	}
+
+	/**
+	 * Test whether the board is locked for modification.
+	 * @return whether the board is locked for modification.
+	 */
+	public boolean isLocked() {
+		return locked;
+	}
+
+	/**
+	 * Lock or unlock the board for modification.
+	 * @param locked true if the board is to be locked
+	 */
+	public void setLocked(boolean locked) {
+		this.locked = locked;
 	}
 	
 }

@@ -1,9 +1,5 @@
 package nl.tudelft.bejeweled;
 
-import javafx.scene.Group;
-import nl.tudelft.bejeweled.board.Board;
-import nl.tudelft.bejeweled.board.BoardFactory;
-
 /**
  * Created by Jeroen on 12-9-2015.
  * Extension of the launcher class to load custom boards from text.
@@ -37,8 +33,8 @@ public class CustomBoardLauncher extends Launcher {
      * @param sceneNodes The group containing the jewel nodes.
      * @return The board.
      */
-    @Override
-    public Board makeBoard(BoardFactory boardFactory, Group sceneNodes) {
-        return boardFactory.fromTextGenerateBoard(boardLocation, sceneNodes);
-    }
+//    @Override
+//    public Board makeBoard(BoardFactory boardFactory, Group sceneNodes) {
+ //       return boardFactory.fromTextGenerateBoard(boardLocation, sceneNodes);
+ //   }
 }

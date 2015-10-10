@@ -4,7 +4,7 @@
 
     <groupId>nl.tudelft.bejeweled</groupId>
     <artifactId>sem-lab-group-25</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 
     <prerequisites>
         <maven>2.2.1</maven>

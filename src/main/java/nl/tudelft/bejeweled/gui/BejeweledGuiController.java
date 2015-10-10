@@ -40,6 +40,8 @@ public class BejeweledGuiController implements Initializable {
     @FXML
     private Label scoreLabel;
     @FXML
+    private Label levelLabel;
+    @FXML
     private ListView<String> highscoreList;
 
     @Override // This method is called by the FXMLLoader when initialization is complete
@@ -152,5 +154,13 @@ public class BejeweledGuiController implements Initializable {
      */
     public Label getScoreLabel() {
         return scoreLabel;
+    }
+    
+    /**
+     * Getter method for the level label in the dialog.
+     * @return The Label used to display the level.
+     */
+    public Label getLevelLabel() {
+    	return levelLabel;
     }
 }

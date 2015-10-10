@@ -8,7 +8,6 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import nl.tudelft.bejeweled.board.Board;
 import nl.tudelft.bejeweled.board.BoardFactory;
 import nl.tudelft.bejeweled.game.Game;
 import nl.tudelft.bejeweled.game.GameFactory;
@@ -73,7 +72,6 @@ public class Launcher extends Application {
      */
     public void launchGame(Stage theStage) {
         Group sceneNodes = new Group();
-        Board board = makeBoard(getBoardFactory(), sceneNodes);
         game = makeGame(FPS_LIMIT, WINDOW_TITLE, SPRITE_STORE);
         game.setSceneNodes(sceneNodes);
 
@@ -81,7 +79,8 @@ public class Launcher extends Application {
         bejeweledGui = new BejeweledGui(game, theStage);
 
         // initialise the game
-        game.initialise(board, bejeweledGui.getBoardPane(), bejeweledGui.getScoreLabel());
+        game.initialise(bejeweledGui.getBoardPane(), bejeweledGui.getScoreLabel(),
+        		bejeweledGui.getLevelLabel());
         if (saveGameExists()) {
             Optional<ButtonType> result = showYesNoDialog("Saved State Available",
                     "Would you like to resume the previous game?");
@@ -115,16 +114,6 @@ public class Launcher extends Application {
     }
 
     /**
-     * Makes a board.
-     * @param boardFactory The BoardFactory object that creates the board.
-     * @param sceneNodes The group of nodes that are presented in the scene.
-     * @return An instantiated board.
-     */
-    public Board makeBoard(BoardFactory boardFactory, Group sceneNodes) {
-        return boardFactory.generateBoard(sceneNodes);
-    }
-
-    /**
      * Show Dialog with yes/no buttons.
      * @param title Title of the dialog.
      * @param text Context text of the dialog.
@@ -146,12 +135,8 @@ public class Launcher extends Application {
      * @return True if and only if save game files are both present.
      */
     public boolean saveGameExists() {
-        File boardFile = new File("board.mine");
-        File scoreFile = new File("score.mine");
-        if (boardFile.exists() && scoreFile.exists()) {
-            return true;
-        }
-        return false;
+        File saveFile = new File("save.mine");
+        return saveFile.exists();
     }
 
     /**

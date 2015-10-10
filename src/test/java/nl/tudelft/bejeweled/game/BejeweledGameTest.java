@@ -23,11 +23,9 @@ public class BejeweledGameTest extends ApplicationTest {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        File boardFile = new File("board.mine");
-        File scoreFile = new File("score.mine");
-        if (boardFile.exists() || scoreFile.exists()) {
-            boardFile.delete();
-            scoreFile.delete();
+        File saveFile = new File("save.mine");
+        if (saveFile.exists()) {
+        	saveFile.delete();
         }
         launcher.launchGame(primaryStage);
     }
@@ -59,13 +57,13 @@ public class BejeweledGameTest extends ApplicationTest {
         });
 
         // click on 2 jewels that can be swapped
-        clickOn(game.getBoard().getGrid()[0][0].getNode());
-        clickOn(game.getBoard().getGrid()[0][1].getNode());
+        clickOn(game.getSession().getBoard().getGrid()[0][0].getNode());
+        clickOn(game.getSession().getBoard().getGrid()[0][1].getNode());
 
         // verify the score is still the same.
         Platform.runLater(new Runnable() {
             public void run() {
-                assertSame(game.getScore(), 0);
+                assertSame(game.getSession().getScore(), 0);
             }
         });
 

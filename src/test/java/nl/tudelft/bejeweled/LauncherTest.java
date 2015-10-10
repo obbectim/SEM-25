@@ -20,12 +20,10 @@ public class LauncherTest extends ApplicationTest {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        File boardFile = new File("board.mine");
-        File scoreFile = new File("score.mine");
-        if (boardFile.exists() || scoreFile.exists()) {
-            boardFile.delete();
-            scoreFile.delete();
-        }
+    	  File saveFile = new File("save.mine");
+          if (saveFile.exists()) {
+          	saveFile.delete();
+          }
         launcher.launchGame(primaryStage);
     }
 
@@ -34,7 +32,7 @@ public class LauncherTest extends ApplicationTest {
      */
     @After
     public void tearDown() {
-        closeCurrentWindow();
+     //   closeCurrentWindow();
     }
 
     /**

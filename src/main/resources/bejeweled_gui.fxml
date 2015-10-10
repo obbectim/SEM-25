@@ -6,7 +6,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0002136230469" prefWidth="683.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="nl.tudelft.bejeweled.gui.BejeweledGuiController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0002136230469" prefWidth="683.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.bejeweled.gui.BejeweledGuiController">
   <children>
     <BorderPane layoutX="0.0" layoutY="8.0" prefHeight="512.0" prefWidth="683.0">
       <center>
@@ -15,11 +15,11 @@
       <left>
         <Pane prefHeight="564.0" prefWidth="171.0">
           <children>
-            <Button fx:id="buttonHint" layoutX="42.0" layoutY="360.0" mnemonicParsing="false" text="Hint" />
+            <Button fx:id="buttonHint" layoutX="42.0" layoutY="375.0" mnemonicParsing="false" text="Hint" />
             <Button fx:id="buttonStart" layoutX="42.0" layoutY="409.0" mnemonicParsing="false" text="Start Game" />
             <Button fx:id="buttonStop" layoutX="42.0" layoutY="438.0" mnemonicParsing="false" text="Stop Game" />
             <Button fx:id="buttonExit" layoutX="42.0" layoutY="477.0" mnemonicParsing="false" prefWidth="-1.0" text="Save &amp; Exit" />
-            <Label fx:id="scoreLabel" alignment="CENTER" contentDisplay="LEFT" layoutX="13.0" layoutY="67.0" prefWidth="143.0" text="" textAlignment="CENTER">
+            <Label fx:id="scoreLabel" alignment="CENTER" contentDisplay="LEFT" layoutX="13.0" layoutY="67.0" prefWidth="143.0" textAlignment="CENTER">
               <font>
                 <Font size="30.0" />
               </font>
@@ -32,12 +32,22 @@
                 <Color blue="0.161" green="0.161" red="0.161" fx:id="x1" />
               </textFill>
             </Label>
-            <Label layoutX="20.0" layoutY="118.0" text="Highscores:" textFill="$x1">
+            <Label layoutX="16.0" layoutY="146.0" text="Highscores:" textFill="$x1">
               <font>
                 <Font size="17.0" />
               </font>
             </Label>
-            <ListView fx:id="highscoreList" layoutX="17.0" layoutY="156.0" prefHeight="200.0" prefWidth="144.0" />
+            <ListView fx:id="highscoreList" layoutX="17.0" layoutY="171.0" prefHeight="200.0" prefWidth="144.0" />
+                  <Label layoutX="18.0" layoutY="104.0" prefHeight="37.0" prefWidth="92.0" text="Level:">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="levelLabel" layoutX="106.0" layoutY="104.0" prefHeight="37.0" prefWidth="46.0">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Label>
           </children>
         </Pane>
       </left>

@@ -28,7 +28,7 @@ public class SaveResumeTest extends ApplicationTest {
      */
     @After
     public void tearDown() {
-        closeCurrentWindow();
+      //  closeCurrentWindow();
     }
     
     /**
@@ -37,11 +37,9 @@ public class SaveResumeTest extends ApplicationTest {
      */
     @Test
     public void testStartExit() {
-        File boardFile = new File("board.mine");
-        File scoreFile = new File("score.mine");
-        if (boardFile.exists() || scoreFile.exists()) {
-            boardFile.delete();
-            scoreFile.delete();
+        File saveFile = new File("save.mine");
+        if (saveFile.exists()) {
+        	saveFile.delete();
         }
         BejeweledGame game = (BejeweledGame) launcher.getGame();
         assertFalse(game.isInProgress());
@@ -49,7 +47,6 @@ public class SaveResumeTest extends ApplicationTest {
         clickOn("#buttonStart");
         clickOn("#buttonExit");
         
-        assertTrue(boardFile.exists());
-        assertTrue(scoreFile.exists());
+        assertTrue(saveFile.exists());
     }
 }
