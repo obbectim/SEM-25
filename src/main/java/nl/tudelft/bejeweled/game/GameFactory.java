@@ -27,4 +27,15 @@ public class GameFactory {
     public Game createBejeweledGame(int framesPerSecond, String windowTitle) {
         return new BejeweledGame(framesPerSecond, windowTitle, spriteStore);
     }
+    
+    /**
+     * Create a CustomBoardBejeweledGame instance with a custom board.
+     * @param framesPerSecond Frames per second the game will be refreshed.
+     * @param windowTitle The title of the window.
+     * @param boardLocation The location of the boardfile to be used 
+     * @return BejeweledGame object.
+     */
+    public Game createBejeweledGame(int framesPerSecond, String windowTitle, String boardLocation) {
+        return new BejeweledGame(framesPerSecond, windowTitle, spriteStore, boardLocation);
+    }
 }

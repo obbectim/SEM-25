@@ -33,9 +33,18 @@ public class SpriteStore implements Serializable {
      * VarArgs of sprite objects to be added to the game.
      * @param sprite Sprite object to add to the list.
      */
-    public void addSprites(Sprite sprite) {
+    public void addSprite(Sprite sprite) {
         LIST_ACTORS.add(sprite);
     }
+    
+    /**
+     * VarArgs of sprite objects to be added to the game.
+     * @param sprites List of sprite objects to add to the list.
+     */
+    public void addSprites(List<JewelSprite> sprites) {
+        LIST_ACTORS.addAll(sprites);
+    }
+    
 
     /**
      * Remove one single sprite in the store from the game.

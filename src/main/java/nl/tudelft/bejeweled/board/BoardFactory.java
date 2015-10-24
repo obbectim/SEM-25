@@ -2,9 +2,9 @@ package nl.tudelft.bejeweled.board;
 import java.io.Serializable;
 
 import nl.tudelft.bejeweled.game.BejeweledGame;
-import nl.tudelft.bejeweled.sprite.Jewel;
+import nl.tudelft.bejeweled.jewel.BasicJewel;
+import nl.tudelft.bejeweled.jewel.Jewel;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
-
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
@@ -60,13 +60,11 @@ public class BoardFactory implements Serializable {
                 String[] parts = line.split("|");  
                 for (int j = 0; j < gridHeight; j++) {
                     int amr = Integer.parseInt(parts[j]);
-                    Jewel jewel = new Jewel(amr, k, j);
-                    jewel.setxPos(k * spriteWidth);
-                    jewel.setyPos(j * spriteHeight);
+                    Jewel jewel = new BasicJewel(amr, k, j, k * spriteWidth, j * spriteHeight);
                     grid[k][j] = jewel;
                     // add to actors in play (sprite objects)
-                    spriteStore.addSprites(jewel);
-                    sceneNodes.getChildren().add(0, jewel.getNode()); 
+                    spriteStore.addSprite(jewel.getSprite());
+                    sceneNodes.getChildren().add(0, jewel.getSprite().getNode()); 
                 } k++;        
             }
         } catch (IOException e) {
@@ -93,17 +91,15 @@ public class BoardFactory implements Serializable {
         // create the boards jewels
         for (int i = 0; i < gridWidth; i++) {
             for (int j = 0; j < gridHeight; j++) {
-               Jewel jewel = new Jewel(rand.nextInt(Board.NUMBER_OF_JEWEL_TYPES) + 1, i, j);
-            //	Jewel jewel = new Jewel((i+j)%7+1, i, j);
-                jewel.setxPos(i * spriteWidth);
-                jewel.setyPos(j * spriteHeight);
+               Jewel jewel = new BasicJewel(rand.nextInt(Board.NUMBER_OF_JEWEL_TYPES) + 1, i, j,
+            		   i * spriteWidth, j * spriteHeight);
                 grid[i][j] = jewel;
 
                 // add to actors in play (sprite objects)
-                spriteStore.addSprites(jewel);
+                spriteStore.addSprite(jewel.getSprite());
 
                 // add sprites
-                sceneNodes.getChildren().add(0, jewel.getNode());
+                sceneNodes.getChildren().add(0, jewel.getSprite().getNode());
             }
         }
 
@@ -131,7 +127,7 @@ public class BoardFactory implements Serializable {
         for (int i = 0; i < gridWidth; i++) {
             for (int j = 0; j < gridHeight; j++) {
                 Jewel jewel = grid[i][j];
-                grid[i][j].getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
+                grid[i][j].getSprite().getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
                         new EventHandler<MouseEvent>() {
                           public void handle(MouseEvent event) {
                             board.addSelection(jewel);

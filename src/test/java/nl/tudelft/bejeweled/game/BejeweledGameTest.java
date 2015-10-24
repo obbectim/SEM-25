@@ -57,8 +57,8 @@ public class BejeweledGameTest extends ApplicationTest {
         });
 
         // click on 2 jewels that can be swapped
-        clickOn(game.getSession().getBoard().getGrid()[0][0].getNode());
-        clickOn(game.getSession().getBoard().getGrid()[0][1].getNode());
+        clickOn(game.getSession().getBoard().getGrid()[0][0].getSprite().getNode());
+        clickOn(game.getSession().getBoard().getGrid()[0][1].getSprite().getNode());
 
         // verify the score is still the same.
         Platform.runLater(new Runnable() {

@@ -11,7 +11,7 @@ public class SelectionCursor extends Sprite {
 	private double xPos, yPos;
 	
     /**
-     * Constructor for Jewel class.
+     * Constructor for SelectionCursor class.
      * @param x The X position of this SelectionCursor on the board grid (in number of squares).
      * @param y The Y position of this SelectionCursor on the board grid (in number of squares).
      */

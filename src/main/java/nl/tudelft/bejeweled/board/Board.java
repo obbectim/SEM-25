@@ -14,8 +14,12 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import nl.tudelft.bejeweled.game.BejeweledGame;
+import nl.tudelft.bejeweled.jewel.BasicJewel;
+import nl.tudelft.bejeweled.jewel.ExplosivePowerUp;
+import nl.tudelft.bejeweled.jewel.HyperPowerUp;
+import nl.tudelft.bejeweled.jewel.Jewel;
 import nl.tudelft.bejeweled.logger.Logger;
-import nl.tudelft.bejeweled.sprite.Jewel;
+import nl.tudelft.bejeweled.sprite.ExplosiveSprite;
 import nl.tudelft.bejeweled.sprite.SelectionCursor;
 import nl.tudelft.bejeweled.sprite.SpriteState;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
@@ -30,14 +34,15 @@ public class Board implements Serializable {
 	private int spriteWidth;
 	private int spriteHeight;
 	private static final int MINIMAL_COMBO_LENGTH = 3;
+	private static final int EXPLOSIVE_JEWEL_COMBO_LENGTH = 4;
+	private static final int HYPER_JEWEL_COMBO_LENGTH = 5;
 	public static final int NUMBER_OF_JEWEL_TYPES = 7;
 
-    private List<Jewel> selection = new ArrayList<Jewel>();
-    
-    private Random rand = new Random();
+    private List<Jewel> selection = new ArrayList<>();
     
     private transient Jewel[][] grid;
-
+    private List<Integer> explosivesSave;
+    private List<Integer> hyperSave;
     private transient List<BoardObserver> observers;
 
     /** The JavaFX group containing all the jewels. */
@@ -78,15 +83,6 @@ public class Board implements Serializable {
     		observers.add(observer);
     	}
     }
-    
-    
-    /**
-     * Removes an observer of the board.
-     * @param observer BoardObserver to be removed
-     */
-    public void removeObserver(BoardObserver observer) {
-    	observers.remove(observer);
-    }
 
     /**
      * Updates the observers a jewel was removed.
@@ -119,19 +115,24 @@ public class Board implements Serializable {
      * @param jewel The Jewel to be added to the current selection.
      */
     public void addSelection(Jewel jewel) {
-    	if (!isLocked()) {
+    	if (!isLocked() && !anyJewelsAnimating()) {
     		getSelection().add(jewel);
     		//TODO Cleanup this method with better logic.
     		if (getSelection().size() == 1) {
-    			selectionCursor = new SelectionCursor(getSelection().get(0).getxPos(), 
-    					getSelection().get(0).getyPos());
-    			spriteStore.addSprites(getSelectionCursor());
+    			selectionCursor = new SelectionCursor(getSelection().get(0).getSprite().getxPos(), 
+    					getSelection().get(0).getSprite().getyPos());
+    			spriteStore.addSprite(getSelectionCursor());
     			sceneNodes.getChildren().add(0, getSelectionCursor().getNode());
     		}
     		// 2 gems are selected, see if any combo's are made
     		if (getSelection().size() == 2) {
-
-    			if (moveWithinDomain(getSelection().get(0), getSelection().get(1))) {
+    			
+    			//Check for hypermoves
+    			if (getSelection().get(0).isHyper()) {
+    				hyperMove(getSelection().get(0), getSelection().get(1));
+    			} else if (getSelection().get(1).isHyper()) {
+    				hyperMove(getSelection().get(1), getSelection().get(0));
+    			} else if (moveWithinDomain(getSelection().get(0), getSelection().get(1))) {
     				Logger.logInfo("Swapping jewels " + getSelection().get(0).toString()
     						+ " and " + getSelection().get(1).toString());
     				swapJewel(getSelection().get(0), getSelection().get(1));
@@ -148,6 +149,17 @@ public class Board implements Serializable {
     		}
     	}
     }
+
+	private void hyperMove(Jewel hyperjewel, Jewel jewel2) {
+		hyperjewel.implode(sceneNodes);
+	    for (int x = 0; x < gridWidth; x++) {
+            for (int y = 0; y < gridHeight; y++) {
+            	if (grid[x][y].getType() == jewel2.getType()) {
+	                grid[x][y].implode(sceneNodes);
+            	}
+            }
+        }
+	}
 
 	/**
      * Set up two jewels to be swapped, intended to undo an invalid move.
@@ -166,7 +178,7 @@ public class Board implements Serializable {
     private void tryToReverse() {
     	assert (reverse1 != null);
     	assert (reverse2 != null);
- 		if (!reverse1.animationActive() && !reverse2.animationActive()) {
+ 		if (!reverse1.getSprite().animationActive() && !reverse2.getSprite().animationActive()) {
  			swapJewel(reverse1, reverse2);
  			toReverseMove = false;
  			reverse1 = null;
@@ -182,53 +194,12 @@ public class Board implements Serializable {
      * @param j2 The second Jewel.
      * @return True if the Jewels can be swapped.
      */
-    public Boolean moveWithinDomain(Jewel j1, Jewel j2) {
+    private Boolean moveWithinDomain(Jewel j1, Jewel j2) {
         if (Math.abs(j1.getBoardX() - j2.getBoardX()) 
         		+ Math.abs(j1.getBoardY() - j2.getBoardY()) == 1) {
             return true;
         }
         return false;
-    }
-
-    
-    /**
-     * Performs a horizontal swap of two Jewels.
-     * @param j1 First jewel to swap
-     * @param j2 Second jewel to swap
-     */
-    private void horizontalSwap(Jewel j1, Jewel j2) {
-    	int tmp;
-    	double previousJ1, previousJ2;
-    	tmp = j1.getBoardX();
-        j1.setBoardX(j2.getBoardX());
-        j2.setBoardX(tmp);
-
-        previousJ1 = j1.getxPos();
-        j1.setxPos(j2.getxPos());
-        j1.getNode().setTranslateX(previousJ1 - j1.getxPos());
-        previousJ2 = j2.getxPos();
-        j2.setxPos(previousJ1);
-        j2.getNode().setTranslateX(previousJ2 - j2.getxPos());
-    }
-    
-    /**
-     * Performs a vertical Swap of two Jewels.
-     * @param j1 First jewel to swap
-     * @param j2 Second jewel to swap
-     */
-    private void verticalSwap(Jewel j1, Jewel j2) {
-    	int tmp;
-    	double previousJ1, previousJ2;
-    	tmp = j1.getBoardY();
-        j1.setBoardY(j2.getBoardY());
-        j2.setBoardY(tmp);
-
-        previousJ1 = j1.getyPos();
-        j1.setyPos(j2.getyPos());
-        j1.getNode().setTranslateY(previousJ1 - j1.getyPos());
-        previousJ2 = j2.getyPos();
-        j2.setyPos(previousJ1);
-        j2.getNode().setTranslateY(previousJ2 - j2.getyPos());
     }
     
     /**
@@ -237,29 +208,28 @@ public class Board implements Serializable {
      * @param j1 First Jewel to be swapped.
      * @param j2 Second Jewel to be swapped.
      */
-    public void swapJewel(Jewel j1, Jewel j2) {
-        // TODO This can probably be done nicer
-        int x1, x2, y1, y2;
-        x1 = j1.getBoardX();
-        y1 = j1.getBoardY();
-        x2 = j2.getBoardX();
-        y2 = j2.getBoardY();
+    private void swapJewel(Jewel j1, Jewel j2) {     
+        //Swap the jewels in the board
+        grid[j1.getBoardX()][j1.getBoardY()] = j2;
+        grid[j2.getBoardX()][j2.getBoardY()] = j1;
+        
+        //TODO create a moveTo function for Jewel that in turn moves it sprite
+        //Swap the positions of the sprite images
+        int previousJ1X = j1.getSprite().getxPos();
+    	int previousJ1Y = j1.getSprite().getyPos();
+    	j1.getSprites().forEach((sprite) -> sprite.moveTo(j2.getSprite().getxPos(), j2.getSprite().getyPos()));
+    	j2.getSprites().forEach((sprite) -> sprite.moveTo(previousJ1X, previousJ1Y));
 
-        Jewel tmpJewel;
-        // find out what direction the change is
-        // horizontal swap
-        if (Math.abs(j1.getBoardX() - j2.getBoardX()) == 1) {
-            horizontalSwap(j1, j2);
-        }
-        else if (Math.abs(j1.getBoardY() - j2.getBoardY()) == 1) {
-            // vertical swap
-            verticalSwap(j1, j2);
-
-        }
-
-        tmpJewel = j1;
-        grid[x1][y1] = j2;
-        grid[x2][y2] = tmpJewel;
+       // j1.getSprite().moveTo(j2.getSprite().getxPos(), j2.getSprite().getyPos());
+     //   j2.getSprite().moveTo(previousJ1X, previousJ1Y);
+        
+    	//Swap the jewel's variables of its position on the board
+    	int previousJ1I = j1.getBoardX();
+        int previousJ1J = j1.getBoardY();
+        j1.setBoardX(j2.getBoardX());
+        j1.setBoardY(j2.getBoardY());
+        j2.setBoardX(previousJ1I);
+        j2.setBoardY(previousJ1J);
     }
 
     /**
@@ -278,7 +248,7 @@ public class Board implements Serializable {
             type = 0;
             for (int i = 0; i < grid[0].length; i++) {
                 if (grid[col][i].getType() == type && type != 0
-                        && grid[col][i].getState() != SpriteState.TO_BE_REMOVED) {
+                        && grid[col][i].getSprite().getState() != SpriteState.TO_BE_REMOVED) {
                     matches++;
                     current.push(grid[col][i]);
                 } //subtract 1 because arrays start at 0
@@ -311,7 +281,7 @@ public class Board implements Serializable {
             type = 0;
             for (int i = 0; i < grid.length; i++) {
                 if (grid[i][row].getType() == type && type != 0
-                        && grid[i][row].getState() != SpriteState.TO_BE_REMOVED) {
+                        && grid[i][row].getSprite().getState() != SpriteState.TO_BE_REMOVED) {
                     matches++;
                     current.push(grid[i][row]);
                 }
@@ -347,241 +317,76 @@ public class Board implements Serializable {
         comboList.clear();
         comboList.addAll(comboSet);
         int count = comboList.size();
+        
+        List<Jewel> additionalJewels = new ArrayList();
+        // check if any of the jewels is a 
+        for (Iterator<Jewel> jewelIterator = comboList.iterator(); jewelIterator.hasNext();) {
+            Jewel jewel = jewelIterator.next();
+            
+            if (jewel.isExplosive())
+            	additionalJewels.addAll(explosiveSurrounding(jewel, comboList));
 
+        }
+        
+        comboList.addAll(additionalJewels);
+        
         for (Iterator<Jewel> jewelIterator = comboList.iterator(); jewelIterator.hasNext();) {
             Jewel jewel = jewelIterator.next();
             // remove the JavaFX nodes from the scene group and animate an implosion
             jewel.implode(sceneNodes);
             // remove the event filter
-            jewel.getNode().setOnMouseClicked(null);
+            jewel.getNodes().forEach((node) -> node.setOnMouseClicked(null));
             updateScore();
             // TODO Make sure the Jewels are also removed from the spriteStore.
             // grid[jewel.getBoardX()][jewel.getBoardY()] = null;
         }
-
+        //Check if PowerJewels should be generated.
+         if (count == EXPLOSIVE_JEWEL_COMBO_LENGTH) { 
+	        	Jewel powerjewel = comboList.get(0);
+	        	addExplosiveJewel(	powerjewel.getType(), 
+	        						powerjewel.getBoardX(), 
+	        						powerjewel.getBoardY()
+	        						);
+	        }
+         if (count >= HYPER_JEWEL_COMBO_LENGTH) { 
+	        	Jewel powerjewel = comboList.get(0);
+	        	addHyperJewel(		powerjewel.getType(), 
+	        						powerjewel.getBoardX(), 
+	        						powerjewel.getBoardY()
+	        						);
+	        }
         return count;
     }
-    
-    
-    /**
-     * Checks the left most completion option for a valid move.
-     * 
-     * @param jewels Grid of jewels
-     * @param x x-position of the start of the row to be completed
-     * @param y y-position of the start of the row to be completed
-     * @return true if the option is possible, otherwise false
-     */
-    private boolean checkLeft(Jewel[][] jewels, int x, int y) {
-    	if (y > 0) {
-    		if (y > 1 && jewels[x][y - 2].getType() == jewels[x][y].getType()) {
-    			return true;
+
+    List<Jewel> explosiveSurrounding(Jewel jewel, List<Jewel> comboList) {
+    	List<Jewel> newComboList = new ArrayList();
+    	newComboList.addAll(comboList);
+    	
+    	System.out.println("Hello World");
+    	// Upper left corner of explosion region
+    	int x0 = -1;
+    	int y0 = -1;
+    	
+    	// Lower right corner of the explosion region
+    	int x1 = 1;
+    	int y1 = 1;
+    	
+    	x0 = Math.max(0, x0+jewel.getBoardX());
+    	x1 = Math.min(7, x1+jewel.getBoardX());
+    	
+    	y0 = Math.max(0, y0+jewel.getBoardY());
+    	y1 = Math.min(7, y1+jewel.getBoardY());
+    	    	
+    	for (int i = x0; i <= x1; i++)
+    		for (int j = y0; j <= y1; j++) {
+    			System.out.println(i + ", " + j);
+    			if (!newComboList.contains(grid[i][j])) {
+    				newComboList.add(grid[i][j]);
+    				System.out.println("Added");
+    			}
     		}
-    	}
-    	
-    	return false;
-    }
-    
-    /**
-     * Checks the left-top completion option for a valid move.
-     * 
-     * @param jewels Grid of jewels
-     * @param x x-position of the start of the row to be completed
-     * @param y y-position of the start of the row to be completed
-     * @return true if the option is possible, otherwise false
-     */
-    private boolean checkLeftTop(Jewel[][] jewels, int x, int y) {
-    	if (y > 0) {
-    		if (x > 0 && jewels[x - 1][y - 1].getType() == jewels[x][y].getType()) {
-    			return true;
-    		}
-    	}
-    	
-    	return false;
-    }
-    
-    /**
-     * Checks the left-bottom completion option for a valid move.
-     * 
-     * @param jewels Grid of jewels
-     * @param x x-position of the start of the row to be completed
-     * @param y y-position of the start of the row to be completed
-     * @return true if the option is possible, otherwise false
-     */
-    private boolean checkLeftBottom(Jewel[][] jewels, int x, int y) {
-    	if (y > 0) {
-    		if (x < jewels.length - 1 && jewels[x + 1][y - 1].getType()
-    				== jewels[x][y].getType()) {
-    			return true;
-    		}
-    	}
-    	
-    	return false;
-    }
-    
-    /**
-     * Checks the right most completion option for a valid move.
-     * 
-     * @param jewels Grid of jewels
-     * @param x x-position of the start of the row to be completed
-     * @param y y-position of the start of the row to be completed
-     * @return true if the option is possible, otherwise false
-     */
-    private boolean checkRight(Jewel[][] jewels, int x, int y) {
-    	final int three = 3;
-    	
-    	if (y < jewels[0].length - 2) {
-    		if (y < jewels[0].length - three && jewels[x][y + three].getType() 
-    				== jewels[x][y].getType()) {
-    			return true;
-    		}
-    	}
-    	
-    	return false;
-    }
-    
-    /**
-     * Checks the right-top completion option for a valid move.
-     * 
-     * @param jewels Grid of jewels
-     * @param x x-position of the start of the row to be completed
-     * @param y y-position of the start of the row to be completed
-     * @return true if the option is possible, otherwise false
-     */
-    private boolean checkRightTop(Jewel[][] jewels, int x, int y) {
-    	if (y < jewels[0].length - 2) {
-    		
-    		if (x > 0 && jewels[x - 1][y + 2].getType() == jewels[x][y].getType()) {
-    			return true;
-    		}
-    		
-    	}
-    	
-    	return false;
-    }
-    
-    /**
-     * Checks the right-top completion option for a valid move.
-     * 
-     * @param jewels Grid of jewels
-     * @param x x-position of the start of the row to be completed
-     * @param y y-position of the start of the row to be completed
-     * @return true if the option is possible, otherwise false
-     */
-    private boolean checkRightBottom(Jewel[][] jewels, int x, int y) {
-    	if (y < jewels[0].length - 2) {
-    		if (x < jewels.length - 1 && jewels[x + 1][y + 2].getType() 
-    				== jewels[x][y].getType()) {
-    			return true;
-    		}
-    	}
-    	
-    	return false;
-    }
-    
-    /**
-     * Checks if a pair of similar jewels can be extended by a valid move (done for a vertical pair
-     * but can be used for horizontal if jewels matrix is transposed).
-     * @param jewels The grid containing the Jewels
-     * @param x x-position of the first jewel of the pair to be extended
-     * @param y y-position of the first jewel of the pair to be extended
-     * @return a list of the coordinates of the Jewels (x1,y1,x2,y2)
-     */
-    public List<Integer> validMove(Jewel[][] jewels, int x, int y) {
-    	final int three = 3;
-		if (checkLeft(jewels, x, y)) {
-			return Arrays.asList(x, y - 1, x, y - 2);
-		}
-		if (checkLeftTop(jewels, x, y)) {
-			return Arrays.asList(x, y - 1, x - 1, y - 1);
-		}
-		if (checkLeftBottom(jewels, x, y)) {
-			return Arrays.asList(x, y - 1, x + 1, y - 1);
-		}
-		if (checkRight(jewels, x, y)) {
-			return Arrays.asList(x, y + 2, x, y + three);
-		}
-		if (checkRightTop(jewels, x, y)) {
-			return Arrays.asList(x, y + 2, x - 1, y + 2);
-		}
-		if (checkRightBottom(jewels, x, y)) {
-			return Arrays.asList(x, y + 2, x + 1, y + 2);
-		}
-    	return new ArrayList<Integer>();
-    }
-    
-    /**
-     * Checks a vertical pair for a valid move.
-     * @param x x-position of the first jewel of the vertical pair
-     * @param y y-position of first jewel of the vertical pair
-     * @return a list of the two Jewels to be swapped for a valid move
-     */
-    private List<Jewel> verticalRow(int x, int y) {
-    	final int three = 3;
-    	List<Integer> indices = validMove(grid, x, y);
-    	
-    	if (!indices.isEmpty()) {
-    		return Arrays.asList(grid[indices.get(0)][indices.get(1)], 
-    	                                          grid[indices.get(2)][indices.get(three)]);
-    	}
-    	return new ArrayList<Jewel>();
-    }
-    
-    /**
-     * Checks a horizontal pair for a valid Move.
-     * @param x x-position of the first jewel of the horizontal pair
-     * @param y y-position of first jewel of the horizontal pair
-     * @return a list of the two Jewels to be swapped for a valid move
-     */
-    private List<Jewel> horizontalRow(int x, int y) {
-    	/**
-    	 * Create transpose of matrix
-    	 */
-    	Jewel[][] transposed = new Jewel[grid[0].length][grid.length];
-    	for (int i = 0; i < grid[0].length; i++) {
-			for (int j = 0; j < grid.length; j++) {
-				transposed[i][j] = grid[j][i];
-			}
-		}
-    	
-    	final int three = 3;
-    	List<Integer> indices = validMove(transposed, y, x);
-    	if (!indices.isEmpty()) {
-    		return Arrays.asList(grid[indices.get(1)][indices.get(0)], 
-    	                                          grid[indices.get(three)][indices.get(2)]);
-    	}
-    	return new ArrayList<Jewel>();
-    }
-    
-    /**
-     * Checks a possible horizontal row (xox) for a valid move.
-     * @param x x-position of first jewel of possible row
-     * @param y y-position of first jewel of possible row
-     */
-    private List<Jewel> horizontalRowPossible(int x, int y) {
-    	if (y > 0 && grid[x + 1][y - 1].getType() == grid[x][y].getType()) {
-    		
-        	return Arrays.asList(grid[x + 1][y], grid[x + 1][y - 1]);
-    	}
-    	if (y < grid[0].length - 1 && grid[x + 1][y + 1].getType() == grid[x][y].getType()) {
-    		return Arrays.asList(grid[x + 1][y], grid[x + 1][y + 1]);
-    	}
-    	
-    	return new ArrayList<Jewel>();
-    }
-    
-    /**
-     * Checks a possible vertical row (xox) for a valid move.
-     * @param x x-position of first jewel of possible row
-     * @param y y-position of first jewel of possible row
-     */
-    private List<Jewel> verticalRowPossible(int x, int y) {
-    	if (x > 0 && grid[x - 1][y + 1].getType() == grid[x][y].getType()) {
-    		return Arrays.asList(grid[x][y + 1], grid[x - 1][y + 1]);
-    	}
-    	if (x < grid.length - 1 && grid[x + 1][y + 1].getType() == grid[x][y].getType()) {
-    		return Arrays.asList(grid[x][y + 1], grid[x + 1][y + 1]);
-    	}
-    	return new ArrayList<Jewel>();
+    				
+    	return newComboList;
     }
     
     /**
@@ -591,39 +396,11 @@ public class Board implements Serializable {
      * constructions like "xox" where another x could fill in.
      * For each case a different function is called which checks for
      * a valid move.</p>
-     * 
-     * @param x x-position in the grid to be checked for a pair
-     * @param y y-position in the grid to be checked for a pair
+     *
      * @return returns two jewels in a list to swap if move is possible
      */
-    private List<Jewel> checkForPair(int x, int y) {
-    	int type = grid[x][y].getType();
-    	List<Jewel> swap;
-		if (y < grid[0].length - 1 && type == grid[x][y + 1].getType()) {
-			swap = verticalRow(x, y);
-			if (!swap.isEmpty()) { 
-				return swap;
-			}
-		}
-		if (x < grid.length - 1 && type == grid[x + 1][y].getType()) {
-			swap = horizontalRow(x, y);
-			if (!swap.isEmpty()) {
-				return swap;
-			}
-		}
-		if (y < grid[0].length - 2 && type == grid[x][y + 2].getType()) {
-			swap = verticalRowPossible(x, y);
-			if (!swap.isEmpty()) {
-				return swap;
-			}
-		}
-		if (x < grid.length - 2 && type == grid[x + 2][y].getType()) {
-			swap = horizontalRowPossible(x, y);
-			if (!swap.isEmpty()) {
-				return swap;
-			}
-		}
-		return new ArrayList<Jewel>();
+    private List<Jewel> getValidMovePair(BoardMoveStrategy strategy) {
+		return strategy.getValidMovePair();
     }
     
     /**
@@ -631,13 +408,9 @@ public class Board implements Serializable {
      * @return true if no moves possible
      */
     public boolean outOfMoves() {
-    	for (int x = 0; x < grid.length; x++) {
-			for (int y = 0; y < grid[0].length; y++) {
-				if (!checkForPair(x, y).isEmpty()) {
-					return false;
-				}
-			}
-		}
+        if (!getValidMovePair(new BruteForceStrategy(grid)).isEmpty()) {
+            return false;
+        }
     	for (BoardObserver observer : observers) {
 			observer.boardOutOfMoves();
     	}
@@ -650,22 +423,72 @@ public class Board implements Serializable {
      * @param j Grid row
      */
     protected void addRandomJewel(int i, int j) {
-    	  Jewel jewel = new Jewel(rand.nextInt(NUMBER_OF_JEWEL_TYPES) + 1, i, j);
-          jewel.setxPos(i * spriteWidth);
-          jewel.setyPos(j * spriteHeight);
-          grid[i][j] = jewel;
-          spriteStore.addSprites(jewel);
-          sceneNodes.getChildren().add(0, jewel.getNode());
-          setSpriteStore(spriteStore);
-          grid[i][j].getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
-                  new EventHandler<MouseEvent>() {
-                      public void handle(MouseEvent event) {
-                          addSelection(jewel);
-                          event.consume();
-                      }
-                  }
-          );
+        Random rand = new Random();
+        Jewel jewel = new BasicJewel(rand.nextInt(NUMBER_OF_JEWEL_TYPES) + 1, i, j,
+        		i * spriteWidth, j * spriteHeight);
+        grid[i][j] = jewel;
+        spriteStore.addSprites(jewel.getSprites());
+        sceneNodes.getChildren().addAll(0, jewel.getNodes());
+        setSpriteStore(spriteStore);
+        grid[i][j].getNodes().forEach((node) -> node.addEventFilter(MouseEvent.MOUSE_CLICKED,
+            new EventHandler<MouseEvent>() {
+                public void handle(MouseEvent event) {
+                    addSelection(jewel);
+                    event.consume();
+                }
+            }
+        )
+        );
     }
+    
+    /**
+     * This function adds an explosive jewel of the selected type to the grid at the specified position.
+     * @param i Grid column
+     * @param j Grid row
+     */
+    protected void addExplosiveJewel(int type, int i, int j) {
+        Jewel jewel = new ExplosivePowerUp(new BasicJewel(type, i, j,
+        		i * spriteWidth, j * spriteHeight));
+        grid[i][j] = jewel;
+        spriteStore.addSprites(jewel.getSprites());
+        sceneNodes.getChildren().addAll(0, jewel.getNodes());
+        setSpriteStore(spriteStore);
+        grid[i][j].getNodes().forEach((node) -> node.addEventFilter(MouseEvent.MOUSE_CLICKED,
+            new EventHandler<MouseEvent>() {
+                public void handle(MouseEvent event) {
+                    addSelection(jewel);
+                    event.consume();
+                }
+            }
+        )
+        );
+        grid[i][j].getSprites().forEach((sprite)-> sprite.fadeIn(sceneNodes)); 
+     }
+    
+    /**
+     * This function adds an explosive jewel of the selected type to the grid at the specified position.
+     * @param i Grid column
+     * @param j Grid row
+     */
+    protected void addHyperJewel(int type, int i, int j) {
+        Jewel jewel = new HyperPowerUp(new BasicJewel(type, i, j,
+        		i * spriteWidth, j * spriteHeight));
+        grid[i][j] = jewel;
+        spriteStore.addSprites(jewel.getSprites());
+        sceneNodes.getChildren().addAll(0, jewel.getNodes());
+        setSpriteStore(spriteStore);
+        grid[i][j].getNodes().forEach((node) -> node.addEventFilter(MouseEvent.MOUSE_CLICKED,
+            new EventHandler<MouseEvent>() {
+                public void handle(MouseEvent event) {
+                    addSelection(jewel);
+                    event.consume();
+                }
+            }
+        )
+        );
+        grid[i][j].getSprites().forEach((sprite)-> sprite.fadeIn(sceneNodes));  
+      }
+    
     
     /**
      * This function adds a animating jewel of a random type to the grid at the specified position.
@@ -678,9 +501,9 @@ public class Board implements Serializable {
     protected void addRandomJewel(int i, int j, int translateX, int translateY) {
     	  addRandomJewel(i, j);
           if (translateX != 0 || translateY != 0) {
-        	  grid[i][j].setState(SpriteState.ANIMATION_ACTIVE);
-        	  grid[i][j].getNode().setTranslateX(translateX);
-        	  grid[i][j].getNode().setTranslateY(translateY);
+        	  grid[i][j].getSprite().setState(SpriteState.ANIMATION_ACTIVE);
+        	  grid[i][j].getNodes().forEach((node) -> node.setTranslateX(translateX));
+        	  grid[i][j].getNodes().forEach((node) -> node.setTranslateY(translateY));
           }
     }
 
@@ -689,11 +512,11 @@ public class Board implements Serializable {
      * Jewels with empty spots under them are moved down, 
      * and the empty positions are filled with new jewels
      */
-    public void updateJewelPositions() {
+    private void updateJewelPositions() {
     	for (int i = 0; i < gridWidth; i++) {	
     		int emptySpots = 0;
     		for (int j = gridHeight - 1; j >= 0; j--) {
-    			if (grid[i][j] == null || grid[i][j].getState() == SpriteState.TO_BE_REMOVED) {
+    			if (grid[i][j] == null || grid[i][j].getSprite().getState() == SpriteState.TO_BE_REMOVED) {
     				emptySpots++;
     			} else {
     				if (emptySpots > 0) {
@@ -714,49 +537,10 @@ public class Board implements Serializable {
      * @param spots The number of spots to move down
      */
     private void moveJewelDown(Jewel jewel, int spots) {
-        	jewel.setyPos(jewel.getyPos() + spots * this.spriteHeight);
-        	jewel.setBoardY(jewel.getBoardY() + spots);
-        	jewel.getNode().setTranslateY(-spots * this.spriteHeight);
+        jewel.setBoardY(jewel.getBoardY() + spots);
+    	jewel.relativeMoveTo(0, spots * this.spriteHeight);
     }
 
-    	
-    /**
-     * This function fills the null spots in the grid[][] with Jewels
-     * at the start of the game.
-     */
-    public void fillNullSpots() {
-        for (int x = 0; x < grid.length; x++) {
-            for (int y = 0; y < grid[x].length; y++) {
-                if (grid[x][y] == null) {
-                    addRandomJewel(x, y);                
-                }
-            }
-        }
-    }
-    
-    /**
-     * Clears the grid and removes the jewels from the scenegroup.
-     */
-    public void clearGrid() {
-        for (int x = 0; x < grid.length; x++) {
-            for (int y = 0; y < grid[x].length; y++) {
-            	if (grid[x][y] != null) {
-	            	grid[x][y].remove(sceneNodes);
-	            	grid[x][y] = null;
-            	}
-        	}
-        }
-    }
-    
-    
-    /**
-	 * Getter function for the current spriteStore.
-	 * @return current spriteStore
-	 */
-
-	public Object getSpriteStore() {
-		return spriteStore;
-	}
     /**
 	 * Setter function for the current spriteStore.
 	 * @param spriteStore spriteStore to be set
@@ -820,30 +604,11 @@ public class Board implements Serializable {
 	}
 
     /**
-     * Getter function for the state grid.
-     * @return The state grid.
-     */
-    public int[][] getState() {
-        return state;
-    }
-
-    /**
      * Setter method for the state grid.
      * @param state The state grid.
      */
     public void setState(int[][] state) {
         this.state = state;
-    }
-
-    /**
-     * Function to reset the entire grid[][] to null.
-     */
-    public void resetGrid() {
-        for (int x = 0; x < grid.length; x++) {
-            for (int y = 0; y < grid[x].length; y++) {
-            	grid[x][y] = null;
-            }
-        }
     }
     
     /**
@@ -865,27 +630,21 @@ public class Board implements Serializable {
 	 */
 	public void showHint() {
 		
-		List<Jewel> swap;
+		List<Jewel> swap = getValidMovePair(new BruteForceStrategy(grid));
 		
-		for (int x = 0; x < grid.length; x++) {
-			for (int y = 0; y < grid[0].length; y++) {
-				swap = checkForPair(x, y);
-				if (!swap.isEmpty()) {
-					addSelection(swap.get(1));
-					return;
-				}
-			}
-		}
+		if (!swap.isEmpty()) {
+            addSelection(swap.get(1));
+        }
 	}
 
     /**
      * Determines if any Jewel on the board is still animating.
      * @return True if any Jewels are falling, otherwise false.
      */
-	public boolean anyJewelsAnimating() {
+	private boolean anyJewelsAnimating() {
 		for (int x = 0; x < gridWidth; x++) {
 			for (int y = 0; y < gridHeight; y++) {
-				if (grid[x][y] != null && grid[x][y].animationActive()) {
+				if (grid[x][y] != null && grid[x][y].getSprite().animationActive()) {
 					return true;
 				}
 			}
@@ -918,15 +677,13 @@ public class Board implements Serializable {
 		this.sceneNodes = sceneNodes;
 		for (int i = 0; i < gridWidth; i++) {
             for (int j = 0; j < gridHeight; j++) {
-               Jewel jewel = new Jewel(state[i][j], i, j); 
-                jewel.setxPos(i * spriteWidth); 
-                jewel.setyPos(j * spriteHeight); 
+               Jewel jewel = new BasicJewel(state[i][j], i, j, i * spriteWidth, j * spriteHeight); 
                 grid[i][j] = null;
                 grid[i][j] = jewel;
-                spriteStore.addSprites(jewel);
-                sceneNodes.getChildren().add(0, jewel.getNode());
+                spriteStore.addSprite(jewel.getSprite());
+                sceneNodes.getChildren().add(0, jewel.getSprite().getNode());
                 setSpriteStore(spriteStore);
-                grid[i][j].getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
+                grid[i][j].getSprite().getNode().addEventFilter(MouseEvent.MOUSE_CLICKED,
                         new EventHandler<MouseEvent>() {
                             public void handle(MouseEvent event) {
                                 addSelection(jewel);
@@ -945,7 +702,43 @@ public class Board implements Serializable {
 	public boolean isLocked() {
 		return locked;
 	}
-
+	
+	public void saveExplosivesAndHypers() {
+		explosivesSave = new ArrayList<Integer>();
+		hyperSave = new ArrayList<Integer>();
+		for (Jewel[] column : grid) {
+			for (Jewel jewel : column) {
+				if (jewel.isExplosive()) {
+					explosivesSave.add(jewel.getType());
+					explosivesSave.add(jewel.getBoardX());
+					explosivesSave.add(jewel.getBoardY());
+				}
+				if (jewel.isHyper()) {
+					hyperSave.add(jewel.getType());
+					hyperSave.add(jewel.getBoardX());
+					hyperSave.add(jewel.getBoardY());
+				}
+			}
+		}
+	}
+	
+	public void restoreExplosivesAndHypers() {
+		for (int i = 0; i < explosivesSave.size(); i+=3) {
+			int type = explosivesSave.get(i);
+			int x = explosivesSave.get(i+1);
+			int y = explosivesSave.get(i+2);
+			grid[x][y].implode(sceneNodes);
+			addExplosiveJewel(type, x, y);
+		}
+		for (int i = 0; i < hyperSave.size(); i+=3) {
+			int type = hyperSave.get(i);
+			int x = hyperSave.get(i+1);
+			int y = hyperSave.get(i+2);
+			grid[x][y].implode(sceneNodes);
+			addHyperJewel(type, x, y);
+		}
+	}
+	
 	/**
 	 * Lock or unlock the board for modification.
 	 * @param locked true if the board is to be locked

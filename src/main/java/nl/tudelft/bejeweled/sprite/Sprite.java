@@ -14,10 +14,10 @@ public abstract class Sprite {
     private Node node;
 
     /** X  screen position. */
-    private double xPos;
+    protected int xPos;
 
     /** Y screen position. */
-    private double yPos;
+    protected int yPos;
 
     /** velocity vector x direction. */
     private double vX = 0;
@@ -53,7 +53,7 @@ public abstract class Sprite {
      * Getter method for xPos.
      * @return the current x position in pixels
      */
-	public double getxPos() {
+	public int getxPos() {
 		return xPos;
 	}
 
@@ -61,7 +61,7 @@ public abstract class Sprite {
      * Setter method for xPos.
      * @param xPos x position in pixels to be set
      */
-	public void setxPos(double xPos) {
+	protected void setxPos(int xPos) {
 		this.xPos = xPos;
 	}
 
@@ -69,14 +69,14 @@ public abstract class Sprite {
      * Getter method for yPos.
      * @return the current y position in pixels
      */
-	public double getyPos() {
+	public int getyPos() {
 		return yPos;
 	}
     /**
      * Setter method for yPos.
      * @param yPos y position in pixels to be set
      */
-	public void setyPos(double yPos) {
+	protected void setyPos(int yPos) {
 		this.yPos = yPos;
 	}
 
@@ -108,7 +108,7 @@ public abstract class Sprite {
      * Setter method for vX.
      * @param vX x velocity in pixels/update to be set
      */
-	public void setvX(double vX) {
+	protected void setvX(double vX) {
 		this.vX = vX;
 	}
 	
@@ -124,9 +124,35 @@ public abstract class Sprite {
      * Setter method for vY.
      * @param vY y velocity in pixels/update to be set
      */
-	public void setvY(double vY) {
+	protected void setvY(double vY) {
 		this.vY = vY;
 	}
+	
+    /**
+     * Function to move the sprite to a certain position via animation.
+     * @param x the new x position in pixels.
+     * @param y the new y position in pixels.
+     */
+    public void moveTo(int x, int y) {
+    	this.getNode().setTranslateX(this.getxPos() - x);
+    	this.getNode().setTranslateY(this.getyPos() - y);
+    	this.setxPos(x);
+    	this.setyPos(y);
+    }
+    
+    /**
+     * Function to move the sprite to a relative position via animation.
+     * @param deltaX the change of x position in pixels.
+     * @param deltaY the change of y position in pixels.
+     */
+      public void relativeMoveTo(int deltaX, int deltaY) {
+    	this.getNode().setTranslateX(-deltaX);
+    	this.getNode().setTranslateY(-deltaY);
+    	this.setxPos(this.getxPos() + deltaX);
+    	this.setyPos(this.getyPos() + deltaY);
+    }
+    
+      
 	
 	 /**
     * Method to check is an animation for this sprite is still in progress.

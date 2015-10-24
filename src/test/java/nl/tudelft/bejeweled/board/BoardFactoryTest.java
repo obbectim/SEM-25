@@ -7,8 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javafx.scene.Group;
+import nl.tudelft.bejeweled.jewel.Jewel;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
-import nl.tudelft.bejeweled.sprite.Jewel;
 
 /**
  * Test for BoardFactory to verify that board 

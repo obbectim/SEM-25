@@ -10,7 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javafx.collections.ObservableList;
-import nl.tudelft.bejeweled.sprite.Jewel;
+import nl.tudelft.bejeweled.jewel.BasicJewel;
+import nl.tudelft.bejeweled.jewel.Jewel;
 import nl.tudelft.bejeweled.sprite.SpriteStore;
 
 /**
@@ -43,7 +44,7 @@ public class BoardTest {
 	 */
 	@Test
 	public void testSelectionSize() {
-		Jewel jewel1 = mock(Jewel.class);
+		Jewel jewel1 = new BasicJewel(0, 0, 0, 0, 0);
 		selectionBoard.addSelection(jewel1);
 		assertEquals(TEST_RESULT_SIZE_1, selectionBoard.getSelection().size());
 		Jewel jewel2 = mock(Jewel.class);
@@ -56,7 +57,7 @@ public class BoardTest {
 	 */
 	@Test
 	public void retriveSelection() {
-		Jewel jewel = mock(Jewel.class);
+		Jewel jewel = new BasicJewel(0, 0, 0, 0, 0);
 		selectionBoard.addSelection(jewel);
 		assertEquals(jewel, selectionBoard.getSelection().get(0));
 	}
@@ -67,7 +68,7 @@ public class BoardTest {
 	@Test
 	public void selectionCursorCreation() {
 		assertNull(selectionBoard.getSelectionCursor());
-		Jewel jewel = mock(Jewel.class);
+		Jewel jewel = new BasicJewel(0, 0, 0, 0, 0);
 		selectionBoard.addSelection(jewel);
 		assertNotNull(selectionBoard.getSelectionCursor());
 	}
