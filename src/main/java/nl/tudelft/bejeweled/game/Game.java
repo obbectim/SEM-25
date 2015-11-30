@@ -23,7 +23,7 @@ import java.util.TreeMap;
 public abstract class Game implements Serializable {
 
     /** All nodes to be displayed in the game window. */
-    protected Group sceneNodes;
+    private Group sceneNodes;
 
     /** The game loop using JavaFX's <code>Timeline</code> API.*/
     private static Timeline gameLoop;

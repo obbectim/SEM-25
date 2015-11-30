@@ -55,9 +55,7 @@ public class BejeweledGui {
 
             // draw board as a background on the boardPane
             boardPane = bejeweledController.getBoardPane();
-
-            scoreLabel = bejeweledController.getScoreLabel();
-            
+            scoreLabel = bejeweledController.getScoreLabel();          
             levelLabel = bejeweledController.getLevelLabel();
 
             // redirect button callbacks to game class

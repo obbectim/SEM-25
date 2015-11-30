@@ -37,7 +37,7 @@ public class JewelTest {
 	 */
 	@Before
 	public void setUp() {
-		jewel = new BasicJewel(TYPE, GRID_I, GRID_J, GRID_I*SPRITE_SIZE, GRID_J*SPRITE_SIZE );
+		jewel = new BasicJewel(TYPE, GRID_I, GRID_J, GRID_I * SPRITE_SIZE, GRID_J * SPRITE_SIZE);
 	}
 	
 	/**
@@ -91,10 +91,13 @@ public class JewelTest {
 		jewel.getSprite().getNode().setTranslateX(LARGE_V_X);
 		jewel.getSprite().getNode().setTranslateY(LARGE_V_Y);
     	jewel.update();
-		assertEquals(jewel.getSprite().MAX_SPEED_X, jewel.getSprite().getvX(), DELTA);
-		assertEquals(jewel.getSprite().MAX_SPEED_Y, jewel.getSprite().getvY(), DELTA);
-		assertEquals(LARGE_V_X - jewel.getSprite().MAX_SPEED_X, jewel.getSprite().getNode().getTranslateX(), DELTA);
-		assertEquals(LARGE_V_Y - jewel.getSprite().MAX_SPEED_Y, jewel.getSprite().getNode().getTranslateY(), DELTA);
+		jewel.getSprite();
+		assertEquals(JewelSprite.MAX_SPEED_X, jewel.getSprite().getvX(), DELTA);
+		assertEquals(JewelSprite.MAX_SPEED_Y, jewel.getSprite().getvY(), DELTA);
+		assertEquals(LARGE_V_X - JewelSprite.MAX_SPEED_X, 
+						jewel.getSprite().getNode().getTranslateX(), DELTA);
+		assertEquals(LARGE_V_Y - JewelSprite.MAX_SPEED_Y, 
+						jewel.getSprite().getNode().getTranslateY(), DELTA);
 	}
 	
 	/**
@@ -120,16 +123,20 @@ public class JewelTest {
 		jewel.getSprite().getNode().setTranslateX(-LARGE_V_X);
 		jewel.getSprite().getNode().setTranslateY(-LARGE_V_Y);
     	jewel.update();
-		assertEquals(-jewel.getSprite().MAX_SPEED_X, jewel.getSprite().getvX(), DELTA);
-		assertEquals(-jewel.getSprite().MAX_SPEED_Y, jewel.getSprite().getvY(), DELTA);
-		assertEquals(-(LARGE_V_X - jewel.getSprite().MAX_SPEED_X), jewel.getSprite().getNode().getTranslateX(), DELTA);
-		assertEquals(-(LARGE_V_Y - jewel.getSprite().MAX_SPEED_Y), jewel.getSprite().getNode().getTranslateY(), DELTA);
+		assertEquals(-JewelSprite.MAX_SPEED_X, jewel.getSprite().getvX(), DELTA);
+		assertEquals(-JewelSprite.MAX_SPEED_Y, jewel.getSprite().getvY(), DELTA);
+		assertEquals(-(LARGE_V_X - JewelSprite.MAX_SPEED_X),
+				jewel.getSprite().getNode().getTranslateX(), DELTA);
+		jewel.getSprite();
+		assertEquals(-(LARGE_V_Y - JewelSprite.MAX_SPEED_Y),
+				jewel.getSprite().getNode().getTranslateY(), DELTA);
 	}
 	
 	/**
 	 * Test the velocity at implosion.
 	 */
 	@Test
+	
 	public void implodeVelocityTest() {
 		jewel.getSprite().getNode().setTranslateX(LARGE_V_X);
 		jewel.getSprite().getNode().setTranslateY(LARGE_V_Y);

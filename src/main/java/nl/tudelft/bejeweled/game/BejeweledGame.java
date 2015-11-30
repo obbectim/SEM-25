@@ -43,11 +43,9 @@ public class BejeweledGame extends Game implements Serializable, SessionObserver
 
     private static final String SAVE_FILE = "save.mine";
 
-    protected Session session;
-
-	protected SpriteStore spriteStore;
-
-    protected Pane gamePane;
+    private Session session;
+    private SpriteStore spriteStore;
+    private Pane gamePane;
 
     private Label scoreLabel;
 	private Label levelLabel;
@@ -83,7 +81,8 @@ public class BejeweledGame extends Game implements Serializable, SessionObserver
      * @param boardLocation The location of the boardfile to be used 
      * to create the board at the start of this session.
     */
-    public BejeweledGame(int framesPerSecond, String windowTitle, SpriteStore spriteStore, String boardLocation) {
+    public BejeweledGame(int framesPerSecond, String windowTitle,
+    						SpriteStore spriteStore, String boardLocation) {
         super(framesPerSecond, windowTitle);
         this.boardLocation = boardLocation;
         this.spriteStore = spriteStore;
@@ -105,14 +104,14 @@ public class BejeweledGame extends Game implements Serializable, SessionObserver
     public void start() {
     	Logger.logInfo("Game started");
     	//Clean up existing sprites
-    	gamePane.getChildren().remove(sceneNodes);
+    	gamePane.getChildren().remove(getSceneNodes());
         spriteStore.removeAllSprites();    
         
-        sceneNodes = new Group();
+        setSceneNodes(new Group());
         if (boardLocation == null) {
-        	session = new Session(spriteStore, sceneNodes);
+        	session = new Session(spriteStore, getSceneNodes());
         } else {
-        	session = new Session(spriteStore, sceneNodes, boardLocation);
+        	session = new Session(spriteStore, getSceneNodes(), boardLocation);
         }
         session.addObserver(this);
         updateLevel();
@@ -203,6 +202,7 @@ public class BejeweledGame extends Game implements Serializable, SessionObserver
     		if (session.getBoard().isLocked()) {
     			return;
     		}
+            session.getBoard().removeJewelSelection();
 	    	session.lockBoard();
 	        try {
 	        	//Before writing, convert the board to a serializable state

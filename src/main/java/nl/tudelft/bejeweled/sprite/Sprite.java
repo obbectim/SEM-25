@@ -14,10 +14,10 @@ public abstract class Sprite {
     private Node node;
 
     /** X  screen position. */
-    protected int xPos;
+    private int xPos;
 
     /** Y screen position. */
-    protected int yPos;
+    private int yPos;
 
     /** velocity vector x direction. */
     private double vX = 0;
